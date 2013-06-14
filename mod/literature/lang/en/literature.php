@@ -36,7 +36,7 @@ $string['pluginname'] = 'literature';
 
 
 $string['actions'] = 'Actions';
-$string['actionsl'] = 'Select action';
+$string['actionsel'] = 'Select action';
 $string['add'] = 'Add';
 $string['addlist'] = 'Add List';
 $string['addlit'] = 'Add Literature';
