@@ -18,9 +18,9 @@
 
 require_once($CFG->libdir . "/externallib.php");
 require_once(dirname(__FILE__).'/locallib.php');
-require_once(dirname(__FILE__).'/dbobjects/literature.php');
-require_once(dirname(__FILE__).'/dbobjects/literaturelist.php');
-require_once(dirname(__FILE__).'/dbobjects/listinfo.php');
+require_once(dirname(__FILE__).'/dbobject/literature.php');
+require_once(dirname(__FILE__).'/dbobject/literaturelist.php');
+require_once(dirname(__FILE__).'/dbobject/listinfo.php');
 
 
 /**

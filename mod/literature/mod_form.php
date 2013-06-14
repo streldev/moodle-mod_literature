@@ -30,7 +30,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once(dirname(__FILE__).'/dbobjects/listinfo.php');
+require_once(dirname(__FILE__).'/dbobject/listinfo.php');
 require_once('locallib.php');
 
 /**
@@ -99,7 +99,7 @@ class mod_literature_mod_form extends moodleform_mod {
 		//-------------------------------------------------------------------------------
 		// Literaturelists 
 		$mform->addElement('header', 'lists', get_string('lists', 'literature'));
-		$listinfos = ListInfo::load_by_userid($USER->id);
+		$listinfos = literature_dbobject_listinfo::load_by_userid($USER->id);
 		$lists = literature_print_listinfos($listinfos, true, $this->course->id, $this->_section);
 		$mform->addElement('html', $lists);
 		$mform->closeHeaderBefore('btn_post_lists');

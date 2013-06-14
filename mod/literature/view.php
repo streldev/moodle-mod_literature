@@ -30,7 +30,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/locallib.php');
-require_once(dirname(__FILE__) . '/dbobjects/literature.php');
+require_once(dirname(__FILE__) . '/dbobject/literature.php');
 require_once($CFG->dirroot.'/lib/formslib.php');
 
 class literature_view_form extends moodleform {

@@ -124,7 +124,7 @@ function literature_delete_instance($id) {
     }
 
     # Delete any dependent records here #
-    require_once('dbobjects/literature.php');
+    require_once('dbobject/literature.php');
     Literature::del_by_id($literature->litid);
 
     $DB->delete_records('literature', array('id' => $literature->id));
@@ -458,7 +458,7 @@ function literature_extend_settings_navigation(settings_navigation $settingsnav,
 function literature_cm_info_view(cm_info $cminfo) {
 	
 	require_once('locallib.php');
-	require_once('dbobjects/literature.php');
+	require_once('dbobject/literature.php');
 	
 	global $DB;
 	
@@ -466,7 +466,7 @@ function literature_cm_info_view(cm_info $cminfo) {
 		
 	$literature = $DB->get_record('literature', array('id' => $id));
 	
-	$lit = Literature::load_by_id($literature->litid);
+	$lit = literature_dbobject_literature::load_by_id($literature->litid);
 	
 	if($literature->litview == 1) {
 		$content = literature_view_full($lit);

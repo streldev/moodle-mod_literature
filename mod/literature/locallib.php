@@ -36,7 +36,7 @@ require_once(dirname(__FILE__).'/enricher/lib.php');
 // Searchsource lib
 require_once(dirname(__FILE__).'/searchsource/lib.php');
 // Literature dbobject
-require_once(dirname(__FILE__).'/dbobjects/literature.php');
+require_once(dirname(__FILE__).'/dbobject/literature.php');
 
 
 /**
@@ -95,11 +95,11 @@ function literature_view_list($item) {
 	
 	switch ($item->type) {
 		
-		case Literature::BOOK :
+		case literature_dbobject_literature::BOOK :
 			return literature_htmlfactory_book($item, true);
 			break;
 			
-		case Literature::ELECTRONIC :
+		case literature_dbobject_literature::ELECTRONIC :
 			return literature_htmlfactory_electronic($item, true);
 			break;
 			
@@ -117,11 +117,11 @@ function literature_view_full($item) {
 	
 	switch ($item->type) {
 		
-		case Literature::BOOK :
+		case literature_dbobject_literature::BOOK :
 			return literature_htmlfactory_book($item);
 			break;
 			
-		case Literature::BOOK :
+		case literature_dbobject_literature::BOOK :
 			return literature_htmlfactory_electronic($item);
 			break;
 			
@@ -142,6 +142,7 @@ function literature_view_full($item) {
 function literature_htmlfactory_book($item, $short=false, $aslistelement=false, $addcheckbox=false) {
 	global $CFG, $SESSION;
 	
+        // This is not unused!!!
 	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 	
 	if(!is_callable('inShortBook')) {
@@ -212,11 +213,11 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 	
 	if(!$short) {
 		// Cover
-		$image = '<p><img src="'.$coverpath.'" style="float:left; margin: 0 15px 0 15px;""></p>';
+		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
 		$html .= $image;
 	}
 	
-	$html .= '<div class="data" style="margin: 0 15px 0 15px;">';
+	$html .= '<div class="data">';
 		
 	// Title
 	if(isset($item->titlelink) && inShortBook('title')) {
@@ -259,8 +260,8 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 	
 	// Link to Read
 	if(isset($item->linktoread) && inShortBook('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.'</span>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a><br />';
+		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
+				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
 		$html .= $link;
 	}
 	
@@ -274,7 +275,7 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 	
 	// Clear float from image
 	if(!$short) {
-		$clearfloat = '<div style="clear:both;" />';
+		$clearfloat = '<div class="clear" />';
 		$html .= $clearfloat;
 	}
 	
@@ -283,14 +284,14 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 	
 	// If item should be list element then add list element tags
 	if($aslistelement) {
-		$html = '<li class="lit_entry" style="list-style-type: none; margin:0.2em;">'.
-				'<div class="lit_entry" style="border: 1px solid #B3B2B2;">'.
+		$html = '<li class="lit_entry">'.
+				'<div class="lit_entry">'.
 				$html.
 				'</div>'.
 				'</li>';
 	}
 	
-	'<div class="lit_entry" style="border: 1px solid #B3B2B2;">'.
+	'<div class="lit_entry">'.
 	'<input type="hidden" name="select['.$item->id.']" value="0" />';
 	
 	return $html;
@@ -308,6 +309,7 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 function literature_htmlfactory_electronic($item, $short=false, $aslistelement=false, $addcheckbox=false) {
 	global $CFG, $SESSION;
 
+        // This is not unused!!!
 	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
 	if(!is_callable('inShortElectronic')) {
@@ -379,12 +381,12 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 
 	// Cover
 	if(!$short) {
-		$image = '<p><img src="'.$coverpath.'" style="float:left; margin: 0 15px 0 15px;""></p>';
+		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
 		$html .= $image;
 	}
 	
 
-	$html .= '<div class="data" style="margin: 0 15px 0 15px;">';
+	$html .= '<div class="data">';
 	
 	// Title
 	if(isset($item->titlelink) && inShortElectronic('title')) {
@@ -427,8 +429,8 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 
 	// Link to Read
 	if(isset($item->linktoread) && inShortElectronic('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b></span>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a><br />';
+		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
+				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
 		$html .= $link;
 	}
 
@@ -443,7 +445,7 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 
 	// Clear float from image
 	if(!$short) {
-		$clearfloat = '<div style="clear:both;" />';
+		$clearfloat = '<div class="clear" />';
 		$html .= $clearfloat;
 	}
 
@@ -452,8 +454,8 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 
 	// If item should be list element then add list element tags
 	if($aslistelement) {
-		$html = '<li class="lit_entry" style="list-style-type: none; margin:0.2em;">'.
-				'<div class="lit_entry" style="border: 1px solid #B3B2B2;">'.
+		$html = '<li class="lit_entry">'.
+				'<div class="lit_entry">'.
 				$html.
 				'</div>'.
 				'</li>';
@@ -473,6 +475,7 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, $addcheckbox=false) {
 	global $CFG, $SESSION;
 
+        // This is not unused!!!
 	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
 	if(!is_callable('inShortMisc')) {
@@ -545,11 +548,11 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
 
 	// Cover
 	if(!$short) {
-		$image = '<p><img src="'.$coverpath.'" style="float:left; margin: 0 10px 15px 15px;""></p>';
+		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
 		$html .= $image;
 	}
 	
-	$html .= '<div class="data" style="margin: 0 15px 0 15px;">';
+	$html .= '<div class="data">';
 	
 	// Title
 	if(isset($item->titlelink) && inShortMisc('title')) {
@@ -592,8 +595,8 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
 
 	// Link to Read
 	if(isset($item->linktoread) && inShortMisc('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b></span>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a><br />';
+		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
+				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
 		$html .= $link;
 	}
 
@@ -607,7 +610,7 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
 
 	// Clear float from image
 	if(!$short) {
-		$clearfloat = '<div style="clear:both;" />';
+		$clearfloat = '<div class="clear" />';
 		$html .= $clearfloat;
 	}
 
@@ -616,8 +619,8 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
 
 	// If item should be list element then add list element tags
 	if($aslistelement) {
-		$html = '<li class="lit_entry" style="list-style-type: none; margin:0.2em;">'.
-				'<div class="lit_entry" style="border: 1px solid #B3B2B2;">'.
+		$html = '<li class="lit_entry">'.
+				'<div class="lit_entry">'.
 				$html.
 				'</div>'.
 				'</li>';
@@ -672,12 +675,12 @@ function literature_result_print($results, $from=0, $count=5) {
 		switch ($item->type) {
 				
 			// Book
-			case Literature::BOOK :
+			case literature_dbobject_literature::BOOK :
 				$htmllistitems[] = literature_htmlfactory_book($item, false, true, true);
 				break;
 		
 				// Journal
-			case Literature::ELECTRONIC :
+			case literature_dbobject_literature::ELECTRONIC :
 				$htmllistitems[] = literature_htmlfactory_electronic($item, false, true, true);
 				break;
 		
@@ -723,18 +726,18 @@ function literature_print_literaturelist($items, $selectable=true, $start=0, $en
 		switch ($item->type) {
 	
 			// Book
-			case Literature::BOOK :
-				$htmllistitems[] = literature_htmlfactory_book($item, false, true, true);
+			case literature_dbobject_literature::BOOK :
+				$htmllistitems[] = literature_htmlfactory_book($item, false, true, $selectable);
 				break;
 	
 				// Journal
-			case Literature::ELECTRONIC :
-				$htmllistitems[] = literature_htmlfactory_electronic($item, false, true, true);
+			case literature_dbobject_literature::ELECTRONIC :
+				$htmllistitems[] = literature_htmlfactory_electronic($item, false, true, $selectable);
 				break;
 	
 				// Misc
 			default:
-				$htmllistitems[] = literature_htmlfactory_misc($item, false, true, true);
+				$htmllistitems[] = literature_htmlfactory_misc($item, false, true, $selectable);
 		}
 	}
 	
@@ -897,11 +900,12 @@ function literature_html_build_list($htmllistitems, $message=null) {
 /**
  * Make a Literature object form a stdClass with the same attributes
  * @param stdClass $item
- * @return Literature
+ * @return literature_dbobject_literature
  */
 function literature_cast_stdClass_literature($item) {
 
-	return new Literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors, 
-				$item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn,
-				$item->coverpath, $item->description, $item->linktoread, $item->format, $item->titlelink, 0);
+	return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors, 
+				$item->publisher, $item->published, $item->series, $item->isbn10, 
+                                $item->isbn13, $item->issn, $item->coverpath, $item->description,
+                                $item->linktoread, $item->format, $item->titlelink, 0);
 }

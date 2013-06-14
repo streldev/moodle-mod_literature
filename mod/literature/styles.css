@@ -1,0 +1,38 @@
+
+.clear {
+    clear: both;
+}
+
+.literature .data {
+    margin-left: 150px;
+    word-wrap: break-word;
+}
+
+.literature .lit_image {
+    width: 150px;
+    float: left;
+}
+
+.literature .lit_image img {
+    display: block;
+    margin: 0px auto;
+    width: 130px;
+}
+
+li.lit_entry {
+    list-style-type: none; 
+    margin-top: 5px;
+}
+
+div.lit_entry {
+    border: 1px solid #B3B2B2;
+    padding: 10px 5px 5px 5px;
+}
+
+.literature .lit_link {
+    word-break: break-all;
+}
+
+.results ul {
+    list-style: none;
+}
