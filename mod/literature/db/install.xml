@@ -1,112 +1,112 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/literature/db" VERSION="20121026" COMMENT="XMLDB file for Moodle mod/literature"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+<XMLDB PATH="mod/literature/db" VERSION="20130615" COMMENT="XMLDB file for Moodle mod/literature"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
-    <TABLES>
-        <TABLE NAME="literature" COMMENT="Default comment for literature, please edit me" NEXT="literature_lists">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
-                <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course literature activity belongs to" PREVIOUS="id" NEXT="name"/>
-                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
-                <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the literature activity" PREVIOUS="name" NEXT="introformat"/>
-                <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="litid"/>
-                <FIELD NAME="litid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="litview"/>
-                <FIELD NAME="litview" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="litid"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-            <INDEXES>
-                <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
-            </INDEXES>
-        </TABLE>
-        <TABLE NAME="literature_lists" COMMENT="Literature lists for the module literature" PREVIOUS="literature" NEXT="literature_list_lit">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="userid"/>
-                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
-                <FIELD NAME="name" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="New list" SEQUENCE="false" PREVIOUS="userid" NEXT="created"/>
-                <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="description"/>
-                <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="created" NEXT="modified"/>
-                <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="description" NEXT="public"/>
-                <FIELD NAME="public" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="modified"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="literature_list_lit" COMMENT="Jointable for lists and literature" PREVIOUS="literature_lists" NEXT="literature_lit">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="list_id"/>
-                <FIELD NAME="list_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="lit_id"/>
-                <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="list_id"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="list_key"/>
-                <KEY NAME="list_key" TYPE="foreign" FIELDS="list_id" REFTABLE="literature_lists" REFFIELDS="id" PREVIOUS="primary" NEXT="lit_key"/>
-                <KEY NAME="lit_key" TYPE="foreign" FIELDS="lit_id" REFTABLE="literature_lit" REFFIELDS="id" PREVIOUS="list_key"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="literature_lit" COMMENT="Literature items" PREVIOUS="literature_list_lit" NEXT="literature_searchsource">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
-                <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
-                <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="subtitle"/>
-                <FIELD NAME="subtitle" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="authors"/>
-                <FIELD NAME="authors" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="subtitle" NEXT="publisher"/>
-                <FIELD NAME="publisher" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="authors" NEXT="published"/>
-                <FIELD NAME="published" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="publisher" NEXT="series"/>
-                <FIELD NAME="series" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="published" NEXT="isbn10"/>
-                <FIELD NAME="isbn10" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="series" NEXT="isbn13"/>
-                <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
-                <FIELD NAME="issn" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
-                <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
-                <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
-                <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
-                <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="links"/>
-                <FIELD NAME="links" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="format" NEXT="titlelink"/>
-                <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="links"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="literature_searchsource" COMMENT="Default comment for the table, please edit me" PREVIOUS="literature_lit" NEXT="literature_lit_temp">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
-                <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="instance"/>
-                <FIELD NAME="instance" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="type"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="literature_lit_temp" COMMENT="Literature searchitems" PREVIOUS="literature_searchsource">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
-                <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
-                <FIELD NAME="title" TYPE="char" LENGTH="1000" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="subtitle"/>
-                <FIELD NAME="subtitle" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="authors"/>
-                <FIELD NAME="authors" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="subtitle" NEXT="publisher"/>
-                <FIELD NAME="publisher" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="authors" NEXT="published"/>
-                <FIELD NAME="published" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="publisher" NEXT="series"/>
-                <FIELD NAME="series" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="published" NEXT="isbn10"/>
-                <FIELD NAME="isbn10" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="series" NEXT="isbn13"/>
-                <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
-                <FIELD NAME="issn" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
-                <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
-                <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
-                <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
-                <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="userid"/>
-                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="format" NEXT="timestamp"/>
-                <FIELD NAME="timestamp" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="titlelink"/>
-                <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="timestamp"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-        </TABLE>
-    </TABLES>
+  <TABLES>
+    <TABLE NAME="literature" COMMENT="Default comment for literature, please edit me" NEXT="literature_lists">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course literature activity belongs to" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the literature activity" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="litid"/>
+        <FIELD NAME="litid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="timemodified" NEXT="litview"/>
+        <FIELD NAME="litview" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="litid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="literature_lists" COMMENT="Literature lists for the module literature" PREVIOUS="literature" NEXT="literature_list_lit">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="New list" SEQUENCE="false" PREVIOUS="userid" NEXT="created"/>
+        <FIELD NAME="created" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="created" NEXT="modified"/>
+        <FIELD NAME="modified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="description" NEXT="public"/>
+        <FIELD NAME="public" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="modified"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_list_lit" COMMENT="Jointable for lists and literature" PREVIOUS="literature_lists" NEXT="literature_lit">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="list_id"/>
+        <FIELD NAME="list_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="lit_id"/>
+        <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="list_id"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="list_key"/>
+        <KEY NAME="list_key" TYPE="foreign" FIELDS="list_id" REFTABLE="literature_lists" REFFIELDS="id" PREVIOUS="primary" NEXT="lit_key"/>
+        <KEY NAME="lit_key" TYPE="foreign" FIELDS="lit_id" REFTABLE="literature_lit" REFFIELDS="id" PREVIOUS="list_key"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_lit" COMMENT="Literature items" PREVIOUS="literature_list_lit" NEXT="literature_searchsource">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="subtitle"/>
+        <FIELD NAME="subtitle" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="authors"/>
+        <FIELD NAME="authors" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="subtitle" NEXT="publisher"/>
+        <FIELD NAME="publisher" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="authors" NEXT="published"/>
+        <FIELD NAME="published" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="publisher" NEXT="series"/>
+        <FIELD NAME="series" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="published" NEXT="isbn10"/>
+        <FIELD NAME="isbn10" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="series" NEXT="isbn13"/>
+        <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
+        <FIELD NAME="issn" TYPE="char" LENGTH="512" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
+        <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
+        <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
+        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="links"/>
+        <FIELD NAME="links" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="format" NEXT="titlelink"/>
+        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="links"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_searchsource" COMMENT="Default comment for the table, please edit me" PREVIOUS="literature_lit" NEXT="literature_lit_temp">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="instance"/>
+        <FIELD NAME="instance" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="type"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_lit_temp" COMMENT="Literature searchitems" PREVIOUS="literature_searchsource">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="1000" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="subtitle"/>
+        <FIELD NAME="subtitle" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="title" NEXT="authors"/>
+        <FIELD NAME="authors" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="subtitle" NEXT="publisher"/>
+        <FIELD NAME="publisher" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="authors" NEXT="published"/>
+        <FIELD NAME="published" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="publisher" NEXT="series"/>
+        <FIELD NAME="series" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" PREVIOUS="published" NEXT="isbn10"/>
+        <FIELD NAME="isbn10" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="series" NEXT="isbn13"/>
+        <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
+        <FIELD NAME="issn" TYPE="char" LENGTH="512" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
+        <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
+        <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
+        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="format" NEXT="timestamp"/>
+        <FIELD NAME="timestamp" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="titlelink"/>
+        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="timestamp"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
 </XMLDB>

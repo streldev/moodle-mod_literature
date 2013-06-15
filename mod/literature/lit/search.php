@@ -50,6 +50,7 @@ if ($courseid != -1) {
     require_login($course);
     $context = context_course::instance($course->id);
     require_capability('mod/literature:addinstance', $context);
+    
 } else {
 
     require_login();

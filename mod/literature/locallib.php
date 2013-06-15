@@ -829,7 +829,8 @@ function literature_db_insert_results($results) {
 		$result->userid = $userid;
 		literature_enricher_enrich_preview($result);
 		if(!$DB->insert_record($table, $result)) {
-			return false;
+                        // TODO warning
+			continue;
 		}
 	}
 	
