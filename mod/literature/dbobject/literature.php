@@ -131,11 +131,9 @@ class literature_dbobject_literature {
 
     /**
      * A link belonging to the literature
-     * @todo implement db table for links that one literature can
-     * have more than one link
-     * @var string
+     * @var array of link objects
      */
-    public $linktoread;
+    public $links;
 
     /**
      * The format of the literature
@@ -152,12 +150,10 @@ class literature_dbobject_literature {
     public $titlelink;
 
     /**
-     * Link counter
-     *
      * Counts the references on the db entry
      * @var int
      */
-    public $links;
+    public $refs;
 
     /**
      * The db table for {@link literature_dbobject_literature} objects
@@ -166,7 +162,7 @@ class literature_dbobject_literature {
     public static $table = 'literature_lit';
 
     public function __construct($id, $type, $title, $subtitle, $authors, $publisher, $published, $series, $isbn10, $isbn13,
-            $issn, $coverpath, $description, $linktoread, $format, $titlelink, $links) {
+            $issn, $coverpath, $description, $links, $format, $titlelink, $refs) {
 
         $this->id = $id;
 
@@ -208,8 +204,8 @@ class literature_dbobject_literature {
         // DESCRIPTION
         $this->description = $description;
 
-        // LINK TO READ
-        $this->linktoread = $linktoread;
+        // LINKS TO READ
+        $this->links = $links;
 
         // FORMAT
         $this->format = $format;
@@ -217,8 +213,8 @@ class literature_dbobject_literature {
         // TITLE LINK
         $this->titlelink = $titlelink;
 
-        // LINKS
-        $this->links = isset($links) ? $links : 0;
+        // REFS
+        $this->refs = isset($links) ? $links : 0;
     }
 
     /**
@@ -230,7 +226,7 @@ class literature_dbobject_literature {
         global $DB;
 
         literature_enricher_enrich($this);
-        $this->links = 0;
+        $this->refs = 0;
 
         $result = $DB->insert_record(self::$table, $this, true);
         if ($result) {
@@ -266,7 +262,7 @@ class literature_dbobject_literature {
 
         return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors,
                         $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn,
-                        $item->coverpath, $item->description, $item->linktoread, $item->format, $item->titlelink, $item->links);
+                        $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, $item->refs);
     }
 
     /**
@@ -281,9 +277,9 @@ class literature_dbobject_literature {
             return false;
         }
 
-        // Literature has more links --> do not delete and reduce links
-        if ($literature->has_links()) {
-            $literature->del_link();
+        // Literature has more refs --> do not delete and reduce refs
+        if ($literature->has_refs()) {
+            $literature->del_ref();
             $literature->save();
             return true;
         }
@@ -323,31 +319,31 @@ class literature_dbobject_literature {
     }
 
     /**
-     * Delete one link from the calling object
+     * Delete one reference from the calling object
      */
-    public function del_link() {
+    public function del_ref() {
 
-        if ($this->links > 0) {
-            $this->links--;
+        if ($this->refs > 0) {
+            $this->refs--;
         } else {
             print_error('error:db:incorectlinkhandling', 'literature');
         }
     }
 
     /**
-     * Add one link to the calling object
+     * Add one reference to the calling object
      */
-    public function add_link() {
-        $this->links++;
+    public function add_ref() {
+        $this->refs++;
     }
 
     /**
-     * Check if the calling object has multiple links
-     * @return boolean true if the object hast more then one link; false otherwise
+     * Check if the calling object has multiple references
+     * @return boolean true if the object hast more then one reference, false otherwise
      */
-    public function has_links() {
+    public function has_refs() {
 
-        if ($this->links > 1) {
+        if ($this->refs > 1) {
             return true;
         } else {
             return false;

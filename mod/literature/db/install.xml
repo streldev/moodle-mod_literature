@@ -65,8 +65,8 @@
         <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="format"/>
         <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="titlelink"/>
-        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="format" NEXT="links"/>
-        <FIELD NAME="links" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="titlelink"/>
+        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="format" NEXT="refs"/>
+        <FIELD NAME="refs" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="titlelink"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
