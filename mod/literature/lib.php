@@ -125,7 +125,7 @@ function literature_delete_instance($id) {
 
     # Delete any dependent records here #
     require_once('dbobject/literature.php');
-    Literature::del_by_id($literature->litid);
+    literature_dbobject_literature::del_by_id($literature->litid);
 
     $DB->delete_records('literature', array('id' => $literature->id));
 

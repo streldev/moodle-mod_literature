@@ -55,7 +55,7 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 require_capability('mod/literature:view', $context);
 
 
-$lit = Literature::load_by_id($literature->litid);
+$lit = literature_dbobject_literature::load_by_id($literature->litid);
 
 
 add_to_log($course->id, 'literature', 'view', "view.php?id={$cm->id}", $literature->name, $cm->id);

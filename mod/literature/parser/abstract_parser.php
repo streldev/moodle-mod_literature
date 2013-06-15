@@ -32,7 +32,7 @@ abstract class literature_parser_abstract {
 	 * 
 	 * @param string $string The entry
 	 * @param string $titlelink A link to a representation of the data
-	 * @return Literature A object of the class Literature
+	 * @return literature_dbobject_literature A object of the class Literature
 	 */
 	abstract public function parse($string, $titlelink);
 	

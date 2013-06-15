@@ -45,7 +45,7 @@ require_once(dirname(__FILE__).'/dbobject/literature.php');
  * @param stdClass $data The searchparameters
  * @param int $from
  * @param int $to
- * @return array of Literature objects
+ * @return array of Literature objects @see literature_dbobject_literature
  */
 function literature_search($data, $from, $to) {
 	global $SESSION;
@@ -88,7 +88,7 @@ function literature_search($data, $from, $to) {
 
 /**
  * Build list view of a literature item
- * @param Literature $item The literature item
+ * @param literature_dbobject_literature $item The literature item
  * @return string A html element for the item
  */
 function literature_view_list($item) {
@@ -110,7 +110,7 @@ function literature_view_list($item) {
 
 /**
  * Build full view of a literature item
- * @param Literature $item The literature item
+ * @param literature_dbobject_literature $item The literature item
  * @return string A html element for the item
  */
 function literature_view_full($item) {
@@ -134,7 +134,7 @@ function literature_view_full($item) {
 /**
  * HTML Factory for Literature items of type BOOK
  * 
- * @param Literature $item The Literature object of type BOOK
+ * @param literature_dbobject_literature $item The Literature object of type BOOK
  * @param boolean $short Build list view?
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
@@ -301,7 +301,7 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
 /**
  * HTML Factory for Literature items of type ELECTRONIC
  *
- * @param Literature $item The Literature object of type ELECTRONIC
+ * @param literature_dbobject_literature $item The Literature object of type ELECTRONIC
  * @param boolean $short Build list view?
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
@@ -467,7 +467,7 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
 /**
  * HTML Factory for Literature items of type MISC
  *
- * @param Literature $item The Literature object of type MISC
+ * @param literature_dbobject_literature $item The Literature object of type MISC
  * @param boolean $short Build list view?
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
@@ -634,7 +634,7 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
 
 /**
  * Build the html view of the results
- * @param array $results Array of Literature objects
+ * @param array $results Array of Literature objects @see literature_dbobject_literature
  * @param int $from Start with entry $from
  * @param int $count Display $count entries
  * @return string The html view of the results
@@ -746,7 +746,7 @@ function literature_print_literaturelist($items, $selectable=true, $start=0, $en
 
 /**
  * Build html view of list informations
- * @param array $listinfos Array of ListInfo objects
+ * @param array $listinfos Array of ListInfo objects @see literature_dbobject_listinfo
  * @param boolean $incourse In kontext moodle course?
  * @param int $course The course id
  * @param int $section The section id
@@ -764,7 +764,7 @@ function literature_print_listinfos($listinfos, $incourse, $course=null, $sectio
 
 /**
  * Build the html view of the listinfos
- * @param array $array Array of ListInfo objects
+ * @param array $array Array of ListInfo objects @see literature_dbobject_listinfo
  * @param boolean $incourse In kontext course?
  * @param int $courseid The id of the course
  * @param int $section Thee id of the section

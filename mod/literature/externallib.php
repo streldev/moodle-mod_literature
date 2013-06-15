@@ -174,8 +174,8 @@ class mod_literature_external extends external_api {
     	
     	// Add literature list
     	$created = time();
-    	$listinfo = new ListInfo(null, $data['name'], $USER->id, $created, null, $created, 0);
-    	$list = new LiteratureList($listinfo, $literatures);
+    	$listinfo = new literature_dbobject_listinfo(null, $data['name'], $USER->id, $created, null, $created, 0);
+    	$list = new literature_dbobject_literaturelist($listinfo, $literatures);
     	
     	if(!$list->insert()) {
     		
@@ -306,7 +306,7 @@ class mod_literature_external extends external_api {
     	 
     	// User is list owner
     	if($USER->id == $userid) {
-    		$allowedlistinfos = ListInfo::load_by_userid($USER->id);
+    		$allowedlistinfos = literature_dbobject_listinfo::load_by_userid($USER->id);
     		
     	// Get public lists
     	} else {
@@ -395,7 +395,7 @@ class mod_literature_external extends external_api {
     		return $result;
     	}
     	
-		if(!$list = LiteratureList::load_by_id($listid)) {
+		if(!$list = literature_dbobject_literaturelist::load_by_id($listid)) {
 			
 			$result['code'] = -2;
 			$result['msg'] = 'List with id '.$listid.' does not exist!';
