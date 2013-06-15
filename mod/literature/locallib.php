@@ -26,18 +26,15 @@
  * @copyright  2012 Frederik Strelczuk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
 require_once('lib.php');
 // Converter lib
-require_once(dirname(__FILE__).'/converter/lib.php');
+require_once(dirname(__FILE__) . '/converter/lib.php');
 // Enricher lib
-require_once(dirname(__FILE__).'/enricher/lib.php');
+require_once(dirname(__FILE__) . '/enricher/lib.php');
 // Searchsource lib
-require_once(dirname(__FILE__).'/searchsource/lib.php');
+require_once(dirname(__FILE__) . '/searchsource/lib.php');
 // Literature dbobject
-require_once(dirname(__FILE__).'/dbobject/literature.php');
-
+require_once(dirname(__FILE__) . '/dbobject/literature.php');
 
 /**
  * Call the selected suplguin of type "searchsource" and search
@@ -48,40 +45,38 @@ require_once(dirname(__FILE__).'/dbobject/literature.php');
  * @return array of Literature objects @see literature_dbobject_literature
  */
 function literature_search($data, $from, $to) {
-	global $SESSION;
-	
-	// Cleanup the SESSION
-	if(!isset($SESSION->literature)) {
-		$SESSION->literature = new stdClass();
-	}
-	$SESSION->literature->search = new stdClass();
-		
-	// Extract pluginname
-	if(empty($data->type)) {
-		print_error('error:searchsource:typemissing', 'literature');
-	}
-	$sourcetype = $data->type;
+    global $SESSION;
 
-	// Check if file exists
-	$filepath = dirname(__FILE__).'/searchsource/'.$sourcetype.'/searchobject.php';
-	if(!file_exists($filepath)) {
-		print_error('error:searchsource:notinstalled', 'literature', null, $sourcetype);
-	}
-	
-	require_once($filepath);
-	
-	// Make pluginclass
-	$classname = 'literature_searchsource_'.$sourcetype.'_searchobject';
-	$searchobject = new $classname($data->source);
-	
-	if(!$results = $searchobject->search($data, $from, $to)) {
-		return array();
-	}
-		
-	return $results;
+    // Cleanup the SESSION
+    if (!isset($SESSION->literature)) {
+        $SESSION->literature = new stdClass();
+    }
+    $SESSION->literature->search = new stdClass();
+
+    // Extract pluginname
+    if (empty($data->type)) {
+        print_error('error:searchsource:typemissing', 'literature');
+    }
+    $sourcetype = $data->type;
+
+    // Check if file exists
+    $filepath = dirname(__FILE__) . '/searchsource/' . $sourcetype . '/searchobject.php';
+    if (!file_exists($filepath)) {
+        print_error('error:searchsource:notinstalled', 'literature', null, $sourcetype);
+    }
+
+    require_once($filepath);
+
+    // Make pluginclass
+    $classname = 'literature_searchsource_' . $sourcetype . '_searchobject';
+    $searchobject = new $classname($data->source);
+
+    if (!$results = $searchobject->search($data, $from, $to)) {
+        return array();
+    }
+
+    return $results;
 }
-
-
 
 //---------------------------------------------------------------------------------------
 // Display in course
@@ -92,20 +87,20 @@ function literature_search($data, $from, $to) {
  * @return string A html element for the item
  */
 function literature_view_list($item) {
-	
-	switch ($item->type) {
-		
-		case literature_dbobject_literature::BOOK :
-			return literature_htmlfactory_book($item, true);
-			break;
-			
-		case literature_dbobject_literature::ELECTRONIC :
-			return literature_htmlfactory_electronic($item, true);
-			break;
-			
-		default:
-			return literature_htmlfactory_misc($item, true);
-	}
+
+    switch ($item->type) {
+
+        case literature_dbobject_literature::BOOK :
+            return literature_htmlfactory_book($item, true);
+            break;
+
+        case literature_dbobject_literature::ELECTRONIC :
+            return literature_htmlfactory_electronic($item, true);
+            break;
+
+        default:
+            return literature_htmlfactory_misc($item, true);
+    }
 }
 
 /**
@@ -114,21 +109,20 @@ function literature_view_list($item) {
  * @return string A html element for the item
  */
 function literature_view_full($item) {
-	
-	switch ($item->type) {
-		
-		case literature_dbobject_literature::BOOK :
-			return literature_htmlfactory_book($item);
-			break;
-			
-		case literature_dbobject_literature::BOOK :
-			return literature_htmlfactory_electronic($item);
-			break;
-			
-		default:
-			return literature_htmlfactory_misc($item);
-		
-	}
+
+    switch ($item->type) {
+
+        case literature_dbobject_literature::BOOK :
+            return literature_htmlfactory_book($item);
+            break;
+
+        case literature_dbobject_literature::BOOK :
+            return literature_htmlfactory_electronic($item);
+            break;
+
+        default:
+            return literature_htmlfactory_misc($item);
+    }
 }
 
 /**
@@ -139,164 +133,168 @@ function literature_view_full($item) {
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
  */
-function literature_htmlfactory_book($item, $short=false, $aslistelement=false, $addcheckbox=false) {
-	global $CFG, $SESSION;
-	
-        // This is not unused!!!
-	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
-	
-	if(!is_callable('inShortBook')) {
-		/**
-		 * Check if attribute should be displayed
-		 * @param string $name Name of the attribute
-		 */
-		function inShortBook($name) {
-			global $shortfields, $short;
-		
-			if($short) {
-				return key_exists($name, $shortfields);
-			} else {
-				return true;
-			}
-		}
-	}
-	
-	
-	// Get coverpath
-	if(!$short) {
-		if($item->coverpath) {
-			$coverpath = $item->coverpath;
-		} else {
-			$coverpath = $CFG->wwwroot.'/mod/literature/pix/nocover.jpg';
-		}
-	}
-	
-	// Get Checkbox
-	if($addcheckbox) {
-		
-		$checkbox = '<input type="hidden" name="select['.$item->id.']" value="0" />';
-		
+function literature_htmlfactory_book($item, $short = false, $aslistelement = false, $addcheckbox = false) {
+    global $CFG, $SESSION;
 
-		if(isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
-			$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1" checked></input>';
-		} else {
-			$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1"></input>';
-		}
-	}
-	
-	// If subtitle is set then concat with title
-	$title = $item->title;
-	if(!empty($item->subtitle)) {
-		$title .= ' - '.$item->subtitle;
-	}
-	
-	// Get the isbns
-	if(!empty($item->isbn10)) {
-		if(!empty($item->isbn13)) {
-			$isbn = $item->isbn10.', '.$item->isbn13;
-		} else {
-			$isbn = $item->isbn10;
-		}
-	} else if (!empty($item->isbn13)) {
-		$isbn = $item->isbn13;
-	} else {
-		$isbn = null;
-	}
-	
-	// Build the html elements
-	$html = '<div class="literature">';
-	
-	// Add checkbox
-	if($addcheckbox) {
-		$html .= $checkbox;
-	}
-	
-	if(!$short) {
-		// Cover
-		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
-		$html .= $image;
-	}
-	
-	$html .= '<div class="data">';
-		
-	// Title
-	if(isset($item->titlelink) && inShortBook('title')) {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b></span>'.
-					'<a href="'.$item->titlelink.'" target="_blank">'.$title.'</a><br />';
-	} else {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b>'.$title.'</span><br />';
-	}
-	$html .= $tit;
-	
-	// Authors
-	if(isset($item->authors) && inShortBook('authors')) {
-		$authors = '<span class="lit_author"><b>'.get_string('authors', 'literature').'</b>'.$item->authors.'</span><br />';
-		$html .= $authors;
-	}
-	
-	// Publisher
-	if(isset($item->publisher) && inShortBook('publisher')) {
-		$publisher = '<span class="lit_published"><b>'.get_string('publisher', 'literature').'</b>'.$item->publisher.'</span><br />';
-		$html .= $publisher;
-	}
-	
-	// Published
-	if(isset($item->published) && inShortBook('published')) {
-		$published = '<span class="lit_published"><b>'.get_string('published', 'literature').'</b>'.$item->published.'</span><br />';
-		$html .= $published;
-	}
-	
-	// ISBN
-	if(isset($isbn) && inShortBook('isbn')) {
-		$isbn = '<span class="lit_published"><b>'.get_string('isbn', 'literature').'</b>'.$isbn.'</span><br />';
-		$html .= $isbn;
-	}
-	
-	// Format
-	if(isset($item->format) && inShortBook('format')) {
-		$format = '<span class="lit_format"><b>'.get_string('format:', 'literature').'</b>'.$item->format.'</span><br />';
-		$html .= $format;
-	}
-	
-	// Link to Read
-	if(isset($item->linktoread) && inShortBook('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
-		$html .= $link;
-	}
-	
-	// Description
-	if(isset($item->description) && inShortBook('description')) {
-		$description = '<span class="lit_description"><b>'.get_string('description:', 'literature').'</b>'.$item->description.'</span><br />';
-		$html .= $description;
-	}
-	
-	$html .= '</div>';
-	
-	// Clear float from image
-	if(!$short) {
-		$clearfloat = '<div class="clear" />';
-		$html .= $clearfloat;
-	}
-	
-	// Main div end tag
-	$html .= '</div><br />';
-	
-	// If item should be list element then add list element tags
-	if($aslistelement) {
-		$html = '<li class="lit_entry">'.
-				'<div class="lit_entry">'.
-				$html.
-				'</div>'.
-				'</li>';
-	}
-	
-	'<div class="lit_entry">'.
-	'<input type="hidden" name="select['.$item->id.']" value="0" />';
-	
-	return $html;
+    // This is not unused!!!
+    $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
+
+    if (!is_callable('inShortBook')) {
+
+        /**
+         * Check if attribute should be displayed
+         * @param string $name Name of the attribute
+         */
+        function inShortBook($name) {
+            global $shortfields, $short;
+
+            if ($short) {
+                return key_exists($name, $shortfields);
+            } else {
+                return true;
+            }
+        }
+
+    }
+
+
+    // Get coverpath
+    if (!$short) {
+        if ($item->coverpath) {
+            $coverpath = $item->coverpath;
+        } else {
+            $coverpath = $CFG->wwwroot . '/mod/literature/pix/nocover.jpg';
+        }
+    }
+
+    // Get Checkbox
+    if ($addcheckbox) {
+
+        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
+
+
+        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+        } else {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+        }
+    }
+
+    // If subtitle is set then concat with title
+    $title = $item->title;
+    if (!empty($item->subtitle)) {
+        $title .= ' - ' . $item->subtitle;
+    }
+
+    // Get the isbns
+    if (!empty($item->isbn10)) {
+        if (!empty($item->isbn13)) {
+            $isbn = $item->isbn10 . ', ' . $item->isbn13;
+        } else {
+            $isbn = $item->isbn10;
+        }
+    } else if (!empty($item->isbn13)) {
+        $isbn = $item->isbn13;
+    } else {
+        $isbn = null;
+    }
+
+    // Build the html elements
+    $html = '<div class="literature">';
+
+    // Add checkbox
+    if ($addcheckbox) {
+        $html .= $checkbox;
+    }
+
+    if (!$short) {
+        // Cover
+        $image = '<div class="lit_image"><img src="' . $coverpath . '"></div>';
+        $html .= $image;
+
+        $html .= '<div class="data">';
+    } else {
+        $html .= '<div class="data_short">';
+    }
+
+
+    // Title
+    if (isset($item->titlelink) && inShortBook('title')) {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
+                '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
+    } else {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b>' . $title . '</span><br />';
+    }
+    $html .= $tit;
+
+    // Authors
+    if (isset($item->authors) && inShortBook('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+        $html .= $authors;
+    }
+
+    // Publisher
+    if (isset($item->publisher) && inShortBook('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+        $html .= $publisher;
+    }
+
+    // Published
+    if (isset($item->published) && inShortBook('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+        $html .= $published;
+    }
+
+    // ISBN
+    if (isset($isbn) && inShortBook('isbn')) {
+        $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
+        $html .= $isbn;
+    }
+
+    // Format
+    if (isset($item->format) && inShortBook('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+        $html .= $format;
+    }
+
+    // Link to Read
+    if (isset($item->linktoread) && inShortBook('link')) {
+        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
+        $html .= $link;
+    }
+
+    // Description
+    if (isset($item->description) && inShortBook('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+        $html .= $description;
+    }
+
+    $html .= '</div>';
+
+    // Clear float from image
+    if (!$short) {
+        $clearfloat = '<div class="clear" />';
+        $html .= $clearfloat;
+    }
+
+    // Main div end tag
+    $html .= '</div><br />';
+
+    // If item should be list element then add list element tags
+    if ($aslistelement) {
+        $html = '<li class="lit_entry">' .
+                '<div class="lit_entry">' .
+                $html .
+                '</div>' .
+                '</li>';
+    }
+
+    '<div class="lit_entry">' .
+            '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
+
+    return $html;
 }
-
 
 /**
  * HTML Factory for Literature items of type ELECTRONIC
@@ -306,162 +304,166 @@ function literature_htmlfactory_book($item, $short=false, $aslistelement=false, 
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
  */
-function literature_htmlfactory_electronic($item, $short=false, $aslistelement=false, $addcheckbox=false) {
-	global $CFG, $SESSION;
+function literature_htmlfactory_electronic($item, $short = false, $aslistelement = false, $addcheckbox = false) {
+    global $CFG, $SESSION;
 
-        // This is not unused!!!
-	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
+    // This is not unused!!!
+    $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
-	if(!is_callable('inShortElectronic')) {
-		/**
-		 * Check if attribute should be displayed
-		 * @param string $name Name of the attribute
-		 */
-		function inShortElectronic($name) {
-			global $shortfields, $short;
-		
-			if($short) {
-		
-				return key_exists($name, $shortfields);
-		
-			} else {
-				return true;
-			}
-		}
-	}
-	
+    if (!is_callable('inShortElectronic')) {
 
-	// Get coverpath
-	if(!$short) {
-		if($item->coverpath) {
-			$coverpath = $item->coverpath;
-		} else {
-			$coverpath = $CFG->wwwroot.'/mod/literature/pix/nocover.jpg';
-		}
-	}
+        /**
+         * Check if attribute should be displayed
+         * @param string $name Name of the attribute
+         */
+        function inShortElectronic($name) {
+            global $shortfields, $short;
 
-	// Get Checkbox
-	if($addcheckbox) {
+            if ($short) {
 
-		$checkbox = '<input type="hidden" name="select['.$item->id.']" value="0" />';
+                return key_exists($name, $shortfields);
+            } else {
+                return true;
+            }
+        }
 
-		if(isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
-				$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1" checked></input>';
-		} else {
-			$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1"></input>';
-		}
-	}
+    }
 
-	// If subtitle is set then concat with title
-	$title = $item->title;
-	if(!empty($item->subtitle)) {
-		$title .= ' - '.$item->subtitle;
-	}
 
-	// Get the isbns
-	if(!empty($item->isbn10)) {
-		if(!empty($item->isbn13)) {
-			$isbn = $item->isbn10.', '.$item->isbn13;
-		} else {
-			$isbn = $item->isbn10;
-		}
-	} else if (!empty($item->isbn13)) {
-		$isbn = $item->isbn13;
-	} else {
-		$isbn = null;
-	}
+    // Get coverpath
+    if (!$short) {
+        if ($item->coverpath) {
+            $coverpath = $item->coverpath;
+        } else {
+            $coverpath = $CFG->wwwroot . '/mod/literature/pix/nocover.jpg';
+        }
+    }
 
-	// Build the html elements
-	$html = '<div class="literature">';
+    // Get Checkbox
+    if ($addcheckbox) {
 
-	// Add checkbox
-	if($addcheckbox) {
-		$html .= $checkbox;
-	}
+        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
 
-	// Cover
-	if(!$short) {
-		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
-		$html .= $image;
-	}
-	
+        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+        } else {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+        }
+    }
 
-	$html .= '<div class="data">';
-	
-	// Title
-	if(isset($item->titlelink) && inShortElectronic('title')) {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b></span>'.
-				'<a href="'.$item->titlelink.'" target="_blank">'.$title.'</a><br />';
-	} else {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b>'.$title.'</span><br />';
-	}
-	$html .= $tit;
+    // If subtitle is set then concat with title
+    $title = $item->title;
+    if (!empty($item->subtitle)) {
+        $title .= ' - ' . $item->subtitle;
+    }
 
-	// Authors
-	if(isset($item->authors) && inShortElectronic('authors')) {
-		$authors = '<span class="lit_author"><b>'.get_string('authors', 'literature').'</b>'.$item->authors.'</span><br />';
-		$html .= $authors;
-	}
+    // Get the isbns
+    if (!empty($item->isbn10)) {
+        if (!empty($item->isbn13)) {
+            $isbn = $item->isbn10 . ', ' . $item->isbn13;
+        } else {
+            $isbn = $item->isbn10;
+        }
+    } else if (!empty($item->isbn13)) {
+        $isbn = $item->isbn13;
+    } else {
+        $isbn = null;
+    }
 
-	// Publisher
-	if(isset($item->publisher) && inShortElectronic('publisher')) {
-		$publisher = '<span class="lit_published"><b>'.get_string('publisher', 'literature').'</b>'.$item->publisher.'</span><br />';
-		$html .= $publisher;
-	}
+    // Build the html elements
+    $html = '<div class="literature">';
 
-	// Published
-	if(isset($item->published) && inShortElectronic('published')) {
-		$published = '<span class="lit_published"><b>'.get_string('published', 'literature').'</b>'.$item->published.'</span><br />';
-		$html .= $published;
-	}
+    // Add checkbox
+    if ($addcheckbox) {
+        $html .= $checkbox;
+    }
 
-	// ISBN
-	if(isset($isbn) && inShortElectronic('isbn')) {
-		$isbn = '<span class="lit_published"><b>'.get_string('isbn', 'literature').'</b>'.$isbn.'</span><br />';
-		$html .= $isbn;
-	}
+    // Cover
+    if (!$short) {
+        $image = '<div class="lit_image"><img src="' . $coverpath . '"></div>';
+        $html .= $image;
+        $html .= '<div class="data">';
+    } else {
+        $html .= '<div class="data_short">';
+    }
 
-	// Format
-	if(isset($item->format) && inShortElectronic('format')) {
-		$format = '<span class="lit_format"><b>'.get_string('format:', 'literature').'</b>'.$item->format.'</span><br />';
-		$html .= $format;
-	}
 
-	// Link to Read
-	if(isset($item->linktoread) && inShortElectronic('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
-		$html .= $link;
-	}
 
-	// Description
-	if(isset($item->description) && inShortElectronic('description')) {
-		$description = '<span class="lit_description"><b>'.get_string('description:', 'literature').'</b>'.$item->description.'</span><br />';
-		$html .= $description;
-	}
-	
-	$html .= '</div>';
-	
 
-	// Clear float from image
-	if(!$short) {
-		$clearfloat = '<div class="clear" />';
-		$html .= $clearfloat;
-	}
+    // Title
+    if (isset($item->titlelink) && inShortElectronic('title')) {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
+                '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
+    } else {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b>' . $title . '</span><br />';
+    }
+    $html .= $tit;
 
-	// Main div end tag
-	$html .= '</div><br />';
+    // Authors
+    if (isset($item->authors) && inShortElectronic('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+        $html .= $authors;
+    }
 
-	// If item should be list element then add list element tags
-	if($aslistelement) {
-		$html = '<li class="lit_entry">'.
-				'<div class="lit_entry">'.
-				$html.
-				'</div>'.
-				'</li>';
-	}
+    // Publisher
+    if (isset($item->publisher) && inShortElectronic('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+        $html .= $publisher;
+    }
 
-	return $html;
+    // Published
+    if (isset($item->published) && inShortElectronic('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+        $html .= $published;
+    }
+
+    // ISBN
+    if (isset($isbn) && inShortElectronic('isbn')) {
+        $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
+        $html .= $isbn;
+    }
+
+    // Format
+    if (isset($item->format) && inShortElectronic('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+        $html .= $format;
+    }
+
+    // Link to Read
+    if (isset($item->linktoread) && inShortElectronic('link')) {
+        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
+        $html .= $link;
+    }
+
+    // Description
+    if (isset($item->description) && inShortElectronic('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+        $html .= $description;
+    }
+
+    $html .= '</div>';
+
+
+    // Clear float from image
+    if (!$short) {
+        $clearfloat = '<div class="clear" />';
+        $html .= $clearfloat;
+    }
+
+    // Main div end tag
+    $html .= '</div><br />';
+
+    // If item should be list element then add list element tags
+    if ($aslistelement) {
+        $html = '<li class="lit_entry">' .
+                '<div class="lit_entry">' .
+                $html .
+                '</div>' .
+                '</li>';
+    }
+
+    return $html;
 }
 
 /**
@@ -472,161 +474,165 @@ function literature_htmlfactory_electronic($item, $short=false, $aslistelement=f
  * @param boolean $aslistelement Build as list element? (<li>...</li>)
  * @param boolean $addcheckbox Add a checkbox?
  */
-function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, $addcheckbox=false) {
-	global $CFG, $SESSION;
+function literature_htmlfactory_misc($item, $short = false, $aslistelement = false, $addcheckbox = false) {
+    global $CFG, $SESSION;
 
-        // This is not unused!!!
-	$shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
+    // This is not unused!!!
+    $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
-	if(!is_callable('inShortMisc')) {
-		/**
-		 * Check if attribute should be displayed
-		 * @param string $name Name of the attribute
-		 */
-		function inShortMisc($name) {
-			global $shortfields, $short;
-		
-			if($short) {
-		
-				return key_exists($name, $shortfields);
-		
-			} else {
-				return true;
-			}
-		}
-	}
-	
+    if (!is_callable('inShortMisc')) {
 
-	// Get coverpath
-	if(!$short) {
-		if($item->coverpath) {
-			$coverpath = $item->coverpath;
-		} else {
-			$coverpath = $CFG->wwwroot.'/mod/literature/pix/nocover.jpg';
-		}
-	}
+        /**
+         * Check if attribute should be displayed
+         * @param string $name Name of the attribute
+         */
+        function inShortMisc($name) {
+            global $shortfields, $short;
 
-	// Get Checkbox
-	if($addcheckbox) {
+            if ($short) {
 
-		$checkbox = '<input type="hidden" name="select['.$item->id.']" value="0" />';
+                return key_exists($name, $shortfields);
+            } else {
+                return true;
+            }
+        }
 
-		
-		if(isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
-			$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1" checked></input>';
-		} else {
-			$checkbox .= '<input type="checkbox" name="select['.$item->id.']" value="1"></input>';
-		}
-	}
+    }
 
-	// If subtitle is set then concat with title
-	$title = $item->title;
-	if(!empty($item->subtitle)) {
-		$title .= ' - '.$item->subtitle;
-	}
 
-	// Get the isbns
-	if(!empty($item->isbn10)) {
-		if(!empty($item->isbn13)) {
-			$isbn = $item->isbn10.', '.$item->isbn13;
-		} else {
-			$isbn = $item->isbn10;
-		}
-	} else if (!empty($item->isbn13)) {
-		$isbn = $item->isbn13;
-	} else {
-		$isbn = null;
-	}
+    // Get coverpath
+    if (!$short) {
+        if ($item->coverpath) {
+            $coverpath = $item->coverpath;
+        } else {
+            $coverpath = $CFG->wwwroot . '/mod/literature/pix/nocover.jpg';
+        }
+    }
 
-	// Build the html elements
-	$html = '<div class="literature">';
+    // Get Checkbox
+    if ($addcheckbox) {
 
-	// Add checkbox
-	if($addcheckbox) {
-		$html .= $checkbox;
-	}
+        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
 
-	// Cover
-	if(!$short) {
-		$image = '<div class="lit_image"><img src="'.$coverpath.'"></div>';
-		$html .= $image;
-	}
-	
-	$html .= '<div class="data">';
-	
-	// Title
-	if(isset($item->titlelink) && inShortMisc('title')) {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b></span>'.
-				'<a href="'.$item->titlelink.'" target="_blank">'.$title.'</a><br />';
-	} else {
-		$tit = '<span class="lit_title"><b>'.get_string('title', 'literature').'</b>'.$title.'</span><br />';
-	}
-	$html .= $tit;
 
-	// Authors
-	if(isset($item->authors) && inShortMisc('authors')) {
-		$authors = '<span class="lit_author"><b>'.get_string('authors', 'literature').'</b>'.$item->authors.'</span><br />';
-		$html .= $authors;
-	}
+        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+        } else {
+            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+        }
+    }
 
-	// Publisher
-	if(isset($item->publisher) && inShortMisc('publisher')) {
-		$publisher = '<span class="lit_published"><b>'.get_string('publisher', 'literature').'</b>'.$item->publisher.'</span><br />';
-		$html .= $publisher;
-	}
+    // If subtitle is set then concat with title
+    $title = $item->title;
+    if (!empty($item->subtitle)) {
+        $title .= ' - ' . $item->subtitle;
+    }
 
-	// Published
-	if(isset($item->published) && inShortMisc('published')) {
-		$published = '<span class="lit_published"><b>'.get_string('published', 'literature').'</b>'.$item->published.'</span><br />';
-		$html .= $published;
-	}
+    // Get the isbns
+    if (!empty($item->isbn10)) {
+        if (!empty($item->isbn13)) {
+            $isbn = $item->isbn10 . ', ' . $item->isbn13;
+        } else {
+            $isbn = $item->isbn10;
+        }
+    } else if (!empty($item->isbn13)) {
+        $isbn = $item->isbn13;
+    } else {
+        $isbn = null;
+    }
 
-	// ISBN
-	if(isset($isbn) && inShortMisc('isbn')) {
-		$isbn = '<span class="lit_published"><b>'.get_string('isbn', 'literature').'</b>'.$isbn.'</span><br />';
-		$html .= $isbn;
-	}
+    // Build the html elements
+    $html = '<div class="literature">';
 
-	// Format
-	if(isset($item->format) && inShortMisc('format')) {
-		$format = '<span class="lit_format"><b>'.get_string('format:', 'literature').'</b>'.$item->format.'</span><br />';
-		$html .= $format;
-	}
+    // Add checkbox
+    if ($addcheckbox) {
+        $html .= $checkbox;
+    }
 
-	// Link to Read
-	if(isset($item->linktoread) && inShortMisc('link')) {
-		$link = '<span class="lit_link"><b>'.get_string('link', 'literature').'</b>'.
-				'<a href="'.$item->linktoread.'" target="_balnk">'.$item->linktoread.'</a></span><br />';
-		$html .= $link;
-	}
+    // Cover
+    if (!$short) {
+        $image = '<div class="lit_image"><img src="' . $coverpath . '"></div>';
+        $html .= $image;
+        $html .= '<div class="data">';
+    } else {
+        $html .= '<div class="data_short">';
+    }
 
-	// Description
-	if(isset($item->description) && inShortMisc('description')) {
-		$description = '<span class="lit_description"><b>'.get_string('description:', 'literature').'</b>'.$item->description.'</span><br />';
-		$html .= $description;
-	}
-	
-	$html .= '</div>';
+    
 
-	// Clear float from image
-	if(!$short) {
-		$clearfloat = '<div class="clear" />';
-		$html .= $clearfloat;
-	}
+    // Title
+    if (isset($item->titlelink) && inShortMisc('title')) {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
+                '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
+    } else {
+        $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b>' . $title . '</span><br />';
+    }
+    $html .= $tit;
 
-	// Main div end tag
-	$html .= '</div><br />';
+    // Authors
+    if (isset($item->authors) && inShortMisc('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+        $html .= $authors;
+    }
 
-	// If item should be list element then add list element tags
-	if($aslistelement) {
-		$html = '<li class="lit_entry">'.
-				'<div class="lit_entry">'.
-				$html.
-				'</div>'.
-				'</li>';
-	}
+    // Publisher
+    if (isset($item->publisher) && inShortMisc('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+        $html .= $publisher;
+    }
 
-	return $html;
+    // Published
+    if (isset($item->published) && inShortMisc('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+        $html .= $published;
+    }
+
+    // ISBN
+    if (isset($isbn) && inShortMisc('isbn')) {
+        $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
+        $html .= $isbn;
+    }
+
+    // Format
+    if (isset($item->format) && inShortMisc('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+        $html .= $format;
+    }
+
+    // Link to Read
+    if (isset($item->linktoread) && inShortMisc('link')) {
+        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
+        $html .= $link;
+    }
+
+    // Description
+    if (isset($item->description) && inShortMisc('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+        $html .= $description;
+    }
+
+    $html .= '</div>';
+
+    // Clear float from image
+    if (!$short) {
+        $clearfloat = '<div class="clear" />';
+        $html .= $clearfloat;
+    }
+
+    // Main div end tag
+    $html .= '</div><br />';
+
+    // If item should be list element then add list element tags
+    if ($aslistelement) {
+        $html = '<li class="lit_entry">' .
+                '<div class="lit_entry">' .
+                $html .
+                '</div>' .
+                '</li>';
+    }
+
+    return $html;
 }
 
 //---------------------------------------------------------------------------------------
@@ -639,61 +645,61 @@ function literature_htmlfactory_misc($item, $short=false, $aslistelement=false, 
  * @param int $count Display $count entries
  * @return string The html view of the results
  */
-function literature_result_print($results, $from=0, $count=5) {
-	global $SESSION;
-	
-	if(empty($results)) {
-		return literature_html_build_list(array(), get_string('noresults'));
-	}
-	
-	$html = '<div class="results">';
-		
-	
-	$max = $from + $count;
-	if(count($results) <= $max) {
-		$max = count($results);
-		// Set as last site
-		$SESSION->literature->search->last = 1;
-	} else {
-		$SESSION->literature->search->last = 0;
-	}
-	
-	$counter = 0;
-	$htmllistitems = array();
-	foreach($results as $item) {
-		
-		// loop control
-		if($counter < $from) {
-			$counter++;
-			continue;
-		} else if ($counter >= $max) {
-			break;
-		} else {
-			$counter++;
-		}
-				
-		switch ($item->type) {
-				
-			// Book
-			case literature_dbobject_literature::BOOK :
-				$htmllistitems[] = literature_htmlfactory_book($item, false, true, true);
-				break;
-		
-				// Journal
-			case literature_dbobject_literature::ELECTRONIC :
-				$htmllistitems[] = literature_htmlfactory_electronic($item, false, true, true);
-				break;
-		
-				// Misc
-			default:
-				$htmllistitems[] = literature_htmlfactory_misc($item, false, true, true);
-		}
-	}
-	
-	$html .= literature_html_build_list($htmllistitems);
-	$html .= '</div>';
-	
-	return $html;
+function literature_result_print($results, $from = 0, $count = 5) {
+    global $SESSION;
+
+    if (empty($results)) {
+        return literature_html_build_list(array(), get_string('noresults'));
+    }
+
+    $html = '<div class="results">';
+
+
+    $max = $from + $count;
+    if (count($results) <= $max) {
+        $max = count($results);
+        // Set as last site
+        $SESSION->literature->search->last = 1;
+    } else {
+        $SESSION->literature->search->last = 0;
+    }
+
+    $counter = 0;
+    $htmllistitems = array();
+    foreach ($results as $item) {
+
+        // loop control
+        if ($counter < $from) {
+            $counter++;
+            continue;
+        } else if ($counter >= $max) {
+            break;
+        } else {
+            $counter++;
+        }
+
+        switch ($item->type) {
+
+            // Book
+            case literature_dbobject_literature::BOOK :
+                $htmllistitems[] = literature_htmlfactory_book($item, false, true, true);
+                break;
+
+            // Journal
+            case literature_dbobject_literature::ELECTRONIC :
+                $htmllistitems[] = literature_htmlfactory_electronic($item, false, true, true);
+                break;
+
+            // Misc
+            default:
+                $htmllistitems[] = literature_htmlfactory_misc($item, false, true, true);
+        }
+    }
+
+    $html .= literature_html_build_list($htmllistitems);
+    $html .= '</div>';
+
+    return $html;
 }
 
 /**
@@ -703,45 +709,45 @@ function literature_result_print($results, $from=0, $count=5) {
  * @param int $start Start with item $start
  * @param int $end Show till item $end
  */
-function literature_print_literaturelist($items, $selectable=true, $start=0, $end=false) {
-	
-	if(empty($items)) {
-		return literature_html_build_list(array(), get_string('nolist', 'literature'));
-	}
-	
-	$end = ($end)? $end : count($items)-1;
-	
-	$htmllistitems = array();
-	
-	for($i=$start; $i<=$end; $i++) {
-	
-		// If a item is empty, +1 to end // should not happen
-		if(empty($items[$i])) {
-			$end++;
-			continue;
-		}
-	
-		$item = $items[$i];
-	
-		switch ($item->type) {
-	
-			// Book
-			case literature_dbobject_literature::BOOK :
-				$htmllistitems[] = literature_htmlfactory_book($item, false, true, $selectable);
-				break;
-	
-				// Journal
-			case literature_dbobject_literature::ELECTRONIC :
-				$htmllistitems[] = literature_htmlfactory_electronic($item, false, true, $selectable);
-				break;
-	
-				// Misc
-			default:
-				$htmllistitems[] = literature_htmlfactory_misc($item, false, true, $selectable);
-		}
-	}
-	
-	return literature_html_build_list($htmllistitems);
+function literature_print_literaturelist($items, $selectable = true, $start = 0, $end = false) {
+
+    if (empty($items)) {
+        return literature_html_build_list(array(), get_string('nolist', 'literature'));
+    }
+
+    $end = ($end) ? $end : count($items) - 1;
+
+    $htmllistitems = array();
+
+    for ($i = $start; $i <= $end; $i++) {
+
+        // If a item is empty, +1 to end // should not happen
+        if (empty($items[$i])) {
+            $end++;
+            continue;
+        }
+
+        $item = $items[$i];
+
+        switch ($item->type) {
+
+            // Book
+            case literature_dbobject_literature::BOOK :
+                $htmllistitems[] = literature_htmlfactory_book($item, false, true, $selectable);
+                break;
+
+            // Journal
+            case literature_dbobject_literature::ELECTRONIC :
+                $htmllistitems[] = literature_htmlfactory_electronic($item, false, true, $selectable);
+                break;
+
+            // Misc
+            default:
+                $htmllistitems[] = literature_htmlfactory_misc($item, false, true, $selectable);
+        }
+    }
+
+    return literature_html_build_list($htmllistitems);
 }
 
 /**
@@ -752,14 +758,14 @@ function literature_print_literaturelist($items, $selectable=true, $start=0, $en
  * @param int $section The section id
  * @return string A html list with the informations
  */
-function literature_print_listinfos($listinfos, $incourse, $course=null, $section=null) {
+function literature_print_listinfos($listinfos, $incourse, $course = null, $section = null) {
 
-	// Build listitems -- item = literature list
-	$items = literature_build_listitem($listinfos, $incourse, $course, $section);
-	// Build list from items -- list = overview of literature lists
-	$list =literature_html_build_list($items, get_string('nolists', 'literature'));
-	// return list
-	return $list;
+    // Build listitems -- item = literature list
+    $items = literature_build_listitem($listinfos, $incourse, $course, $section, 'list_info');
+    // Build list from items -- list = overview of literature lists
+    $list = literature_html_build_list($items, get_string('nolists', 'literature'));
+    // return list
+    return $list;
 }
 
 /**
@@ -768,46 +774,44 @@ function literature_print_listinfos($listinfos, $incourse, $course=null, $sectio
  * @param boolean $incourse In kontext course?
  * @param int $courseid The id of the course
  * @param int $section Thee id of the section
+ * @param string $class Class parameter of the li object
  */
-function literature_build_listitem($array, $incourse, $courseid, $section) {
-	global $CFG;
-	$items = array();
-	$counter = 0;
-	foreach ($array as $listentry) {
+function literature_build_listitem($array, $incourse, $courseid, $section, $class='list_item') {
+    global $CFG;
+    $items = array();
+    $counter = 0;
+    foreach ($array as $listentry) {
 
-		$counter++;
-			
-		$item = '<li style="list-style-type: none; margin:0.2em;">'.
-				'<div class="lit_item" style="border: 1px solid #B3B2B2;">'.
-				'<input type="checkbox" name="select['.$listentry->id.']" value="1">'.
-				'&nbsp&nbsp';
-			
-		if ($incourse) {
+        $counter++;
 
-			$item .= '<a href="'.$CFG->wwwroot.'/mod/literature/list/view.php?course='.$courseid.
-			'&section='.$section.'&id='.$listentry->id.'">';
+        $item = '<li class="' . $class . '">' .
+                '<div>' .
+                '<input type="checkbox" name="select[' . $listentry->id . ']" value="1">';
 
-		} else {
+        if ($incourse) {
 
-			$item .= '<a href="'.$CFG->wwwroot.'/mod/literature/list/view.php?id='.$listentry->id.'">';
+            $item .= '<a href="' . $CFG->wwwroot . '/mod/literature/list/view.php?course=' . $courseid .
+                    '&section=' . $section . '&id=' . $listentry->id . '">';
+        } else {
 
-		}
-			
-		$item .= '<span class="lit_listname">'.$listentry->name.'</span>'.
-				'</a>';
-			
-		$date = userdate($listentry->created, get_string('strftimedate', 'langconfig'));
-		$item .= '<br>'.
-				'<b>'.get_string('created:', 'literature').'</b>'.$date.'<br>'.
-				'<b>'.get_string('description:', 'literature').'</b>'.$listentry->description.
-				// Thumbnails TODO in later version
-				'</div>'.
-				"</li>\n";
-			
-		$items[] = $item;
-	}
+            $item .= '<a href="' . $CFG->wwwroot . '/mod/literature/list/view.php?id=' . $listentry->id . '">';
+        }
 
-	return $items;
+        $item .= '<span class="lit_listname">' . $listentry->name . '</span>' .
+                '</a>';
+
+        $date = userdate($listentry->created, get_string('strftimedate', 'langconfig'));
+        $item .= '<br>' .
+                '<b>' . get_string('created:', 'literature') . '</b>' . $date . '<br>' .
+                '<b>' . get_string('description:', 'literature') . '</b>' . $listentry->description .
+                // Thumbnails TODO in later version
+                '</div>' .
+                "</li>\n";
+
+        $items[] = $item;
+    }
+
+    return $items;
 }
 
 /**
@@ -817,24 +821,24 @@ function literature_build_listitem($array, $incourse, $courseid, $section) {
  * @return int The timestamp connected to the results
  */
 function literature_db_insert_results($results) {
-	global $DB, $USER;
-	
-	$table = 'literature_lit_temp';
-	$userid = $USER->id;
-	$timestamp = time();
-	
-	foreach($results as $result) {
-		
-		$result->timestamp = $timestamp;
-		$result->userid = $userid;
-		literature_enricher_enrich_preview($result);
-		if(!$DB->insert_record($table, $result)) {
-                        // TODO warning
-			continue;
-		}
-	}
-	
-	return $timestamp;
+    global $DB, $USER;
+
+    $table = 'literature_lit_temp';
+    $userid = $USER->id;
+    $timestamp = time();
+
+    foreach ($results as $result) {
+
+        $result->timestamp = $timestamp;
+        $result->userid = $userid;
+        literature_enricher_enrich_preview($result);
+        if (!$DB->insert_record($table, $result)) {
+            // TODO warning
+            continue;
+        }
+    }
+
+    return $timestamp;
 }
 
 /**
@@ -842,10 +846,10 @@ function literature_db_insert_results($results) {
  * @param int $timestamp The timestamp of the results
  */
 function literature_db_load_results($timestamp) {
-	global $DB, $USER;
-	
-	$table = 'literature_lit_temp';
-	return $DB->get_records($table, array('userid' => $USER->id, 'timestamp' => $timestamp));
+    global $DB, $USER;
+
+    $table = 'literature_lit_temp';
+    return $DB->get_records($table, array('userid' => $USER->id, 'timestamp' => $timestamp));
 }
 
 /**
@@ -854,14 +858,11 @@ function literature_db_load_results($timestamp) {
  * @param int $id The id of the result
  */
 function literature_db_load_result_by_id($timestamp, $id) {
-	global $DB, $USER;
+    global $DB, $USER;
 
-	$table = 'literature_lit_temp';
-	return $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
+    $table = 'literature_lit_temp';
+    return $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
 }
-
-
-
 
 //###########################################################################//
 //																			 //	
@@ -875,27 +876,27 @@ function literature_db_load_result_by_id($timestamp, $id) {
  * @param string $message If $htmllistitems is empty $message is shown
  * @return string HTML list or message
  */
-function literature_html_build_list($htmllistitems, $message=null) {
+function literature_html_build_list($htmllistitems, $message = null) {
 
-	// If no message is given use the standard message
-	if(!$message) {
-		$message = get_string('empty', 'literature');
-	}
-	
-	if(empty($htmllistitems)) {
+    // If no message is given use the standard message
+    if (!$message) {
+        $message = get_string('empty', 'literature');
+    }
 
-		return $message;
-	}
+    if (empty($htmllistitems)) {
 
-	$htmllist = '<ul>';
+        return $message;
+    }
 
-	foreach($htmllistitems as $htmllistitem) {
+    $htmllist = '<ul class="literature list">';
 
-		$htmllist .= $htmllistitem;
-	}
+    foreach ($htmllistitems as $htmllistitem) {
 
-	$htmllist .= '</ul>';
-	return $htmllist;
+        $htmllist .= $htmllistitem;
+    }
+
+    $htmllist .= '</ul>';
+    return $htmllist;
 }
 
 /**
@@ -905,8 +906,5 @@ function literature_html_build_list($htmllistitems, $message=null) {
  */
 function literature_cast_stdClass_literature($item) {
 
-	return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors, 
-				$item->publisher, $item->published, $item->series, $item->isbn10, 
-                                $item->isbn13, $item->issn, $item->coverpath, $item->description,
-                                $item->linktoread, $item->format, $item->titlelink, 0);
+    return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors, $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn, $item->coverpath, $item->description, $item->linktoread, $item->format, $item->titlelink, 0);
 }

@@ -8,6 +8,10 @@
     word-wrap: break-word;
 }
 
+.literature .data_short {
+    word-wrap: break-word;
+}
+
 .literature .lit_image {
     width: 150px;
     float: left;
@@ -20,7 +24,6 @@
 }
 
 li.lit_entry {
-    list-style-type: none; 
     margin-top: 5px;
 }
 
@@ -33,6 +36,28 @@ div.lit_entry {
     word-break: break-all;
 }
 
-.results ul {
+.literature.list {
     list-style: none;
+}
+
+.literature.list .source_list_item .edit_link {
+    float:right;
+    margin-right:10px;
+    cursor: pointer;
+}
+
+.literature.list .source_item {
+    border: 1px solid #ddd;
+    margin: 5px 0px 5px 0px;
+    padding: 5px;
+}
+
+.literature.list .list_info {
+    border: 1px solid #ddd;
+    margin: 5px 0px 5px 0px;
+    padding: 5px;
+}
+
+.literature.list .list_info input {
+    vertical-align: text-bottom;
 }

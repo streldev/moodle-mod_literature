@@ -75,19 +75,19 @@ class literature_search_index_form extends moodleform {
 
                 $source->typename = get_string('pluginname', 'searchsource_' . $source->type);
 
-                $html = '<li style="list-style-type: none; margin:0.2em;">' .
-                        '<div style="border: 1px solid #B3B2B2;">' .
-                        '<input type="checkbox" name="select[' . $counter . ']" value="' . $globalid . '" style="float:left;"></input>' .
-                        '<span style="margin: 0 0 0 5px;">' .
-                        '<b>' . get_string('name', 'literature') . '</b>' . $source->name .
-                        '&nbsp&nbsp' .
-                        '<b>' . get_string('type', 'literature') . '</b>' . $source->typename .
-                        '</span>' .
-                        '<a href="' . $CFG->wwwroot . '/mod/literature/searchsource/' . $source->type . '/view.php?id=' . $globalid . '"
-                        style="float:right; margin-right:10px; cursor: pointer; " title="Edit">' .
-                        get_string('edit', 'literature') .
-                        '</a>' .
-                        '</div>' .
+                $html = '<li class="source_list_item">' .
+                        '<div class="source_item">' .
+                            '<input type="checkbox" name="select[' . $counter . ']" value="' . $globalid . '">' .
+                            '<span>' .
+                                '<b>' . get_string('name', 'literature') . '</b>' . $source->name .
+                                '&nbsp&nbsp' .
+                                '<b>' . get_string('type', 'literature') . '</b>' . $source->typename .
+                            '</span>' .
+                            '<a class="edit_link" href="' . $CFG->wwwroot . '/mod/literature/searchsource/' . $source->type . '/view.php?id=' . $globalid . '"
+                             title="Edit">' .
+                            get_string('edit', 'literature') .
+                            '</a>' .
+                            '</div>' .
                         '</li>';
 
                 $listitems[] = $html;

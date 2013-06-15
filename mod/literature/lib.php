@@ -29,12 +29,10 @@
  * @copyright  2012 Frederik Strelczuk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 // defined('MOODLE_INTERNAL') || die();
 
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
-
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,18 +45,18 @@
  * @return mixed true if the feature is supported, null if unknown
  */
 function literature_supports($feature) {
-    switch($feature) {
-       	case FEATURE_IDNUMBER:                	return false;
-       	case FEATURE_GROUPS:                  	return false;
-       	case FEATURE_GROUPINGS:               	return false;
-       	case FEATURE_GROUPMEMBERSONLY:        	return true;
-       	case FEATURE_MOD_INTRO:               	return false;
-       	case FEATURE_COMPLETION_TRACKS_VIEWS: 	return false;
-       	case FEATURE_GRADE_HAS_GRADE:         	return false;
-       	case FEATURE_GRADE_OUTCOMES:          	return false;
-       	case FEATURE_MOD_ARCHETYPE:           	return MOD_ARCHETYPE_RESOURCE;
-       	case FEATURE_NO_VIEW_LINK:            	return true;
-        default:                      			return null;
+    switch ($feature) {
+        case FEATURE_IDNUMBER: return false;
+        case FEATURE_GROUPS: return false;
+        case FEATURE_GROUPINGS: return false;
+        case FEATURE_GROUPMEMBERSONLY: return true;
+        case FEATURE_MOD_INTRO: return false;
+        case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
+        case FEATURE_GRADE_HAS_GRADE: return false;
+        case FEATURE_GRADE_OUTCOMES: return false;
+        case FEATURE_MOD_ARCHETYPE: return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_NO_VIEW_LINK: return true;
+        default: return null;
     }
 }
 
@@ -119,7 +117,7 @@ function literature_update_instance(stdClass $literature, mod_literature_mod_for
 function literature_delete_instance($id) {
     global $DB;
 
-    if (! $literature = $DB->get_record('literature', array('id' => $id))) {
+    if (!$literature = $DB->get_record('literature', array('id' => $id))) {
         return false;
     }
 
@@ -160,6 +158,7 @@ function literature_user_outline($course, $user, $mod, $literature) {
  * @return void, is supposed to echp directly
  */
 function literature_user_complete($course, $user, $mod, $literature) {
+    
 }
 
 /**
@@ -189,7 +188,8 @@ function literature_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function literature_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function literature_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
+    
 }
 
 /**
@@ -198,6 +198,7 @@ function literature_get_recent_mod_activity(&$activities, &$index, $timestart, $
  * @return void
  */
 function literature_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+    
 }
 
 /**
@@ -207,35 +208,35 @@ function literature_print_recent_mod_activity($activity, $courseid, $detail, $mo
  *
  * @return boolean
  * @todo Finish documenting this function
- **/
-function literature_cron () {
-	global $DB;
-	
-	
-	// Clean temp. table
-	$table = 'literature_lit_temp';
-	$timestamp = time() - 900;
-	$records = $DB->get_records($table);
-	foreach ($records as $record) {
-		
-		if($record->timestamp <= $timestamp) {
-			$DB->delete_records($table, array('id' => $record->id));
-		}
-	}
-	
-	// Clean exported file
-	$timestamp = time() - 900;
-	$table = 'files';
-	$options = array('component' => 'mod_literature', 'filearea' => 'export');
-	$files = $DB->get_records($table, $options);
-	
-	$todelete = array();
-	foreach ($files as $file) {
-		if($file->timecreated <= $timestamp) {
-			$DB->delete_records($table, array('id' => $file->id));
-		}
-	}
-	
+ * */
+function literature_cron() {
+    global $DB;
+
+
+    // Clean temp. table
+    $table = 'literature_lit_temp';
+    $timestamp = time() - 900;
+    $records = $DB->get_records($table);
+    foreach ($records as $record) {
+
+        if ($record->timestamp <= $timestamp) {
+            $DB->delete_records($table, array('id' => $record->id));
+        }
+    }
+
+    // Clean exported file
+    $timestamp = time() - 900;
+    $table = 'files';
+    $options = array('component' => 'mod_literature', 'filearea' => 'export');
+    $files = $DB->get_records($table, $options);
+
+    $todelete = array();
+    foreach ($files as $file) {
+        if ($file->timecreated <= $timestamp) {
+            $DB->delete_records($table, array('id' => $file->id));
+        }
+    }
+
     return true;
 }
 
@@ -320,14 +321,14 @@ function literature_scale_used_anywhere($scaleid) {
  */
 function literature_grade_item_update(stdClass $literature) {
     global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->libdir . '/gradelib.php');
 
     /** @example */
     $item = array();
     $item['itemname'] = clean_param($literature->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = $literature->grade;
-    $item['grademin']  = 0;
+    $item['grademax'] = $literature->grade;
+    $item['grademin'] = 0;
 
     grade_update('mod/literature', $literature->course, 'mod', 'literature', $literature->id, 0, null, $item);
 }
@@ -343,20 +344,20 @@ function literature_grade_item_update(stdClass $literature) {
  * @return object|null
  */
 function literature_get_coursemodule_info($coursemodule) {
-	global $DB;
+    global $DB;
 
-	if ($literature = $DB->get_record('literature', array('id'=>$coursemodule->instance), 'id, name, intro, introformat')) {
-		if (empty($literature->name)) {
-			// label name missing, fix it
-			$literature->name = "literature{$literature->id}";
-			$DB->set_field('literature', 'name', $literature->name, array('id'=>$literature->id));
-		}
-		$info = new stdClass();
-		$info->name  = $literature->name;
-		return $info;
-	} else {
-		return null;
-	}
+    if ($literature = $DB->get_record('literature', array('id' => $coursemodule->instance), 'id, name, intro, introformat')) {
+        if (empty($literature->name)) {
+            // label name missing, fix it
+            $literature->name = "literature{$literature->id}";
+            $DB->set_field('literature', 'name', $literature->name, array('id' => $literature->id));
+        }
+        $info = new stdClass();
+        $info->name = $literature->name;
+        return $info;
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -370,7 +371,7 @@ function literature_get_coursemodule_info($coursemodule) {
  */
 function literature_update_grades(stdClass $literature, $userid = 0) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->libdir . '/gradelib.php');
 
     /** @example */
     $grades = array(); // populate array of grade objects indexed by userid
@@ -409,13 +410,13 @@ function literature_get_file_areas($course, $cm, $context) {
  * @return void this should never return to the caller
  */
 function literature_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload) {
-    
+
     $itemid = array_shift($args);
     $filename = array_shift($args);
     $fs = get_file_storage();
     $file = $fs->get_file($context->id, 'mod_literature', $filearea, $itemid, '/', $filename);
     ob_clean();
-   	send_stored_file($file, 120, 0, true);
+    send_stored_file($file, 120, 0, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -433,9 +434,8 @@ function literature_pluginfile($course, $cm, $context, $filearea, array $args, $
  * @param cm_info $cm
  */
 function literature_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
-	
+    
 }
-
 
 /**
  * Extends the settings navigation with the literature settings
@@ -446,35 +446,32 @@ function literature_extend_navigation(navigation_node $navref, stdclass $course,
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $literaturenode {@link navigation_node}
  */
-function literature_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $literaturenode=null) {
+function literature_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $literaturenode = null) {
+    
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // View Literature in Course                                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
 function literature_cm_info_view(cm_info $cminfo) {
-	
-	require_once('locallib.php');
-	require_once('dbobject/literature.php');
-	
-	global $DB;
-	
-	$id = $cminfo->instance;
-		
-	$literature = $DB->get_record('literature', array('id' => $id));
-	
-	$lit = literature_dbobject_literature::load_by_id($literature->litid);
-	
-	if($literature->litview == 1) {
-		$content = literature_view_full($lit);
-	} else {
-		$content = literature_view_list($lit);
-	}
-	$cminfo->set_content($content);
-	
-}
 
+    require_once('locallib.php');
+    require_once('dbobject/literature.php');
+
+    global $DB;
+
+    $id = $cminfo->instance;
+
+    $literature = $DB->get_record('literature', array('id' => $id));
+
+    $lit = literature_dbobject_literature::load_by_id($literature->litid);
+
+    if ($literature->litview == 1) {
+        $content = literature_view_full($lit);
+    } else {
+        $content = literature_view_list($lit);
+    }
+    $cminfo->set_content($content);
+}
 
