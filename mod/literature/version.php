@@ -30,7 +30,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2013061401;
+$module->version   = 2013061501;
 $module->requires  = 2012120300;      // Requires Moodle 2.4
 $module->cron      = 900;             // 15 min
 $module->component = 'mod_literature'; 

@@ -46,16 +46,17 @@
  */
 function literature_supports($feature) {
     switch ($feature) {
-        case FEATURE_IDNUMBER: return false;
-        case FEATURE_GROUPS: return false;
-        case FEATURE_GROUPINGS: return false;
-        case FEATURE_GROUPMEMBERSONLY: return true;
-        case FEATURE_MOD_INTRO: return false;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
-        case FEATURE_GRADE_HAS_GRADE: return false;
-        case FEATURE_GRADE_OUTCOMES: return false;
-        case FEATURE_MOD_ARCHETYPE: return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_NO_VIEW_LINK: return true;
+        case FEATURE_IDNUMBER:                  return false;
+        case FEATURE_GROUPS:                    return false;
+        case FEATURE_GROUPINGS:                 return false;
+        case FEATURE_GROUPMEMBERSONLY:          return true;
+        case FEATURE_MOD_INTRO:                 return false;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:   return false;
+        case FEATURE_GRADE_HAS_GRADE:           return false;
+        case FEATURE_GRADE_OUTCOMES:            return false;
+        case FEATURE_MOD_ARCHETYPE:             return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_NO_VIEW_LINK:              return true;
+            
         default: return null;
     }
 }
@@ -338,6 +339,8 @@ function literature_grade_item_update(stdClass $literature) {
  * "extra" information that may be needed when printing
  * this activity in a course listing.
  * See get_array_of_activities() in course/lib.php
+ * 
+ * This function is not realy needed. Module does not show a normal "view link"
  *
  * @global object
  * @param object $coursemodule
@@ -346,13 +349,14 @@ function literature_grade_item_update(stdClass $literature) {
 function literature_get_coursemodule_info($coursemodule) {
     global $DB;
 
-    if ($literature = $DB->get_record('literature', array('id' => $coursemodule->instance), 'id, name, intro, introformat')) {
+    $literature = $DB->get_record('literature', array('id' => $coursemodule->instance), 'id, name, intro, introformat');
+    if ($literature) {
         if (empty($literature->name)) {
             // label name missing, fix it
             $literature->name = "literature{$literature->id}";
             $DB->set_field('literature', 'name', $literature->name, array('id' => $literature->id));
         }
-        $info = new stdClass();
+        $info = new cached_cm_info();
         $info->name = $literature->name;
         return $info;
     } else {

@@ -122,6 +122,7 @@ $string['title:exportlists'] = 'Export Lists';
 $string['title:exportlit'] = 'Export Literature';
 $string['title:listoverview'] = 'List overview';
 $string['type'] = 'Type: ';
+$string['updateinstance'] = 'Update instanz';
 $string['url'] = 'URL: ';
 $string['view_list'] = 'View List';
 $string['view_as_list'] = 'List';
@@ -171,7 +172,7 @@ $string['error:list:entriesmissing'] = 'While loading your list we found {$a} mi
 $string['error:list:insert'] = 'Error while inserting list {$name} into database';
 $string['error:list:loadfailed'] = 'Failed to load list with id: {$a->listid}!';
 
-$stirng['error:lit:loadfailed'] = 'Failed to load literature with id: {$litid}!';
+$string['error:lit:loadfailed'] = 'Failed to load literature with id: {$litid}!';
 
 $string['error:post:litfailedcm'] = 'Could not post literature with id: {$lit->id}. I was not able to add course module entry!';
 

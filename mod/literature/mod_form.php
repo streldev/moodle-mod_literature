@@ -25,12 +25,11 @@
  * @subpackage literature
  * @copyright  2012 Frederik Strelczuk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
-
+ */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once(dirname(__FILE__).'/dbobject/listinfo.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once(dirname(__FILE__) . '/dbobject/listinfo.php');
 require_once('locallib.php');
 
 /**
@@ -38,87 +37,106 @@ require_once('locallib.php');
  */
 class mod_literature_mod_form extends moodleform_mod {
 
-	/**
-	 * Overwriting the moodleform_mod constructor due to a change of the $action parameter
-	 *
-	 * @param unknown_type $current
-	 * @param unknown_type $section
-	 * @param unknown_type $cm
-	 * @param unknown_type $course
-	 */
-	function __construct($current, $section, $cm, $course) {
-		global $CFG;
-		$this->current   = $current;
-		$this->_instance = $current->instance;
-		$this->_section  = $section;
-		$this->_cm       = $cm;
-		$this->course	 = $course;
-		if ($this->_cm) {
-			$this->context = get_context_instance(CONTEXT_MODULE, $this->_cm->id);
-		} else {
-			$this->context = get_context_instance(CONTEXT_COURSE, $course->id);
-		}
-		$this->_modname = 'literature';
-		$this->init_features();
-		parent::moodleform('../mod/literature/redirect.php?course='.$course->id.'&section='.$section.'&return=0');
-	}
-	
-	/**
-	 * Defines forms elements
-	 */
-	public function definition() {
-		global $USER;
-		
-		$mform = $this->_form;
+    private $isUpdate;
 
-		//-------------------------------------------------------------------------------
-		// Adding the "quicksearch" fieldset
-		$mform->addElement('header', 'quicksearch', get_string('quicksearch', 'literature'));
-		
-		$inputarray = array();
-		
-		// Source select => different OPACs
-		$sources = literature_searchsource_get_available();
-		$list = array();
-		foreach ($sources as $globalid => $source) {
-			$list[$globalid] = $source->name;
-		}
-		$inputarray[] = &$mform->createElement('select', 'source', null, $list);
-		
-		// Search term textfield
-		$inputarray[] = &$mform->createElement('text', 'search_field');
-		$mform->addGroup($inputarray, 'search_group');
-		
-		// Buttons for search and redirect to extended search
-		$buttonarray = array();
-		$buttonarray[] = &$mform->createElement('submit', 'btn_search', get_string('search','literature'));
-		$buttonarray[] = &$mform->createElement('submit', 'btn_extended', get_string('extendedsearch','literature'));
-		$mform->addGroup($buttonarray);
-		
-		
-		//-------------------------------------------------------------------------------
-		// Literaturelists 
-		$mform->addElement('header', 'lists', get_string('lists', 'literature'));
-		$listinfos = literature_dbobject_listinfo::load_by_userid($USER->id);
-		$lists = literature_print_listinfos($listinfos, true, $this->course->id, $this->_section);
-		$mform->addElement('html', $lists);
-		$mform->closeHeaderBefore('btn_post_lists');
-		$buttonarray = array();
-		$buttonarray[] = &$mform->createElement('submit', 'btn_post_lists', get_string('postlists','literature'));
-		$mform->addGroup($buttonarray);
-		
-		
-		//-------------------------------------------------------------------------------
-		// Hidden fields
-		$mform->addElement('hidden', 'course', $this->course);
-		$mform->addElement('hidden', 'section', $this->_section);
-		
-		
-		// QuickForm workaround
-		$mform->addElement('hidden', 'update', 0);
-		$mform->setType('update', PARAM_INT);
-	}
-	
-	
-	
+    /**
+     * Overwriting the moodleform_mod constructor due to a change of the $action parameter
+     *
+     * @param unknown_type $current
+     * @param unknown_type $section
+     * @param unknown_type $cm
+     * @param unknown_type $course
+     */
+    function __construct($current, $section, $cm, $course) {
+        global $CFG;
+
+        $this->isUpdate = (!empty($current->update)) ? true : false;
+        $this->current = $current;
+        $this->_instance = $current->instance;
+        $this->_section = $section;
+        $this->_cm = $cm;
+        $this->course = $course;
+        if ($this->_cm) {
+            $this->context = get_context_instance(CONTEXT_MODULE, $this->_cm->id);
+        } else {
+            $this->context = get_context_instance(CONTEXT_COURSE, $course->id);
+        }
+        $this->_modname = 'literature';
+        $this->init_features();
+        parent::moodleform('../mod/literature/redirect.php?course=' . $course->id . '&section=' . $section . '&return=0');
+    }
+
+    /**
+     * Defines forms elements
+     */
+    public function definition() {
+        global $USER;
+
+        $mform = $this->_form;
+
+        if (!$this->isUpdate) {
+            
+            /*
+             *  Add new Instance
+             */
+            
+            //-------------------------------------------------------------------------------
+            // Adding the "quicksearch" fieldset
+            $mform->addElement('header', 'quicksearch', get_string('quicksearch', 'literature'));
+
+            $inputarray = array();
+
+            // Source select => different OPACs
+            $sources = literature_searchsource_get_available();
+            $list = array();
+            foreach ($sources as $globalid => $source) {
+                $list[$globalid] = $source->name;
+            }
+            $inputarray[] = &$mform->createElement('select', 'source', null, $list);
+
+            // Search term textfield
+            $inputarray[] = &$mform->createElement('text', 'search_field');
+            $mform->addGroup($inputarray, 'search_group');
+
+            // Buttons for search and redirect to extended search
+            $buttonarray = array();
+            $buttonarray[] = &$mform->createElement('submit', 'btn_search', get_string('search', 'literature'));
+            $buttonarray[] = &$mform->createElement('submit', 'btn_extended', get_string('extendedsearch', 'literature'));
+            $mform->addGroup($buttonarray);
+
+
+            //-------------------------------------------------------------------------------
+            // Literaturelists 
+            $mform->addElement('header', 'lists', get_string('lists', 'literature'));
+            $listinfos = literature_dbobject_listinfo::load_by_userid($USER->id);
+            $lists = literature_print_listinfos($listinfos, true, $this->course->id, $this->_section);
+            $mform->addElement('html', $lists);
+            $mform->closeHeaderBefore('btn_post_lists');
+            $buttonarray = array();
+            $buttonarray[] = &$mform->createElement('submit', 'btn_post_lists', get_string('postlists', 'literature'));
+            $mform->addGroup($buttonarray);
+
+
+            //-------------------------------------------------------------------------------
+            // Hidden fields
+            $mform->addElement('hidden', 'course', $this->course);
+            $mform->addElement('hidden', 'section', $this->_section);
+
+
+            // QuickForm workaround
+            $mform->addElement('hidden', 'update', 0);
+            $mform->setType('update', PARAM_INT);
+            
+        } else {
+            
+            /*
+             *  Update an instance
+             *  TODO
+             */
+            
+            $mform->addElement('header', 'update', get_string('updateinstance', 'literature'));
+            $mform->addElement('html', 'Sorry this is currently not supported!');
+        }
+    }
+
 }

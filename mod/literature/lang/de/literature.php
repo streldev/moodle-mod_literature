@@ -31,7 +31,7 @@ $string['modulenameplural'] = 'Literatures';
 $string['modulename_help'] = 'Das Literatur-Modul erlaubt es Literaturdaten in verschiedenen Quellen zu suchen, zu verwalten und in Kursen zu veröffentlichen.';
 $string['literature'] = 'literature';
 $string['pluginadministration'] = 'literature administration';
-$string['pluginname'] = 'Literature';
+$string['pluginname'] = 'Literatur';
 
 
 
@@ -122,6 +122,7 @@ $string['title:exportlists'] = 'Liste exportieren';
 $string['title:exportlit'] = 'Literatur exportieren';
 $string['title:listoverview'] = 'Listenübersicht';
 $string['type'] = 'Typ: ';
+$string['updateinstance'] = 'Instanz bearbeiten';
 $string['url'] = 'URL: ';
 $string['view_list'] = 'Liste anzeigen';
 $string['view_as_list'] = 'Liste';
@@ -173,7 +174,7 @@ $string['error:list:entriesmissing'] = 'Während dem Laden der Liste wurden {$a}
 $string['error:list:insert'] = 'Das Einfügen der Liste {$name} in die Datenbank ist fehlgeschlagen.';
 $string['error:list:loadfailed'] = 'Das Laden der Liste mit der ID: {$a->listid} ist fehlgeschlagen!';
 
-$stirng['error:lit:loadfailed'] = 'Das Laden der Literatur mit der ID: {$litid} ist fehlgeschlagen!';
+$string['error:lit:loadfailed'] = 'Das Laden der Literatur mit der ID: {$litid} ist fehlgeschlagen!';
 
 $string['error:post:litfailedcm'] = 'Die Literatur mit der ID: {$lit->id} konnte nicht veröffentlicht werden.' .
         'Grund: Der entsprechende Eintrag in die Datenbanktabelle course_module war nicht erfolgreich!';

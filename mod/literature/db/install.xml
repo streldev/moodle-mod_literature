@@ -63,11 +63,10 @@
         <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
         <FIELD NAME="issn" TYPE="char" LENGTH="512" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
         <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
-        <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
-        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="links"/>
-        <FIELD NAME="links" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="format" NEXT="titlelink"/>
-        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="links"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="format"/>
+        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="titlelink"/>
+        <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="format" NEXT="links"/>
+        <FIELD NAME="links" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="titlelink"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -83,7 +82,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="literature_lit_temp" COMMENT="Literature searchitems" PREVIOUS="literature_searchsource">
+    <TABLE NAME="literature_lit_temp" COMMENT="Literature searchitems" PREVIOUS="literature_searchsource" NEXT="literature_links">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
@@ -97,12 +96,33 @@
         <FIELD NAME="isbn13" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn10" NEXT="issn"/>
         <FIELD NAME="issn" TYPE="char" LENGTH="512" NOTNULL="false" SEQUENCE="false" PREVIOUS="isbn13" NEXT="coverpath"/>
         <FIELD NAME="coverpath" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="issn" NEXT="description"/>
-        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="linktoread"/>
-        <FIELD NAME="linktoread" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="format"/>
-        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="linktoread" NEXT="userid"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="coverpath" NEXT="format"/>
+        <FIELD NAME="format" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="description" NEXT="userid"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="format" NEXT="timestamp"/>
         <FIELD NAME="timestamp" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="titlelink"/>
         <FIELD NAME="titlelink" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="timestamp"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_links" COMMENT="Default comment for the table, please edit me" PREVIOUS="literature_lit_temp" NEXT="literature_links_temp">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="lit_id"/>
+        <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="text"/>
+        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="link"/>
+        <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="literature_links_temp" COMMENT="Default comment for the table, please edit me" PREVIOUS="literature_links">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="lit_id"/>
+        <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="text"/>
+        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="link"/>
+        <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
