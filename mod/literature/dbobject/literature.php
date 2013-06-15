@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+include_once 'link.php';
+
 /**
  * Literature Class
  *
@@ -214,7 +216,7 @@ class literature_dbobject_literature {
         $this->titlelink = $titlelink;
 
         // REFS
-        $this->refs = isset($links) ? $links : 0;
+        $this->refs = isset($refs) ? $refs : 0;
     }
 
     /**
@@ -231,6 +233,12 @@ class literature_dbobject_literature {
         $result = $DB->insert_record(self::$table, $this, true);
         if ($result) {
             $this->id = $result;
+            // Save all links
+            foreach($this->links as $link) {
+                $link->lit_id = $this->id;
+                $link->insert();
+            }
+            
         }
 
         return $result;
@@ -243,7 +251,12 @@ class literature_dbobject_literature {
      */
     public function save() {
         global $DB;
-
+        
+        // Update links
+        foreach($this->links as $link) {
+            $link->update();
+        }
+        // Update literature
         return $DB->update_record(self::$table, $this);
     }
 
@@ -260,6 +273,9 @@ class literature_dbobject_literature {
             return false;
         }
 
+        // Load links
+        $item->links = literature_dbobject_link::load_by_lit_id($id);
+        
         return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors,
                         $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn,
                         $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, $item->refs);
@@ -282,6 +298,11 @@ class literature_dbobject_literature {
             $literature->del_ref();
             $literature->save();
             return true;
+        }
+        
+        // Delete links
+        foreach($literature->links as $link) {
+            $link->delete();
         }
 
         // If cover delete
@@ -307,6 +328,7 @@ class literature_dbobject_literature {
             }
         }
 
+        // Delete literature
         return $DB->delete_records(self::$table, array('id' => $id));
     }
 
