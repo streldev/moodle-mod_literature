@@ -213,7 +213,7 @@ class literature_dbobject_literaturelist {
 
         $lit = literature_dbobject_literature::load_by_id($litid);
         if ($lit) {
-            $lit->add_link();
+            $lit->add_ref();
             if (!$lit->save()) {
                 $DB->delete_records('literature_list_lit', 'literature', array('list_id' => $listid, 'lit_id' => $litid));
                 return false;

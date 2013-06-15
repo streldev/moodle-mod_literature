@@ -107,7 +107,7 @@ foreach ($listids as $listid => $isselected) {
         set_coursemodule_visible($cm->id, true);
 
         // +1 to links and save
-        $lit->add_link();
+        $lit->add_ref();
         $lit->save();
     }
 }
