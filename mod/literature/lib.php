@@ -213,28 +213,29 @@ function literature_print_recent_mod_activity($activity, $courseid, $detail, $mo
 function literature_cron() {
     global $DB;
 
+    $timestamp = time() - 900;
 
     // Clean temp. table
-    $table = 'literature_lit_temp';
-    $timestamp = time() - 900;
-    $records = $DB->get_records($table);
+    $litTable = 'literature_lit_temp';
+    $linkTable = 'literature_link_temp';
+    $records = $DB->get_records($litTable);
     foreach ($records as $record) {
 
         if ($record->timestamp <= $timestamp) {
-            $DB->delete_records($table, array('id' => $record->id));
+            // Delete literature entry
+            $DB->delete_records($litTable, array('id' => $record->id));
+            // Delete link entry
+            $DB->delete_records($linkTable, array('lit_id' => $record->id));
         }
     }
 
     // Clean exported file
-    $timestamp = time() - 900;
-    $table = 'files';
+    $fileTable = 'files';
     $options = array('component' => 'mod_literature', 'filearea' => 'export');
-    $files = $DB->get_records($table, $options);
-
-    $todelete = array();
+    $files = $DB->get_records($fileTable, $options);
     foreach ($files as $file) {
         if ($file->timecreated <= $timestamp) {
-            $DB->delete_records($table, array('id' => $file->id));
+            $DB->delete_records($fileTable, array('id' => $file->id));
         }
     }
 

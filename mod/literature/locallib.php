@@ -824,6 +824,7 @@ function literature_db_insert_results($results) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
+    $tableLink = 'literature_link_temp';
     $userid = $USER->id;
     $timestamp = time();
 
@@ -832,9 +833,17 @@ function literature_db_insert_results($results) {
         $result->timestamp = $timestamp;
         $result->userid = $userid;
         literature_enricher_enrich_preview($result);
-        if (!$DB->insert_record($table, $result)) {
+        $id = $DB->insert_record($table, $result);
+        if (!$id) {
             // TODO warning
             continue;
+        }
+        // Insert links
+        foreach ($result->links as $link) {
+            $link->lit_id = $id;
+            if(!$DB->insert_record($tableLink, $link)) {
+                // TODO log error
+            }
         }
     }
 
