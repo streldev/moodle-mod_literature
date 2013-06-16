@@ -46,9 +46,9 @@ class literature_searchsource_z3950_searchobject {
             $this->host = $source->host;
 
             if (!empty($source->user) && !empty($source->pass)) {
-                $this->options = array('user' => $source->user, 'password' => $source->pass);
+                $this->options = array('user' => $source->user, 'password' => $source->pass,'charset' => 'utf-8');
             } else {
-                $this->options = array();
+                $this->options = array('charset' => 'marc-8');
             }
         }
 
@@ -91,7 +91,7 @@ class literature_searchsource_z3950_searchobject {
         yaz_range($id, 1, $maxentries);
 
         yaz_search($id, "rpn", $query);
-
+        
         yaz_wait();
 
         if (yaz_errno($id)) {
@@ -110,7 +110,10 @@ class literature_searchsource_z3950_searchobject {
                 if ($record) {
                     $xmlrecord = new SimpleXMLElement($record);
                     $parser = new literature_parser_marc21xml();
-                    $this->results[] = $parser->parse($xmlrecord, null);
+                    $result = $parser->parse($xmlrecord, null);
+                    if($result) {
+                        $this->results[] = $result;
+                    }
                 }
             }
 
@@ -122,6 +125,9 @@ class literature_searchsource_z3950_searchobject {
      * Connect to yaz server
      */
     private function connect() {
+        if (!function_exists('yaz_connect')) {
+            print_error('yaznotinstalled', 'searchsource_z3950');
+        }
         $id = yaz_connect($this->host, $this->options);
         if (!$id) {
             return false;

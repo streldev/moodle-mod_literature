@@ -35,12 +35,13 @@ $string['default'] = 'Standardindex';
 $string['desc'] = 'Beschreibung';
 $string['errorconnectingserver'] = 'Verbindung zum Z39.50 Server fehlgeschlagen!';
 $string['host'] = 'Host';
+$string['headnotinstalled'] = 'Hinweis';
 $string['name'] = 'Name';
 $string['password'] = 'Passwort';
 $string['profile'] = 'Profile';
 $string['user'] = 'User';
 $string['save'] = 'Speichern';
-$string['yaznotinstalled'] = 'Um das Z39.50 Subplugin zu nutzen, wird die PHP-YAZ Bibliothek benötigt.' .
+$string['yaznotinstalled'] = 'Um das Z39.50 Suchplugin zu nutzen, wird die PHP-YAZ Bibliothek benötigt.' .
         'Bitte kontaktieren sie den Administrator.';
 
 $string['newsource'] = 'Suchquelle anlegen';

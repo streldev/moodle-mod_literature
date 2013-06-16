@@ -35,12 +35,13 @@ $string['default'] = 'Defaultindex';
 $string['desc'] = 'Description';
 $string['errorconnectingserver'] = 'Connecting to z server failed!';
 $string['host'] = 'Host';
+$string['headnotinstalled'] = 'Warning';
 $string['name'] = 'Name';
 $string['password'] = 'Password';
 $string['profile'] = 'Profile';
 $string['user'] = 'User';
 $string['save'] = 'Save';
-$string['yaznotinstalled'] = 'To use this plugin the php-yaz library is needed. Please contact the admin.';
+$string['yaznotinstalled'] = 'To use this search plugin the php-yaz library is needed. Please contact the admin.';
 
 $string['newsource'] = 'New source';
 $string['editsource'] = 'Edit Source';

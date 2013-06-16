@@ -36,58 +36,67 @@ class literature_searchsource_z3950_form extends moodleform {
 
         $mform = $this->_form;
         $data = $this->_customdata;
+        
+        if (!function_exists('yaz_connect')) {
+            
+            $mform->addElement('header', 'notinstalled', get_string('headnotinstalled', 'searchsource_z3950'));
+            $warning = get_string('yaznotinstalled', 'searchsource_z3950');
+            $mform->addElement('html', "<div class=\"literature_warning\">$warning</div>");
+            
+        } else {
 
-        $mform->addElement('header', 'source', get_string('pluginname', 'searchsource_z3950'));
+            $mform->addElement('header', 'source', get_string('pluginname', 'searchsource_z3950'));
 
-        // Name
-        $mform->addElement('text', 'name', get_string('name', 'searchsource_z3950'));
-        $mform->addRule('name', get_string('required'), 'required', null, 'client');
-        $mform->addHelpButton('name', 'help:name', 'searchsource_z3950');
+            // Name
+            $mform->addElement('text', 'name', get_string('name', 'searchsource_z3950'));
+            $mform->addRule('name', get_string('required'), 'required', null, 'client');
+            $mform->addHelpButton('name', 'help:name', 'searchsource_z3950');
 
-        // Host
-        $mform->addElement('text', 'host', get_string('host', 'searchsource_z3950'), array('size' => 35));
-        $mform->addRule('host', get_string('required'), 'required', null, 'client');
-        $mform->addHelpButton('host', 'help:host', 'searchsource_z3950');
+            // Host
+            $mform->addElement('text', 'host', get_string('host', 'searchsource_z3950'), array('size' => 35));
+            $mform->addRule('host', get_string('required'), 'required', null, 'client');
+            $mform->addHelpButton('host', 'help:host', 'searchsource_z3950');
 
-        // User
-        $mform->addElement('text', 'user', get_string('user', 'searchsource_z3950'));
+            // User
+            $mform->addElement('text', 'user', get_string('user', 'searchsource_z3950'));
 
-        // Password
-        $mform->addElement('password', 'password', get_string('password', 'searchsource_z3950'));
+            // Password
+            $mform->addElement('password', 'password', get_string('password', 'searchsource_z3950'));
 
-        // Profile
-        $mform->addElement('header', 'profile', get_string('profile', 'searchsource_z3950'));
+            // Profile
+            $mform->addElement('header', 'profile', get_string('profile', 'searchsource_z3950'));
 
-        if (!empty($data->fields)) {
+            if (!empty($data->fields)) {
 
-            for ($i = 0; $i < $data->fields; $i++) {
+                for ($i = 0; $i < $data->fields; $i++) {
 
-                $fieldgroup = array();
-                $fieldgroup[] = &$mform->createElement('text', 'code', null, array('size' => 8));
-                $fieldgroup[] = &$mform->createElement('text', 'text');
-                if ($i == 0) {
-                    $mform->addGroup($fieldgroup, 'fieldgroup[' . $i . ']', get_string('default', 'searchsource_z3950'));
-                    $mform->addHelpButton('fieldgroup[' . $i . ']', 'help:profile', 'searchsource_z3950');
-                    $mform->addGroupRule('fieldgroup[0]', get_string('required'), 'required', null, 'client');
-                } else {
-                    $mform->addGroup($fieldgroup, 'fieldgroup[' . $i . ']');
+                    $fieldgroup = array();
+                    $fieldgroup[] = &$mform->createElement('text', 'code', null, array('size' => 8));
+                    $fieldgroup[] = &$mform->createElement('text', 'text');
+                    if ($i == 0) {
+                        $mform->addGroup($fieldgroup, 'fieldgroup[' . $i . ']', get_string('default', 'searchsource_z3950'));
+                        $mform->addHelpButton('fieldgroup[' . $i . ']', 'help:profile', 'searchsource_z3950');
+                        $mform->addGroupRule('fieldgroup[0]', get_string('required'), 'required', null, 'client');
+                    } else {
+                        $mform->addGroup($fieldgroup, 'fieldgroup[' . $i . ']');
+                    }
                 }
             }
+
+            $list = array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5');
+            $addgroup = array();
+            $addgroup[] = $mform->createElement('select', 'count', null, $list);
+            $addgroup[] = $mform->createElement('submit', 'addfield', get_string('addfield', 'searchsource_z3950'));
+            $mform->addGroup($addgroup, 'addgroup');
+
+            $mform->closeHeaderBefore('submitgroup');
+
+            $submitgroup = array();
+            $submitgroup[] = &$mform->createElement('submit', 'save', get_string('save', 'searchsource_z3950'));
+            $submitgroup[] = &$mform->createElement('cancel');
+
+            $mform->addGroup($submitgroup, 'submitgroup');
         }
-
-        $list = array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5');
-        $addgroup = array();
-        $addgroup[] = $mform->createElement('select', 'count', null, $list);
-        $addgroup[] = $mform->createElement('submit', 'addfield', get_string('addfield', 'searchsource_z3950'));
-        $mform->addGroup($addgroup, 'addgroup');
-
-        $mform->closeHeaderBefore('submitgroup');
-
-        $submitgroup = array();
-        $submitgroup[] = &$mform->createElement('submit', 'save', get_string('save', 'searchsource_z3950'));
-        $submitgroup[] = &$mform->createElement('cancel');
-
-        $mform->addGroup($submitgroup, 'submitgroup');
     }
 
 }

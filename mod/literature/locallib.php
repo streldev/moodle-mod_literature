@@ -431,7 +431,7 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
     }
 
     // Links
-    if (!empty($item->links) && inShortBook('link')) {
+    if (!empty($item->links) && inShortElectronic('link')) {
         foreach($item->links as $link) {
              $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
                 '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
@@ -602,7 +602,7 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
     }
 
     // Links
-    if (!empty($item->links) && inShortBook('link')) {
+    if (!empty($item->links) && inShortMisc('link')) {
         foreach($item->links as $link) {
              $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
                 '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';

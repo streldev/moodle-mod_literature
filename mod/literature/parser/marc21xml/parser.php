@@ -60,12 +60,13 @@ class literature_parser_marc21xml implements literature_parser {
             '650' => array('field' => 'topic', 'handler' => 'map_multi', 'args' =>
                 array('$a' => 'topic', '$x' => 'subdiv')),
             '856' => array('field' => 'link', 'handler' => 'map_multi', 'args' => 
-                array('$u' => 'url', '$y' => 'text'))
+                array('$u' => 'url', '$y' => 'text', '$3' => 'alttext'))
         );
     }
 
     /**
      * @see literature_parser_abstract::parse()
+     * @param SimpleXMLElement $xmlrecord
      */
     public function parse($xmlrecord, $titlelink) {
         $parsedfields = array();
@@ -79,7 +80,10 @@ class literature_parser_marc21xml implements literature_parser {
             if (isset($this->mapping[$code])) {
 
                 $handler = $this->mapping[$code]['handler'];
-                $parsedfields[$this->mapping[$code]['field']][] = $this->$handler($field, $this->mapping);
+                $value = $this->$handler($field, $this->mapping);
+                if($value) {
+                    $parsedfields[$this->mapping[$code]['field']][] = $value;
+                }
             }
         }
 
@@ -134,6 +138,7 @@ class literature_parser_marc21xml implements literature_parser {
                 return $result;
             }
         }
+        return false;
     }
 
     /**
@@ -154,7 +159,11 @@ class literature_parser_marc21xml implements literature_parser {
                 $results[$propname] = $subfield->__toString();
             }
         }
-        return $results;
+        if(!empty($results)) {
+            return $results;
+        } else  {
+            return false;
+        }
     }
 
     /**
@@ -167,6 +176,9 @@ class literature_parser_marc21xml implements literature_parser {
 
         $id = null;
         $type = $parsedfields['type'];
+        if(empty($parsedfields['title'][0]['title'])) {
+            return false;
+        }
         $title = $parsedfields['title'][0]['title'];
         $subtitle = (isset($parsedfields['title'][0]['subtitle'])) ? $parsedfields['title'][0]['subtitle'] : null;
         $authors = $this->get_authors($parsedfields);
@@ -207,18 +219,18 @@ class literature_parser_marc21xml implements literature_parser {
      * Extract links from marc21 fields
      */
     private function get_links($fields) {
-        
+                
         // If no links found return empty array
-        if(!isset($fields['url'])) {
+        if(!isset($fields['link'])) {
             return array();
         }
         
         $links = array();
-        foreach ($fields['url'] as $link) {
+        foreach ($fields['link'] as $link) {
             if(empty($link['url'])) {
                 continue; // No valid url
             }
-            $text = (empty($link['text'])) ? $link['url'] : $link['text'];
+            $text = (empty($link['text'])) ? (empty($link['alttext'])) ? $link['url'] : $link['alttext'] : $link['text'];
             $links[] = new literature_dbobject_link(null, null, $text, $link['url']);
         }
         

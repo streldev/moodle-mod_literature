@@ -3,9 +3,14 @@
     clear: both;
 }
 
+.literature_warning {
+    background-color: orange;
+}
+
 .literature .data {
     margin-left: 150px;
     word-wrap: break-word;
+    padding-right: 15px;
 }
 
 .literature .data_short {

@@ -107,7 +107,7 @@ class literature_searchsource_sru_searchobject {
             $url = $this->server . '?version=1.1&operation=searchRetrieve&startRecord=' . $from .
                     '&maximumRecords=' . $maxentry . '&query=' . $query;
         }
-
+        
         $xml = new SimpleXMLElement($url, 0, true, 'http://www.loc.gov/zing/srw/');
         $parser = new literature_parser_marc21xml();
 
@@ -119,7 +119,6 @@ class literature_searchsource_sru_searchobject {
         foreach ($xml->records->record as $record) {
 
             $recorddata = $record->recordData->children('http://www.loc.gov/MARC21/slim');
-
             $titlelink = null;
 
             $results[] = $parser->parse($recorddata->record, $titlelink);
