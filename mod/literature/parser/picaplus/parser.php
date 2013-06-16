@@ -176,9 +176,13 @@ class literature_parser_picaplus implements literature_parser {
         $result = '';
         foreach ($isbns as $isbn) {
             if(isset($isbn['isbn10'])) {
-                $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn10']);
-                if (strlen($cleanisbn10) == 10) {
-                    $result .= $cleanisbn10 . ' ';
+                // Have to split with delimiter whitepsace beceause of lazy bib people
+                $splitArray = explode(' ', $isbn['isbn10']);
+                foreach ($splitArray as $splitedIsbn) {
+                    $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
+                    if (strlen($cleanisbn10) == 10) {
+                        $result .= $cleanisbn10 . ' ';
+                    }
                 }
             }
         }
@@ -199,9 +203,13 @@ class literature_parser_picaplus implements literature_parser {
         $result = '';
         foreach ($isbns as $isbn) {
             if(isset($isbn['isbn13'])) {
-                $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn13']);
-                if (strlen($cleanisbn13) == 13) {
-                    $result .= $cleanisbn13 . ' ';
+                // Have to split with delimiter whitepsace beceause of lazy bib people
+                $splitArray = explode(' ', $isbn['isbn13']);
+                foreach ($splitArray as $splitedIsbn) {
+                    $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
+                    if (strlen($cleanisbn13) == 13) {
+                        $result .= $cleanisbn13 . ' ';
+                    }
                 }
             } 
         }

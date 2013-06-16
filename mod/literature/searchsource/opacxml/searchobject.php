@@ -93,7 +93,10 @@ class literature_searchsource_opacxml_searchobject {
             $entries[$len] = array_shift($strings);
 
             $titlelink = $this->server . '/PPN?PPN=' . $ppn;
-            $results[] = $parser->parse($entries, $titlelink);
+            $result = $parser->parse($entries, $titlelink);
+            if($result) {
+                $results[] = $result;
+            }
         }
 
         return $results;

@@ -80,8 +80,11 @@ class literature_enricher_aws implements literature_enricher {
      * @return boolean|string false or the url
      */
     public function get_coverurl_for_isbn($isbn) {
-
-        return $this->get_cover_by_isbn_and_country($isbn, 'de');
+        $url = $this->get_cover_by_isbn_and_country($isbn, 'de');
+        if(!$url) {
+            $url = $this->get_cover_by_isbn_and_country($isbn, 'com');
+        }
+        return $url;
 
     }
 

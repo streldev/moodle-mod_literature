@@ -105,7 +105,10 @@ class literature_searchsource_srugbv_searchobject {
                 $recorddata = $record->recordData->children('http://www.loc.gov/MARC21/slim');
                 $ppn = $recorddata->record->controlfield[0];
                 $titlelink = 'http://gso.gbv.de/PPNSET?PPN=' . $ppn;
-                $results[] = $parser->parse($recorddata->record, $titlelink);
+                $result = $parser->parse($recorddata->record, $titlelink);
+                if ($result) {
+                    $results[] = $result;
+                }
             }
         }
 

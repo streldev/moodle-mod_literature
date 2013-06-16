@@ -78,7 +78,7 @@ class literature_parser_marc21xml implements literature_parser {
             $code = $field->attributes()->tag->__toString();
 
             if (isset($this->mapping[$code])) {
-
+                
                 $handler = $this->mapping[$code]['handler'];
                 $value = $this->$handler($field, $this->mapping);
                 if($value) {
@@ -248,12 +248,16 @@ class literature_parser_marc21xml implements literature_parser {
         $result->isbn10 = null;
         $result->isbn13 = null;
 
-        foreach ($isbns as $isbn) {
-            $cleanisbn = preg_replace("/[^0-9Xx]/", '', $isbn);
-            if (strlen($cleanisbn) == 10) {
-                $result->isbn10 = $cleanisbn;
-            } else if (strlen($cleanisbn) == 13) {
-                $result->isbn13 = $cleanisbn;
+        foreach ($isbns as $isbnString) { 
+            // Have to split the string here because of lazy bib people
+            $isbnArr = explode(' ', $isbnString);
+            foreach ($isbnArr as $isbn) {
+                $cleanisbn = preg_replace("/[^0-9Xx]/", '', $isbn);
+                if (strlen($cleanisbn) == 10) {
+                    $result->isbn10 = $cleanisbn;
+                } else if (strlen($cleanisbn) == 13) {
+                    $result->isbn13 = $cleanisbn;
+                }  
             }
         }
 
@@ -269,7 +273,6 @@ class literature_parser_marc21xml implements literature_parser {
 
         $cleanissns = '';
         foreach ($issns as $issn) {
-
             $cleanissns .= preg_replace("/[^0-9Xx]/", '', $issn) . ' ';
         }
 

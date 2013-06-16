@@ -121,7 +121,10 @@ class literature_searchsource_sru_searchobject {
             $recorddata = $record->recordData->children('http://www.loc.gov/MARC21/slim');
             $titlelink = null;
 
-            $results[] = $parser->parse($recorddata->record, $titlelink);
+            $result = $parser->parse($recorddata->record, $titlelink);
+            if($result) {
+                $results[] = $result;
+            }
         }
 
         return $results;
