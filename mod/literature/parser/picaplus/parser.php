@@ -17,6 +17,7 @@
 
 require_once(dirname(dirname(__FILE__)) . '/parser.php');
 require_once(dirname(dirname(dirname(__FILE__))) . '/dbobject/literature.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/dbobject/link.php');
 
 /**
  * Parser for the PICA+ format
@@ -40,23 +41,24 @@ class literature_parser_picaplus implements literature_parser {
     public function __construct() {
 
         $this->mapping = array(
-            '002@' => array('$0' => 'type'),
-            '004A' => array('$0' => 'isbn10', '$A' => 'isbn13', '$c' => null, '$f' => null, 'g' => null),
-            '005A' => array('$0' => 'issn', '$c' => null),
-            '010@' => array('$a' => 'language'),
-            '021A' => array('$a' => 'title', '$d' => 'subtitle', '$h' => 'authors', '$e' => null,
-                '$f' => null, '$e' => null, '$n' => null),
-            '033A' => array('$p' => 'place', '$n' => 'publisher'),
-            '011@' => array('$a' => 'date', '$b' => null, '$n' => null),
+            '002@' => array('field' => 'type', 'map' => 'single', 'args' => '$0'),
+            '004A' => array('field' => 'isbn', 'map' => 'multi', 'args' => 
+                    array('$0' => 'isbn10', '$A' => 'isbn13')),
+            '005A' => array('field' => 'issn', 'map' => 'single', 'args' => '$0'),
+            '010@' => array('field' => 'lang', 'map' => 'single', 'args' => '$a'),
+            '021A' => array('field' => 'title', 'map' => 'multi', 'args' => 
+                    array('$a' => 'title', '$d' => 'subtitle', '$h' => 'authors')),
+            '033A' => array('field' => 'publisher', 'map' => 'multi', 'args' =>
+                    array('$p' => 'place', '$n' => 'publisher')),
+            '011@' => array('field' => 'date', 'map' => 'single', 'args' => '$a'),
             // '034I' => 'format',
-            '034K' => array('$a' => 'accompany'),
+            //'034K' => array('$a' => 'accompany'),
             // '440' => array('field' => 'series', 'handler' => 'map_single', 'args' => '$a'),welches feld???
-            '020F' => array('$a' => 'summary'),
-            '009Q' => array('$a' => 'url', '$y' => 'urltext', '$T' => null, '$b' => null, '$c' => null,
-                '$d' => null, '$f' => null, '$g' => null, '$h' => null, '$i' => null, '$j' => null,
-                '$k' => null, '$l' => null, '$m' => null, '$n' => null, '$p' => null, '$q' => null,
-                '$r' => null, '$s' => null, '$t' => null, '$u' => null, '$v' => null, '$w' => null,
-                '$x' => null, '$z' => null, '$2' => null, '$4' => null));
+            '020F' => array('field' => 'summary', 'map' => 'single', 'args' => '$a'),
+            '009Q' => array('field' => 'link', 'map' => 'multi', 'args' =>
+                    array('$u' => 'url', '$y' => 'text'))
+            );
+                
     }
 
     /**
@@ -65,7 +67,6 @@ class literature_parser_picaplus implements literature_parser {
     public function parse($entries, $titlelink = null) {
 
         $parsedobject = new stdClass();
-
         foreach ($entries as $entry) {
 
             $entry = trim($entry);
@@ -75,67 +76,94 @@ class literature_parser_picaplus implements literature_parser {
             if (key_exists($code, $this->mapping)) {
 
                 $map = $this->mapping[$code];
-                $fields = $this->split_data_string($data, $map);
-
-                foreach ($map as $subfieldcode => $title) {
-
-                    if (!empty($title) && key_exists($subfieldcode, $fields) && !empty($fields[$subfieldcode])) {
-
-                        $parsedobject->$title = $fields[$subfieldcode];
-                    }
+                $mapCallback = 'map_' . $map['map'];
+                $fieldTitle = $map['field'];
+                
+                // Check if field exists allready
+                if(empty($parsedobject->$fieldTitle)) {
+                    $parsedobject->$fieldTitle = array();
                 }
+                
+                // Get the field value
+                $value = $this->$mapCallback($data,$map['args']);
+                if($value) {
+                    $parsedobject->$fieldTitle[] = $value;
+                }
+                
             }
         }
 
-        $id = -1;
-        $type = isset($parsedobject->type) ? $this->get_type($parsedobject->type) : literature_dbobject_literature::MISC;
-        $title = isset($parsedobject->title) ? $parsedobject->title : null;
-        $subtitle = isset($parsedobject->subtitle) ? $parsedobject->subtitle : null;
-        $authors = isset($parsedobject->authors) ? $parsedobject->authors : null;
-        $publisher = isset($parsedobject->publisher) ? $parsedobject->publisher : null;
-        $published = isset($parsedobject->date) ? $parsedobject->date : null;
+        $id = null;
+        $type = isset($parsedobject->type[0]) ? $this->get_type($parsedobject->type[0]) : literature_dbobject_literature::MISC;
+        $title = isset($parsedobject->title[0]['title']) ? $parsedobject->title[0]['title'] : null;
+        $subtitle = isset($parsedobject->title[0]['subtitle']) ? $parsedobject->title[0]['subtitle'] : null;
+        $authors = isset($parsedobject->title[0]['authors']) ? $parsedobject->tile[0]['authors'] : null;
+        $publisher = isset($parsedobject->publisher[0]['publisher']) ? $parsedobject->publisher[0]['publisher'] : null;
+        $published = isset($parsedobject->date[0]) ? $parsedobject->date[0] : null;
         $series = null; // TODO in later version
-        $isbn10 = isset($parsedobject->isbn10) ? $parsedobject->isbn10 : null;
-        $isbn10 = preg_replace("/[^0-9Xx]/", "", $isbn10);
-        $isbn13 = isset($parsedobject->isbn13) ? $parsedobject->isbn13 : null;
-        $isbn13 = preg_replace("/[^0-9Xx]/", "", $isbn13);
-        $issn = isset($parsedobject->issn) ? $parsedobject->issn : null;
+        $isbn10 = $this->get_isbn10($parsedobject->isbn);
+        $isbn13 = $this->get_isbn13($parsedobject->isbn);
+        $issn = isset($parsedobject->issn[0]) ? $parsedobject->issn[0] : null;
         $coverpath = null;
-        $description = isset($parsedobject->summary) ? $parsedobject->summary : null;
-        $linktoread = isset($parsedobject->url) ? $parsedobject->url : null;
+        $description = isset($parsedobject->summary[0]) ? $parsedobject->summary[0] : null;
+        $links = $this->get_links($parsedobject->link);
         $format = null; // TODO in later version
-        $links = 0;
+        $refs = 0;
 
         // TODO in later versions remove this ugly workaround
         $title = preg_replace('/@/', '', $title);
         $subtitle = preg_replace('/@/', '', $subtitle);
 
-        return new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher, $published,
-                        $series, $isbn10, $isbn13, $issn, $coverpath, $description, $linktoread, $format, $titlelink, $links);
+        return new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher,
+                $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format,
+                $titlelink, $refs);
+    }
+    
+    /**
+     * Parse single subfield
+     * @param string $data The datastring for the subfield
+     * @param string $arg The code of the subfield
+     */
+    private function map_single($data, $arg) {
+
+        $pattern = "/$arg([^$]*)/g";
+        $matches = array();
+        if(preg_match($pattern, $data, $matches)) {
+            return $matches[1][0];
+        }
+        return false;     
     }
 
     /**
-     * Splites the subfields in an array
-     * @param string $datastring String with the subfields
-     * @param array $map The map for the field
-     * @return array An string array containing the subfields
+     * Parse multiple subfields
+     * @param unknown_type $field
      */
-    private function split_data_string($datastring, $map) {
+    private function map_multi($data, $args) {
 
-        foreach ($map as $key => $value) {
-            $datastring = str_replace($key, '\#' . $key, $datastring);
+        $values = array();
+        foreach ($args as $code => $title) {
+            $value = $this->map_single($data, $code);
+            if($value) {
+                $values[$title] = $value;
+            }
         }
-
-        $fields = explode('\#', $datastring);
-        array_shift($fields);
-
-        $result = array();
-        foreach ($fields as $field) {
-            $key = substr($field, 0, 2);
-            $result[$key] = substr($field, 2);
+        if(!empty($values)) {
+            return $values;
+        } else {
+            return false;
         }
+    }
 
-        return $result;
+    private function get_links($linkArray) {
+        $links = array();
+        foreach ($linkArray as $link) {
+            if(empty($link['url'])) {
+                continue; // No valid url
+            }
+            $text = (empty($link['text'])) ? $link['url'] : $link['text'];
+            $links[] = new literature_dbobject_link(null, null, $text, $link['url']);
+        }
+        return $links;
     }
 
     /**
@@ -143,21 +171,41 @@ class literature_parser_picaplus implements literature_parser {
      * @param string $isbns
      * @return stdClass with isbn10 or isbn13 as attribute if found
      */
-    private function get_isbns($isbns) {
+    private function get_isbn10($isbns) {
 
-        $result = new stdClass();
-
-        $result->isbn10 = null;
-        $result->isbn13 = null;
-
-        $cleanisbn = preg_replace("/[^0-9Xx]/", '', $isbns);
-        if (strlen($cleanisbn) == 10) {
-            $result->isbn10 = $cleanisbn;
-        } else if (strlen($cleanisbn) == 13) {
-            $result->isbn13 = $cleanisbn;
+        $result = '';
+        foreach ($isbns as $isbn) {
+            $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn10']);
+            if (strlen($cleanisbn10) == 10) {
+                $result .= $cleanisbn10 . ' ';
+            }
         }
+        if (strlen($result) < 0) {
+            return trim($result);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Extract isbn from string
+     * @param string $isbns
+     * @return stdClass with isbn10 or isbn13 as attribute if found
+     */
+    private function get_isbn13($isbns) {
 
-        return $result;
+        $result = '';
+        foreach ($isbns as $isbn) {
+            $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn13']);
+            if (strlen($cleanisbn13) == 13) {
+                $result .= $cleanisbn13 . ' ';
+            }
+        }
+        if (strlen($result) < 0) {
+            return trim($result);
+        } else {
+            return null;
+        }
     }
 
     /**

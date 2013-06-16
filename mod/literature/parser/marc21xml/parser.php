@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,6 +17,8 @@
 
 
 require_once(dirname(dirname(__FILE__)) . '/parser.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/dbobject/literature.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/dbobject/link.php');
 
 /**
  * Parser for the MARC21 format
@@ -56,7 +59,9 @@ class literature_parser_marc21xml implements literature_parser {
                 array('$a' => 'main', '$b' => 'expansion')),
             '650' => array('field' => 'topic', 'handler' => 'map_multi', 'args' =>
                 array('$a' => 'topic', '$x' => 'subdiv')),
-            '856' => array('field' => 'url', 'handler' => 'map_single', 'args' => '$u'));
+            '856' => array('field' => 'link', 'handler' => 'map_multi', 'args' => 
+                array('$u' => 'url', '$y' => 'text'))
+        );
     }
 
     /**
@@ -103,7 +108,7 @@ class literature_parser_marc21xml implements literature_parser {
                 $type = literature_dbobject_literature::ELECTRONIC; // Electronic Resource
                 break;
             default :
-                $type = 3; // Misc
+                $type = literature_dbobject_literature::MISC; // All the other stuff (CDROM, ...)
         }
 
         return $type;
@@ -149,7 +154,7 @@ class literature_parser_marc21xml implements literature_parser {
                 $results[$propname] = $subfield->__toString();
             }
         }
-        return($results);
+        return $results;
     }
 
     /**
@@ -187,14 +192,37 @@ class literature_parser_marc21xml implements literature_parser {
         } else {
             $description = null;
         }
-        $linktoread = (isset($parsedfields['url'][0])) ? $parsedfields['url'][0] : null;
+        $links = $this->get_links($parsedfields);
         $format = (isset($parsedfields['format'][0]['extent'])) ? $parsedfields['format'][0]['extent'] : null;
-        $links = 0;
+        $refs = 0;
 
         $literature = new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher,
-                        $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $linktoread, $format, $titlelink, $links);
+                $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format,
+                $titlelink, $refs);
 
         return $literature;
+    }
+    
+    /**
+     * Extract links from marc21 fields
+     */
+    private function get_links($fields) {
+        
+        // If no links found return empty array
+        if(!isset($fields['url'])) {
+            return array();
+        }
+        
+        $links = array();
+        foreach ($fields['url'] as $link) {
+            if(empty($link['url'])) {
+                continue; // No valid url
+            }
+            $text = (empty($link['text'])) ? $link['url'] : $link['text'];
+            $links[] = new literature_dbobject_link(null, null, $text, $link['url']);
+        }
+        
+        return $links;
     }
 
     /**
