@@ -257,11 +257,12 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
         $html .= $format;
     }
 
-    // Link to Read
-    if (isset($item->linktoread) && inShortBook('link')) {
-        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
-        $html .= $link;
+    // Links
+    if (!empty($item->links) && inShortBook('link')) {
+        foreach($item->links as $link) {
+             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+        }
     }
 
     // Description
@@ -429,11 +430,12 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
         $html .= $format;
     }
 
-    // Link to Read
-    if (isset($item->linktoread) && inShortElectronic('link')) {
-        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
-        $html .= $link;
+    // Links
+    if (!empty($item->links) && inShortBook('link')) {
+        foreach($item->links as $link) {
+             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+        }
     }
 
     // Description
@@ -599,11 +601,12 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
         $html .= $format;
     }
 
-    // Link to Read
-    if (isset($item->linktoread) && inShortMisc('link')) {
-        $link = '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $item->linktoread . '" target="_balnk">' . $item->linktoread . '</a></span><br />';
-        $html .= $link;
+    // Links
+    if (!empty($item->links) && inShortBook('link')) {
+        foreach($item->links as $link) {
+             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+        }
     }
 
     // Description
@@ -824,7 +827,7 @@ function literature_db_insert_results($results) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
-    $tableLink = 'literature_link_temp';
+    $tableLink = 'literature_links_temp';
     $userid = $USER->id;
     $timestamp = time();
 
@@ -858,7 +861,14 @@ function literature_db_load_results($timestamp) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
-    return $DB->get_records($table, array('userid' => $USER->id, 'timestamp' => $timestamp));
+    $results = $DB->get_records($table, array('userid' => $USER->id, 'timestamp' => $timestamp));
+    
+    $linkTable = 'literature_links_temp';
+    foreach($results as $result) {
+        $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
+        $result->links = $links;
+    }
+    return $results;
 }
 
 /**
@@ -870,7 +880,14 @@ function literature_db_load_result_by_id($timestamp, $id) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
-    return $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
+    $results = $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
+    
+    $linkTable = 'literature_links_temp';
+    foreach($results as $result) {
+        $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
+        $result->links = $links;
+    }
+    return $results;
 }
 
 //###########################################################################//

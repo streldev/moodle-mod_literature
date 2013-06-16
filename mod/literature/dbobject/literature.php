@@ -257,6 +257,7 @@ class literature_dbobject_literature {
             $link->update();
         }
         // Update literature
+        unset($this->links);
         return $DB->update_record(self::$table, $this);
     }
 

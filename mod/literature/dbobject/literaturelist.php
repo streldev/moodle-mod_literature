@@ -148,8 +148,7 @@ class literature_dbobject_literaturelist {
         // Delete items
         $items = self::get_item_ids($id);
         foreach ($items as $item) {
-            $item = literature_dbobject_literature::load_by_id($item->lit_id);
-            $item->delete();
+            literature_dbobject_literature::del_by_id($item->lit_id);
         }
 
         // Delete entries in jointable

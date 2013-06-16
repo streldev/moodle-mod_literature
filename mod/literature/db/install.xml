@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/literature/db" VERSION="20130615" COMMENT="XMLDB file for Moodle mod/literature"
+<XMLDB PATH="mod/literature/db" VERSION="20130616" COMMENT="XMLDB file for Moodle mod/literature"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -110,8 +110,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="lit_id"/>
         <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="text"/>
-        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="link"/>
-        <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
+        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="url"/>
+        <FIELD NAME="url" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -121,8 +121,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="lit_id"/>
         <FIELD NAME="lit_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="text"/>
-        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="link"/>
-        <FIELD NAME="link" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
+        <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="lit_id" NEXT="url"/>
+        <FIELD NAME="url" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="text"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

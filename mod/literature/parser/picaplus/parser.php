@@ -56,7 +56,7 @@ class literature_parser_picaplus implements literature_parser {
             // '440' => array('field' => 'series', 'handler' => 'map_single', 'args' => '$a'),welches feld???
             '020F' => array('field' => 'summary', 'map' => 'single', 'args' => '$a'),
             '009Q' => array('field' => 'link', 'map' => 'multi', 'args' =>
-                    array('$u' => 'url', '$y' => 'text'))
+                    array('$a' => 'url', '$y' => 'text'))
             );
                 
     }
@@ -87,26 +87,26 @@ class literature_parser_picaplus implements literature_parser {
                 // Get the field value
                 $value = $this->$mapCallback($data,$map['args']);
                 if($value) {
-                    $parsedobject->$fieldTitle[] = $value;
+                    array_push($parsedobject->$fieldTitle, $value);
                 }
                 
             }
         }
-
+                        
         $id = null;
         $type = isset($parsedobject->type[0]) ? $this->get_type($parsedobject->type[0]) : literature_dbobject_literature::MISC;
         $title = isset($parsedobject->title[0]['title']) ? $parsedobject->title[0]['title'] : null;
         $subtitle = isset($parsedobject->title[0]['subtitle']) ? $parsedobject->title[0]['subtitle'] : null;
-        $authors = isset($parsedobject->title[0]['authors']) ? $parsedobject->tile[0]['authors'] : null;
+        $authors = isset($parsedobject->title[0]['authors']) ? $parsedobject->title[0]['authors'] : null;
         $publisher = isset($parsedobject->publisher[0]['publisher']) ? $parsedobject->publisher[0]['publisher'] : null;
         $published = isset($parsedobject->date[0]) ? $parsedobject->date[0] : null;
         $series = null; // TODO in later version
-        $isbn10 = $this->get_isbn10($parsedobject->isbn);
-        $isbn13 = $this->get_isbn13($parsedobject->isbn);
+        $isbn10 = (isset($parsedobject->isbn)) ? $this->get_isbn10($parsedobject->isbn) : null;
+        $isbn13 = (isset($parsedobject->isbn)) ? $this->get_isbn13($parsedobject->isbn) : null;
         $issn = isset($parsedobject->issn[0]) ? $parsedobject->issn[0] : null;
         $coverpath = null;
         $description = isset($parsedobject->summary[0]) ? $parsedobject->summary[0] : null;
-        $links = $this->get_links($parsedobject->link);
+        $links = isset($parsedobject->link) ? $this->get_links($parsedobject->link) : array();
         $format = null; // TODO in later version
         $refs = 0;
 
@@ -126,10 +126,10 @@ class literature_parser_picaplus implements literature_parser {
      */
     private function map_single($data, $arg) {
 
-        $pattern = "/$arg([^$]*)/g";
+        $pattern = '/\\'.$arg.'([^$]*)/';
         $matches = array();
         if(preg_match($pattern, $data, $matches)) {
-            return $matches[1][0];
+            return $matches[1];
         }
         return false;     
     }
@@ -175,12 +175,14 @@ class literature_parser_picaplus implements literature_parser {
 
         $result = '';
         foreach ($isbns as $isbn) {
-            $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn10']);
-            if (strlen($cleanisbn10) == 10) {
-                $result .= $cleanisbn10 . ' ';
+            if(isset($isbn['isbn10'])) {
+                $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn10']);
+                if (strlen($cleanisbn10) == 10) {
+                    $result .= $cleanisbn10 . ' ';
+                }
             }
         }
-        if (strlen($result) < 0) {
+        if (strlen($result) > 0) {
             return trim($result);
         } else {
             return null;
@@ -196,12 +198,14 @@ class literature_parser_picaplus implements literature_parser {
 
         $result = '';
         foreach ($isbns as $isbn) {
-            $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn13']);
-            if (strlen($cleanisbn13) == 13) {
-                $result .= $cleanisbn13 . ' ';
-            }
+            if(isset($isbn['isbn13'])) {
+                $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $isbn['isbn13']);
+                if (strlen($cleanisbn13) == 13) {
+                    $result .= $cleanisbn13 . ' ';
+                }
+            } 
         }
-        if (strlen($result) < 0) {
+        if (strlen($result) > 0) {
             return trim($result);
         } else {
             return null;
