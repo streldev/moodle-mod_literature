@@ -271,8 +271,7 @@ class literature_dbobject_literature {
      * 
      * @return boolean|int false or new id
      */
-    public function edit() {
-        global $DB;
+    public function update() {
         
         if($this->refs > 0) {
             
@@ -289,18 +288,18 @@ class literature_dbobject_literature {
             
         } else {
             
-            // There are no refs to the entry -> save with old id
-            if($DB->update_record(self::$table, $this)) {
-                return $this->id;
-            } else {
-                return false;
-            }
+            return $this->save();
             
         } 
     }
     
     public function save() {
         global $DB;
+        
+        foreach($this->links as $link) {
+            $link->update();
+        }
+        
         if($DB->update_record(self::$table, $this)) {
             return $this->id;
         } else {

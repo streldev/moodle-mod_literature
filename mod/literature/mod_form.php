@@ -63,7 +63,11 @@ class mod_literature_mod_form extends moodleform_mod {
         }
         $this->_modname = 'literature';
         $this->init_features();
-        parent::moodleform('../mod/literature/redirect.php?course=' . $course->id . '&section=' . $section . '&return=0');
+        if(!$this->isUpdate) {
+                    parent::moodleform('../mod/literature/redirect.php?course=' . $course->id . '&section=' . $section . '&return=0');
+        } else {
+            parent::moodleform();
+        }
     }
 
     /**
@@ -168,32 +172,36 @@ class mod_literature_mod_form extends moodleform_mod {
             $mform->setDefault('format', $literature->issn);
             
             $mform->addElement('text', 'titlelink', get_string('titlelink', 'literature'), array('size' => 50));
-            $mform->setDefault('totlelink', $literature->titlelink);
+            $mform->setDefault('titlelink', $literature->titlelink);
             
             $mform->addElement('textarea', 'description', get_string('description:', 'literature'),
                     array('cols' => 50, 'rows' => 10));
             $mform->setDefault('description', $literature->description);
             
-            
+            $mform->addElement('header', 'links', get_string('links', 'literature'));
+            $i = 0;
+            foreach ($literature->links as $link) {
+                $html = '
+                        <div class="literature_link_wrapper">
+                            <div class="literature_link_data">
+                                <input name="url['.$i.']" type="text" size="50" value="'.$link->url.'">
+                                <input name="linktext['.$i.']" type="text" size="20" value="'.$link->text.'">
+                                <a href="#" class="literature_link_del" id="literature_link_del_'.$i.'">Delete</a>
+                            </div>
+                        </div>';
+                $mform->addElement('html', $html);
+                $i++;
+            }
+          
             $mform->addElement('header', 'coverpath', get_string('cover', 'literature'));
             $mform->addElement('filepicker', 'literature_cover', get_string('file'), null,
                    array('maxbytes' => 5000000, 'accepted_types' => '*'));
             
             
+            $this->standard_coursemodule_elements();
             $this->add_action_buttons();
             
             
         }
-        
-         //-------------------------------------------------------------------------------
-            // Hidden fields
-            $mform->addElement('hidden', 'course', $this->course);
-            $mform->addElement('hidden', 'section', $this->_section);
-            $mform->addElement('hidden', 'modulename');
-            $mform->addElement('hidden', 'instance');
-
-            // QuickForm workaround
-            $mform->addElement('hidden', 'update', 0);
-            $mform->setType('update', PARAM_INT);
     }
 }

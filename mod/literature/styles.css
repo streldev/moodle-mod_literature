@@ -66,3 +66,15 @@ div.lit_entry {
 .literature.list .list_info input {
     vertical-align: text-bottom;
 }
+
+.literature_link_wrapper {
+    padding-left: 16%;
+    padding-bottom: 5px;
+}
+
+.literature_link_del {
+    display: inline-block;
+    padding-left: 20px;
+    color: grey;
+    text-decoration: none;
+}

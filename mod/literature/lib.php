@@ -90,19 +90,44 @@ function literature_add_instance(stdClass $literature, mod_literature_mod_form $
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param object $literature An object from the form in mod_form.php
+ * @param stdClass $object An object from the form in mod_form.php
  * @param mod_literature_mod_form $mform
  * @return boolean Success/Fail
  */
-function literature_update_instance(stdClass $literature, mod_literature_mod_form $mform = null) {
+function literature_update_instance(stdClass $object, mod_literature_mod_form $mform = null) {
     global $DB;
-
+    
+    // Load old instance
+    $instance = $DB->get_record('literature', array('id' => $object->instance));
+    if(!$instance) {
+        // TODO error
+        return false;
+    }
+    
+    // Build new links
+    $links = array();
+    for($i=0; $i<count($_POST['url']); $i++) {
+        $url = $_POST['url'][$i];
+        $text = (!empty($_POST['text'][$i])) ? $_POST['text'][$i] : null;
+        $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
+    }
+     
+    // Build updated literature entry
+    $object->links = $links;
+    $literature = literature_cast_stdClass_literature($object);
     $literature->timemodified = time();
-    $literature->id = $literature->instance;
+    $literature->id = $instance->litid;
 
-    # You may have to add extra stuff in here #
-
-    return $DB->update_record('literature', $literature);
+    // Update literature entry
+    $newLitId = $literature->update();
+    
+    if($newLitId && $newLitId != $instance->litid) {
+        // Set new litid and update
+        $instance->litid = $newLitId;
+        return $DB->update_record('literature', $instance);
+    }
+    
+    return true;
 }
 
 /**
