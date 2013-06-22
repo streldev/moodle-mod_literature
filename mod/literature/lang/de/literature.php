@@ -34,6 +34,10 @@ $string['pluginadministration'] = 'literature administration';
 $string['pluginname'] = 'Literatur';
 
 
+$string['book'] = 'Buch';
+$string['electronic'] = 'Elektronische Ressource';
+$string['misc'] = 'Sonstiges';
+
 
 $string['actions'] = 'Aktionen';
 $string['actionsel'] = 'Wähle Aktion';
@@ -51,6 +55,7 @@ $string['and'] = 'und';
 $string['or'] = 'oder';
 $string['andnot'] = 'und nicht';
 
+$string['cover'] = 'Cover';
 $string['created:'] = 'Erstellt: ';
 $string['delete'] = 'Löschen';
 $string['description'] = 'Beschreibung';
@@ -72,6 +77,7 @@ $string['isactiveenricher'] = 'Gibt an, ob der Enricher aktiv ist.';
 $string['isbn'] = 'ISBN: ';
 $string['isbn10'] = 'ISBN10: ';
 $string['isbn13'] = 'ISBN13: ';
+$string['issn'] = 'ISSN: ';
 $string['ispublic'] = 'Öffentlich';
 $string['items'] = 'Einträge';
 $string['link'] = 'Link: ';
@@ -79,6 +85,7 @@ $string['listinfo'] = 'Listinfo';
 $string['lists'] = 'Listen';
 $string['lit'] = 'Literatur';
 $string['litinfo'] = 'Literaturinformation';
+$string['littype'] = 'Typ: ';
 $string['load'] = 'Anzeigen';
 $string['loadform'] = 'Formular anzeigen';
 $string['managelists'] = 'Verwalte Listen';
@@ -109,6 +116,7 @@ $string['sel_source'] = 'Suchquelle';
 $string['srctype'] = 'Typ';
 $string['selecttype'] = 'Typ auswählen';
 $string['settings'] = 'Einstellungen';
+$string['series'] = 'Reihe: ';
 $string['source'] = 'Quelle';
 $string['sourceoverview'] = 'Suchquellenübersicht';
 $string['sources'] = 'Suchquellen';
@@ -116,13 +124,13 @@ $string['srctype'] = 'Suchquellentyp';
 $string['subtitle'] = 'Untertitel: ';
 $string['text'] = 'Text';
 $string['title'] = 'Titel: ';
+$string['titlelink'] = 'Titellink: ';
 $string['title_add_list'] = 'Neue Literaturliste';
 $string['title_edit_list'] = 'Bearbeite  Literaturliste';
 $string['title:exportlists'] = 'Liste exportieren';
 $string['title:exportlit'] = 'Literatur exportieren';
 $string['title:listoverview'] = 'Listenübersicht';
 $string['type'] = 'Typ: ';
-$string['updateentry'] = 'Bearbeite {$title}';
 $string['url'] = 'URL: ';
 $string['view_list'] = 'Liste anzeigen';
 $string['view_as_list'] = 'Liste';

@@ -115,44 +115,85 @@ class mod_literature_mod_form extends moodleform_mod {
             $buttonarray = array();
             $buttonarray[] = &$mform->createElement('submit', 'btn_post_lists', get_string('postlists', 'literature'));
             $mform->addGroup($buttonarray);
-
-
-            //-------------------------------------------------------------------------------
-            // Hidden fields
-            $mform->addElement('hidden', 'course', $this->course);
-            $mform->addElement('hidden', 'section', $this->_section);
-
-
-            // QuickForm workaround
-            $mform->addElement('hidden', 'update', 0);
-            $mform->setType('update', PARAM_INT);
             
         } else {
             
             /*
              *  Update an instance
+             * TODO in later versions:
+             * Refactor the i18n strings (delete ": ") therefore we have to rename a lot of string ids
              */
-            
+
             // Load the literature entry
-            $literature = literature_dbobject_literature::load_by_id($this->instance->litid);
+            $literature = literature_dbobject_literature::load_by_id($this->current->litid);
             if($literature) {
                 
             }
             
-            $title = $literature->title;
-            $mform->addElement('header', 'update', get_string('updateentry', 'literature', $title));
+            $mform->addElement('header', 'updateentry', get_string('general'));
             
             $lit_types = literature_dbobject_literature::getTypes();
             $mform->addElement('select', 'type', get_string('littype', 'literature'), $lit_types);
-            $mform->addElement('text', 'title', get_string('title', 'literature'));
-            $mform->addElement('text', 'subtitle', get_string('subtitle', 'literature'));
-            $mform->addElement('text', '', get_string('', 'literature'));
-            $mform->addElement('text', '', get_string('', 'literature'));
-            $mform->addElement('text', '', get_string('', 'literature'));
-            $mform->addElement('text', '', get_string('', 'literature'));
-            $mform->addElement('text', '', get_string('', 'literature'));
+            $mform->setDefault('type', $literature->type);
+            
+            $mform->addElement('text', 'title', get_string('title', 'literature'), array('size' => 50));
+            $mform->setDefault('title', $literature->title);
+            $mform->addRule('title', get_string('required'), 'required', null, 'client');
+            
+            $mform->addElement('text', 'subtitle', get_string('subtitle', 'literature'), array('size' => 50));
+            $mform->setDefault('subtitle', $literature->subtitle);
+            
+            $mform->addElement('text', 'authors', get_string('authors', 'literature'), array('size' => 50));
+            $mform->setDefault('authors', $literature->authors);
+            
+            $mform->addElement('text', 'publisher', get_string('publisher', 'literature'), array('size' => 50));
+            $mform->setDefault('publisher', $literature->publisher);
+            
+            $mform->addElement('text', 'published', get_string('published', 'literature'), array('size' => 50));
+            $mform->setDefault('published', $literature->published);
+            
+            $mform->addElement('text', 'series', get_string('series', 'literature'), array('size' => 50));
+            $mform->setDefault('series', $literature->series);
+            
+            $mform->addElement('text', 'isbn10', get_string('isbn10', 'literature'), array('size' => 50));
+            $mform->setDefault('isbn10', $literature->isbn10);
+            
+            $mform->addElement('text', 'isbn13', get_string('isbn13', 'literature'), array('size' => 50));
+            $mform->setDefault('isbn13', $literature->isbn13);
+            
+            $mform->addElement('text', 'issn', get_string('issn', 'literature'), array('size' => 50));
+            $mform->setDefault('issn', $literature->issn);
+            
+            $mform->addElement('text', 'format', get_string('format:', 'literature'), array('size' => 50));
+            $mform->setDefault('format', $literature->issn);
+            
+            $mform->addElement('text', 'titlelink', get_string('titlelink', 'literature'), array('size' => 50));
+            $mform->setDefault('totlelink', $literature->titlelink);
+            
+            $mform->addElement('textarea', 'description', get_string('description:', 'literature'),
+                    array('cols' => 50, 'rows' => 10));
+            $mform->setDefault('description', $literature->description);
+            
+            
+            $mform->addElement('header', 'coverpath', get_string('cover', 'literature'));
+            $mform->addElement('filepicker', 'literature_cover', get_string('file'), null,
+                   array('maxbytes' => 5000000, 'accepted_types' => '*'));
+            
+            
+            $this->add_action_buttons();
+            
             
         }
-    }
+        
+         //-------------------------------------------------------------------------------
+            // Hidden fields
+            $mform->addElement('hidden', 'course', $this->course);
+            $mform->addElement('hidden', 'section', $this->_section);
+            $mform->addElement('hidden', 'modulename');
+            $mform->addElement('hidden', 'instance');
 
+            // QuickForm workaround
+            $mform->addElement('hidden', 'update', 0);
+            $mform->setType('update', PARAM_INT);
+    }
 }

@@ -424,7 +424,7 @@ class literature_dbobject_literature {
      * 
      * @return types
      */
-    public function getTypes() {
+    public static function getTypes() {
         
         $types = array();
         
@@ -432,9 +432,9 @@ class literature_dbobject_literature {
         $electronic = get_string('electronic', 'literature');
         $misc = get_string('misc', 'literature');
 
-        $types[$book] = self::BOOK;
-        $types[$electronic] = self::ELECTRONIC;
-        $types[$misc] = self::MISC;
+        $types[self::BOOK] = $book;
+        $types[self::ELECTRONIC] = $electronic;
+        $types[self::MISC] = $misc;
         
         return $types;
     }
