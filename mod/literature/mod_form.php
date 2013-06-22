@@ -131,11 +131,27 @@ class mod_literature_mod_form extends moodleform_mod {
             
             /*
              *  Update an instance
-             *  TODO
              */
             
-            $mform->addElement('header', 'update', get_string('updateinstance', 'literature'));
-            $mform->addElement('html', 'Sorry this is currently not supported!');
+            // Load the literature entry
+            $literature = literature_dbobject_literature::load_by_id($this->instance->litid);
+            if($literature) {
+                
+            }
+            
+            $title = $literature->title;
+            $mform->addElement('header', 'update', get_string('updateentry', 'literature', $title));
+            
+            $lit_types = literature_dbobject_literature::getTypes();
+            $mform->addElement('select', 'type', get_string('littype', 'literature'), $lit_types);
+            $mform->addElement('text', 'title', get_string('title', 'literature'));
+            $mform->addElement('text', 'subtitle', get_string('subtitle', 'literature'));
+            $mform->addElement('text', '', get_string('', 'literature'));
+            $mform->addElement('text', '', get_string('', 'literature'));
+            $mform->addElement('text', '', get_string('', 'literature'));
+            $mform->addElement('text', '', get_string('', 'literature'));
+            $mform->addElement('text', '', get_string('', 'literature'));
+            
         }
     }
 

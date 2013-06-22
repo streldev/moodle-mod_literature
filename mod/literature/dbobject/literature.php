@@ -271,7 +271,7 @@ class literature_dbobject_literature {
      * 
      * @return boolean|int false or new id
      */
-    public function save() {
+    public function edit() {
         global $DB;
         
         if($this->refs > 0) {
@@ -297,6 +297,15 @@ class literature_dbobject_literature {
             }
             
         } 
+    }
+    
+    public function save() {
+        global $DB;
+        if($DB->update_record(self::$table, $this)) {
+            return $this->id;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -409,6 +418,25 @@ class literature_dbobject_literature {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * 
+     * @return types
+     */
+    public function getTypes() {
+        
+        $types = array();
+        
+        $book = get_string('book', 'literature');
+        $electronic = get_string('electronic', 'literature');
+        $misc = get_string('misc', 'literature');
+
+        $types[$book] = self::BOOK;
+        $types[$electronic] = self::ELECTRONIC;
+        $types[$misc] = self::MISC;
+        
+        return $types;
     }
 
 }
