@@ -275,15 +275,27 @@ class literature_dbobject_literature {
         global $DB;
         
         if($this->refs > 0) {
-            // There are refs -> save edited entry in new db entry
+            
+            // Load the old and decrease the ref counter
+            $oldEntry = literature_dbobject_literature::load_by_id($this->id);
+            if($oldEntry) {
+                $oldEntry->del_ref();
+            }
+            $oldEntry->save();
+            
+            // Set refs to 0 and save the modified entry
+            $this->refs = 0;
             return $this->duplicate();
+            
         } else {
+            
             // There are no refs to the entry -> save with old id
             if($DB->update_record(self::$table, $this)) {
                 return $this->id;
             } else {
                 return false;
             }
+            
         } 
     }
 
