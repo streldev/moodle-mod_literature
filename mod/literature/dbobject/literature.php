@@ -259,7 +259,7 @@ class literature_dbobject_literature {
      */
     public function duplicate() {
         $this->id = null;
-        $this->refs = 0;
+        $this->refs = 1;
         return $this->insert(false);    
     }
 
@@ -273,7 +273,7 @@ class literature_dbobject_literature {
      */
     public function update() {
         
-        if($this->refs > 0) {
+        if($this->refs > 1) {
             
             // Load the old and decrease the ref counter
             $oldEntry = literature_dbobject_literature::load_by_id($this->id);
@@ -283,7 +283,7 @@ class literature_dbobject_literature {
             $oldEntry->save();
             
             // Set refs to 0 and save the modified entry
-            $this->refs = 0;
+            $this->refs = 1;
             return $this->duplicate();
             
         } else {
@@ -296,8 +296,13 @@ class literature_dbobject_literature {
     public function save() {
         global $DB;
         
+        // Delete old links
+        literature_dbobject_link::del_by_lit_id($this->id);
+        
+        // Save new links
         foreach($this->links as $link) {
-            $link->update();
+            $link->lit_id = $this->id;
+            $link->insert();
         }
         
         if($DB->update_record(self::$table, $this)) {

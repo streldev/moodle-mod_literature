@@ -83,11 +83,8 @@ if ($mform->is_submitted()) {
                 print_error('error:importer:extensionnotsupported', 'literature', $PAGE->url, $a);
             }
 
-            // workaround
-            $args = explode('/', $fileinfo->url);
-
             $fs = get_file_storage();
-            $file = $fs->get_file($context->id, 'user', 'draft', $args[8], '/', $fileinfo->filename);
+            $file = $fs->get_file($context->id, 'user', 'draft', $container->itemid, '/', $fileinfo->filename);
 
             $content = $file->get_content();
             if ($content) {

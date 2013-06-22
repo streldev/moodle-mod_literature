@@ -138,6 +138,11 @@ class literature_dbobject_link {
 
         return $DB->delete_records(self::$table, array('id' => $id));
     }
+    
+    public static function del_by_lit_id($id) {
+        global $DB;     
+        return $DB->delete_records(self::$table, array('lit_id' => $id));
+    }
 
     /**
      * Delete the calling link from db

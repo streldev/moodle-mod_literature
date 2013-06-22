@@ -120,6 +120,11 @@ class mod_literature_mod_form extends moodleform_mod {
             $buttonarray[] = &$mform->createElement('submit', 'btn_post_lists', get_string('postlists', 'literature'));
             $mform->addGroup($buttonarray);
             
+            // Workaround
+            $mform->addElement('hidden', 'update');
+            $mform->addElement('hidden', 'course');
+            $mform->addElement('hidden', 'section');
+            
         } else {
             
             /*
@@ -178,6 +183,9 @@ class mod_literature_mod_form extends moodleform_mod {
                     array('cols' => 50, 'rows' => 10));
             $mform->setDefault('description', $literature->description);
             
+            $mform->addElement('hidden', 'refs');
+            $mform->setDefault('refs', $literature->refs);
+            
             $mform->addElement('header', 'links', get_string('links', 'literature'));
             $i = 0;
             foreach ($literature->links as $link) {
@@ -193,10 +201,11 @@ class mod_literature_mod_form extends moodleform_mod {
                 $i++;
             }
           
-            $mform->addElement('header', 'coverpath', get_string('cover', 'literature'));
-            $mform->addElement('filepicker', 'literature_cover', get_string('file'), null,
-                   array('maxbytes' => 5000000, 'accepted_types' => '*'));
-            
+            $mform->addElement('header', 'coverpathheader', get_string('cover', 'literature'));
+            $mform->addElement('filemanager', 'coveredit', null, null, array('subdirs' => 0, 'maxfiles' => 1,
+                'accepted_types' => '*')); // TODO filter in later version
+            $mform->addElement('hidden', 'coverpath');
+            $mform->setDefault('coverpath', $literature->coverpath);
             
             $this->standard_coursemodule_elements();
             $this->add_action_buttons();

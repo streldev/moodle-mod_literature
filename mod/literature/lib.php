@@ -95,8 +95,12 @@ function literature_add_instance(stdClass $literature, mod_literature_mod_form $
  * @return boolean Success/Fail
  */
 function literature_update_instance(stdClass $object, mod_literature_mod_form $mform = null) {
-    global $DB;
+    global $DB, $CFG, $USER;
     
+    // Get context
+    require_login();
+    $context = context_user::instance($USER->id);
+
     // Load old instance
     $instance = $DB->get_record('literature', array('id' => $object->instance));
     if(!$instance) {
@@ -108,10 +112,26 @@ function literature_update_instance(stdClass $object, mod_literature_mod_form $m
     $links = array();
     for($i=0; $i<count($_POST['url']); $i++) {
         $url = $_POST['url'][$i];
-        $text = (!empty($_POST['text'][$i])) ? $_POST['text'][$i] : null;
+        $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
         $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
     }
      
+    // Get new cover
+    $data = $mform->get_data();
+    $container = file_get_drafarea_files($data->coveredit);
+    
+    // TODO copy file
+    if ($container) {
+        if(isset($container->list[0])) {
+            $fileinfo = $container->list[0];
+            $fs = get_file_storage();
+            $file = $fs->get_file($context->id, 'user', 'draft', $container->itemid, '/', $fileinfo->filename);
+            $object->coverpath = $CFG->wwwroot . '/pluginfile.php/' . $file->get_contextid() . '/' . $file->get_component() .
+                '/' . $file->get_filearea() . '/0/' . $file->get_filename();
+        }
+    }
+     
+
     // Build updated literature entry
     $object->links = $links;
     $literature = literature_cast_stdClass_literature($object);
