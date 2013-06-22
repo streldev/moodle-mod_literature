@@ -169,7 +169,7 @@ class literature_parser_picaplus implements literature_parser {
     /**
      * Extract isbn from string
      * @param string $isbns
-     * @return stdClass with isbn10 or isbn13 as attribute if found
+     * @return string isbn10
      */
     private function get_isbn10($isbns) {
 
@@ -181,13 +181,14 @@ class literature_parser_picaplus implements literature_parser {
                 foreach ($splitArray as $splitedIsbn) {
                     $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
                     if (strlen($cleanisbn10) == 10) {
-                        $result .= $cleanisbn10 . ' ';
+                        $result = $cleanisbn10;
+                        break 2; // Just choose one isbn. Should be enough to display.
                     }
                 }
             }
         }
         if (strlen($result) > 0) {
-            return trim($result);
+            return $result;
         } else {
             return null;
         }
@@ -196,7 +197,7 @@ class literature_parser_picaplus implements literature_parser {
     /**
      * Extract isbn from string
      * @param string $isbns
-     * @return stdClass with isbn10 or isbn13 as attribute if found
+     * @return string isbn13
      */
     private function get_isbn13($isbns) {
 
@@ -208,13 +209,14 @@ class literature_parser_picaplus implements literature_parser {
                 foreach ($splitArray as $splitedIsbn) {
                     $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
                     if (strlen($cleanisbn13) == 13) {
-                        $result .= $cleanisbn13 . ' ';
+                        $result = $cleanisbn13;
+                        break 2;
                     }
                 }
             } 
         }
         if (strlen($result) > 0) {
-            return trim($result);
+            return $result;
         } else {
             return null;
         }

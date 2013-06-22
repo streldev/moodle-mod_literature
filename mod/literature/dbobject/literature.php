@@ -225,12 +225,15 @@ class literature_dbobject_literature {
     /**
      * Insert literature object in db
      *
+     * @param boolean $enrich Should the entry get enriched?
      * @return boolean|int false or new id
      */
-    public function insert() {
+    public function insert($enrich=true) {
         global $DB;
 
-        literature_enricher_enrich($this);
+        if($enrich) {
+            literature_enricher_enrich($this);
+        }
         $this->refs = 0;
 
         $result = $DB->insert_record(self::$table, $this, true);
@@ -245,22 +248,43 @@ class literature_dbobject_literature {
 
         return $result;
     }
+    
+    /**
+     * Duplicte this literature object in db
+     *
+     * After an edit to an entry this function saves the edited entry
+     * in a new db row.
+     * 
+     * @return boolean|int false or new id
+     */
+    public function duplicate() {
+        $this->id = null;
+        $this->refs = 0;
+        return $this->insert(false);    
+    }
 
     /**
      * Update literature object in db
-     *
-     * The object with the same id as the calling instance gets updated in db.
+     * 
+     * This function checks if the edited literature entry has some refs pointing on.
+     * If there are some refs the edited entry gets duplicated, otherwise saved.
+     * 
+     * @return boolean|int false or new id
      */
     public function save() {
         global $DB;
         
-        // Update links
-        foreach($this->links as $link) {
-            $link->update();
-        }
-        // Update literature
-        unset($this->links); // Avoid warning
-        return $DB->update_record(self::$table, $this);
+        if($this->refs > 0) {
+            // There are refs -> save edited entry in new db entry
+            return $this->duplicate();
+        } else {
+            // There are no refs to the entry -> save with old id
+            if($DB->update_record(self::$table, $this)) {
+                return $this->id;
+            } else {
+                return false;
+            }
+        } 
     }
 
     /**
