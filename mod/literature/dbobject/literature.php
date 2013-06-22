@@ -207,7 +207,10 @@ class literature_dbobject_literature {
         $this->description = $description;
 
         // LINKS TO READ
-        $this->links = $links;
+        $this->links = array();
+        foreach ($links as $link) {
+            $this->links[] = new literature_dbobject_link($link->id,$link->lit_id,$link->text, $link->url);
+        }
 
         // FORMAT
         $this->format = $format;
@@ -238,7 +241,6 @@ class literature_dbobject_literature {
                 $link->lit_id = $this->id;
                 $link->insert();
             }
-            
         }
 
         return $result;
@@ -257,7 +259,7 @@ class literature_dbobject_literature {
             $link->update();
         }
         // Update literature
-        unset($this->links);
+        unset($this->links); // Avoid warning
         return $DB->update_record(self::$table, $this);
     }
 

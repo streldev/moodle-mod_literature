@@ -82,7 +82,7 @@ class literature_dbobject_link {
      * Update record in db
      * @return boolean
      */
-    public function save() {
+    public function update() {
         global $DB;
         return $DB->update_record(self::$table, $this);
     }

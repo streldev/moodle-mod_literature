@@ -880,14 +880,13 @@ function literature_db_load_result_by_id($timestamp, $id) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
-    $results = $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
+    $result = $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
     
     $linkTable = 'literature_links_temp';
-    foreach($results as $result) {
-        $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
-        $result->links = $links;
-    }
-    return $results;
+    $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
+    $result->links = $links;
+
+    return $result;
 }
 
 //###########################################################################//
@@ -931,6 +930,8 @@ function literature_html_build_list($htmllistitems, $message = null) {
  * @return literature_dbobject_literature
  */
 function literature_cast_stdClass_literature($item) {
-
-    return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors, $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn, $item->coverpath, $item->description, $item->linktoread, $item->format, $item->titlelink, 0);
+    
+    return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle,
+            $item->authors, $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13,
+            $item->issn, $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, 0);
 }
