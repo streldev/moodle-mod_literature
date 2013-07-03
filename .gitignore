@@ -1,0 +1,4 @@
+*
+!mod/literature/*
+!local/litnav/*
+!.gitignore
