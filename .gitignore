@@ -1,4 +1,6 @@
 *
 !mod/literature/*
+mod/literature/*~
 !local/litnav/*
+local/litnav/*~
 !.gitignore
