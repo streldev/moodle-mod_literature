@@ -43,6 +43,17 @@ function literature_enricher_get_folders() {
 }
 
 /**
+ * Check if a valid enricher contains a settings file
+ * @param string $dirname The dirname of the enricher
+ * @return True if settings file exist; false otherwise
+ */
+function literature_enricher_check_settings($dirname) {
+
+	$pattern = dirname(__FILE__) . '\\' . $dirname . '\settings.php';
+	return file_exists($pattern) ? true : false;
+}
+
+/**
  * Check if a given dir contains a valid enricher
  *
  * @param string $dirname The dirname of the enricher
@@ -91,7 +102,7 @@ function literature_enricher_load_by_name($name) {
     if (!class_exists($classname)) {
         print_error('error:enricher:classnotfound', 'literature', null, $name);
     }
-    $enricher = new $classname();
+    $enricher = new $classname($classname);
 
     return $enricher;
 }

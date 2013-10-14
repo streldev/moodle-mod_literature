@@ -132,10 +132,9 @@ if ($mainform->is_submitted()) {
     // Performe the quickesearch
     ////////////////////////////////////////////////////////////////////////////////
 
-    //$text = required_param('text', PARAM_NOTAGS);
-    $text = "php";
-    //$sourceid = required_param('source', PARAM_ALPHANUM);
-    $sourceid = '1';
+    $text = required_param('text', PARAM_NOTAGS);
+    
+    $sourceid = required_param('source', PARAM_ALPHANUM);
 
     $formdata = make_form_data($text, $sourceid, $courseid, $section);
     $results = literature_search($formdata, 1, 21);
