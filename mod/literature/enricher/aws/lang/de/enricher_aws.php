@@ -24,3 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Amazon ECS Cover Enricher';
+$string['apikey'] = 'Amazon API Key';
+$string['secretkey'] = 'Amazon Secret Key';
+$string['associatetag'] = 'Amazon Associate Tag';
