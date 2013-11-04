@@ -49,7 +49,7 @@ function literature_enricher_get_folders() {
  */
 function literature_enricher_check_settings($dirname) {
 
-	$pattern = dirname(__FILE__) . '\\' . $dirname . '\settings.php';
+	$pattern = dirname(__FILE__) . DIRECTORY_SEPARATOR . $dirname . DIRECTORY_SEPARATOR . 'settings.php';
 	return file_exists($pattern) ? true : false;
 }
 
