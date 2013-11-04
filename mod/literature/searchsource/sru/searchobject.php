@@ -59,21 +59,20 @@ class literature_searchsource_sru_searchobject {
      */
     public function get_index_info() {
 
-        $url = $this->server . '?operation=explain';
-        $xml = simplexml_load_file($url, null, null, 'http://www.loc.gov/zing/srw/');
-        $data = $xml->record->recordData;
-        $xmldata = $data->children('http://explain.z3950.org/dtd/2.0/');
-        $indexinfo = $xmldata->explain->indexInfo;
-        $indices = array();
-        foreach ($indexinfo->index as $index) {
-            $entry = new stdClass();
-            $entry->title = $index->title;
-            $entry->name = $index->map->name;
-            $entry->set = $index->map->name->attributes()->set;
-            $indices[] = $entry;
-        }
-
-        return $indices;
+      $url = $this->server . '?operation=explain';
+      $xml = simplexml_load_file($url, null, null, 'http://docs.oasis-open.org/ns/search-ws/sruResponse');
+      $data = $xml->record->recordData;
+      $xmldata = $data->children('http://explain.z3950.org/dtd/2.0/');
+      $indexinfo = $xmldata->explain->indexInfo;
+      $indices = array();
+      foreach ($indexinfo->index as $index) {
+          $entry = new stdClass();
+          $entry->title = $index->title;
+          $entry->name = $index->map->name;
+          $entry->set = $index->map->name->attributes()->set;
+          $indices[] = $entry;
+      }
+      return $indices;
     }
 
     /**
@@ -107,7 +106,7 @@ class literature_searchsource_sru_searchobject {
             $url = $this->server . '?version=1.1&operation=searchRetrieve&startRecord=' . $from .
                     '&maximumRecords=' . $maxentry . '&query=' . $query;
         }
-        
+
         $xml = new SimpleXMLElement($url, 0, true, 'http://www.loc.gov/zing/srw/');
         $parser = new literature_parser_marc21xml();
 
