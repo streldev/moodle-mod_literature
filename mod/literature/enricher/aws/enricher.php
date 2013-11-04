@@ -29,10 +29,29 @@ require_once('AmazonECS.class.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class literature_enricher_aws implements literature_enricher {
+	
+    private $apikey;
+    private $secretkey;
+    private $associateTag;
+    
+    /**
+     * Constructor to initialize configurable parameters
+     * @param name prefix for setting variables
+     */
+    
+    public function __construct($settingname = 0) {
+    	global $CFG;
+    	
+    	$setting = $settingname.'_apikey';
+    	$this->apikey = $CFG->$setting;
+    	
+    	$setting = $settingname.'_secretkey';
+    	$this->secretkey = $CFG->$setting;
+    	
+    	$setting = $settingname.'_associateTag';
+    	$this->associateTag = $CFG->$setting;
 
-    private $apikey = 'AKIAJRKD2SIQYQTODXOQ';
-    private $secretkey = '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';
-    private $associateTag = 'amazonl08-20';
+    }
 
     /**
      * @see literature_enricher::enrich()
