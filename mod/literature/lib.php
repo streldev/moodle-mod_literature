@@ -110,27 +110,28 @@ function literature_update_instance(stdClass $object, mod_literature_mod_form $m
     
     // Build new links
     $links = array();
-    for($i=0; $i<count($_POST['url']); $i++) {
-        $url = $_POST['url'][$i];
-        $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
-        $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
+    if (isset($_POST['url'])) {
+        for($i=0; $i<count($_POST['url']); $i++) {
+           $url = $_POST['url'][$i];
+           $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
+           $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
+        }    
     }
+  
      
     // Get new cover
-    $data = $mform->get_data();
-    $container = file_get_drafarea_files($data->coveredit);
-    
-    // TODO copy file
-    if ($container) {
-        if(isset($container->list[0])) {
-            $fileinfo = $container->list[0];
-            $fs = get_file_storage();
-            $file = $fs->get_file($context->id, 'user', 'draft', $container->itemid, '/', $fileinfo->filename);
-            $object->coverpath = $CFG->wwwroot . '/pluginfile.php/' . $file->get_contextid() . '/' . $file->get_component() .
-                '/' . $file->get_filearea() . '/0/' . $file->get_filename();
-        }
+    $file = $mform->save_stored_file('mod_literature_cover', $context->id,
+            'mod_literature', 'mod_literature_cover', 0, '/', null, true);
+
+    if ($file) {
+        $coverurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+                $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+        $object->coverpath = $coverurl->out(true);
+    } else {
+        $data = $mform->get_data();
+        $object->coverpath = $data->coverpath;
     }
-     
+ 
 
     // Build updated literature entry
     $object->links = $links;

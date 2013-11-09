@@ -74,7 +74,7 @@ class mod_literature_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $USER;
+        global $USER, $CFG;
 
         $mform = $this->_form;
 
@@ -197,13 +197,13 @@ class mod_literature_mod_form extends moodleform_mod {
                                 <a href="#" class="literature_link_del" id="literature_link_del_'.$i.'">Delete</a>
                             </div>
                         </div>';
-                $mform->addElement('html', $html);
+                $mform->addElement('html', format_text($html));
                 $i++;
             }
           
             $mform->addElement('header', 'coverpathheader', get_string('cover', 'literature'));
-            $mform->addElement('filemanager', 'coveredit', null, null, array('subdirs' => 0, 'maxfiles' => 1,
-                'accepted_types' => '*')); // TODO filter in later version
+            $mform->addElement('filepicker', 'mod_literature_cover', get_string('file'), null,
+                   array('maxbytes' => $CFG->userquota, 'accepted_types' => '*'));
             $mform->addElement('hidden', 'coverpath');
             $mform->setDefault('coverpath', $literature->coverpath);
             
