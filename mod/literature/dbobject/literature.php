@@ -259,7 +259,7 @@ class literature_dbobject_literature {
      */
     public function duplicate() {
         $this->id = null;
-        $this->refs = 0;
+        $this->refs = 1;
         return $this->insert(false);    
     }
 
@@ -271,20 +271,45 @@ class literature_dbobject_literature {
      * 
      * @return boolean|int false or new id
      */
+    public function update() {
+        
+        if($this->refs > 1) {
+            
+            // Load the old and decrease the ref counter
+            $oldEntry = literature_dbobject_literature::load_by_id($this->id);
+            if($oldEntry) {
+                $oldEntry->del_ref();
+            }
+            $oldEntry->save();
+            
+            // Set refs to 0 and save the modified entry
+            $this->refs = 1;
+            return $this->duplicate();
+            
+        } else {
+            
+            return $this->save();
+            
+        } 
+    }
+    
     public function save() {
         global $DB;
         
-        if($this->refs > 0) {
-            // There are refs -> save edited entry in new db entry
-            return $this->duplicate();
+        // Delete old links
+        literature_dbobject_link::del_by_lit_id($this->id);
+        
+        // Save new links
+        foreach($this->links as $link) {
+            $link->lit_id = $this->id;
+            $link->insert();
+        }
+        
+        if($DB->update_record(self::$table, $this)) {
+            return $this->id;
         } else {
-            // There are no refs to the entry -> save with old id
-            if($DB->update_record(self::$table, $this)) {
-                return $this->id;
-            } else {
-                return false;
-            }
-        } 
+            return false;
+        }
     }
 
     /**
@@ -397,6 +422,25 @@ class literature_dbobject_literature {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * 
+     * @return types
+     */
+    public static function getTypes() {
+        
+        $types = array();
+        
+        $book = get_string('book', 'literature');
+        $electronic = get_string('electronic', 'literature');
+        $misc = get_string('misc', 'literature');
+
+        $types[self::BOOK] = $book;
+        $types[self::ELECTRONIC] = $electronic;
+        $types[self::MISC] = $misc;
+        
+        return $types;
     }
 
 }

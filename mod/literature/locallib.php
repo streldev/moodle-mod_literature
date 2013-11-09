@@ -927,7 +927,25 @@ function literature_html_build_list($htmllistitems, $message = null) {
  */
 function literature_cast_stdClass_literature($item) {
     
-    return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle,
-            $item->authors, $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13,
-            $item->issn, $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, 0);
+    $id = (!empty($item->id)) ? $item->id : null;
+    $type = (!empty($item->type)) ? $item->type : null;
+    $title = (!empty($item->title)) ? $item->title : null;
+    $subtitle = (!empty($item->subtitle)) ? $item->subtitle : null;
+    $authors = (!empty($item->authors)) ? $item->authors : null;
+    $publisher = (!empty($item->publisher)) ? $item->publisher : null;
+    $published = (!empty($item->published)) ? $item->published : null;
+    $series = (!empty($item->series)) ? $item->series : null;
+    $isbn10 = (!empty($item->isbn10)) ? $item->isbn10 : null;
+    $isbn13 = (!empty($item->isbn13)) ? $item->isbn13 : null;
+    $issn = (!empty($item->issn)) ? $item->issn : null;
+    $coverpath = (!empty($item->coverpath)) ? $item->coverpath : null;
+    $description = (!empty($item->description)) ? $item->description : null;
+    $links = (!empty($item->links)) ? $item->links : array();
+    $format = (!empty($item->format)) ? $item->format : null;
+    $titlelink = (!empty($item->titlelink)) ? $item->titlelink : null;
+    $refs = (!empty($item->refs)) ? $item->refs : 0;
+
+    return new literature_dbobject_literature($id, $type, $title, $subtitle,
+            $authors, $publisher, $published, $series, $isbn10, $isbn13,
+            $issn, $coverpath, $description, $links, $format, $titlelink, $refs);
 }

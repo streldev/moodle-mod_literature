@@ -90,19 +90,65 @@ function literature_add_instance(stdClass $literature, mod_literature_mod_form $
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param object $literature An object from the form in mod_form.php
+ * @param stdClass $object An object from the form in mod_form.php
  * @param mod_literature_mod_form $mform
  * @return boolean Success/Fail
  */
-function literature_update_instance(stdClass $literature, mod_literature_mod_form $mform = null) {
-    global $DB;
+function literature_update_instance(stdClass $object, mod_literature_mod_form $mform = null) {
+    global $DB, $CFG, $USER;
+    
+    // Get context
+    require_login();
+    $context = context_user::instance($USER->id);
 
+    // Load old instance
+    $instance = $DB->get_record('literature', array('id' => $object->instance));
+    if(!$instance) {
+        // TODO error
+        return false;
+    }
+    
+    // Build new links
+    $links = array();
+    if (isset($_POST['url'])) {
+        for($i=0; $i<count($_POST['url']); $i++) {
+           $url = $_POST['url'][$i];
+           $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
+           $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
+        }    
+    }
+  
+     
+    // Get new cover
+    $file = $mform->save_stored_file('mod_literature_cover', $context->id,
+            'mod_literature', 'mod_literature_cover', 0, '/', null, true);
+
+    if ($file) {
+        $coverurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+                $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+        $object->coverpath = $coverurl->out(true);
+    } else {
+        $data = $mform->get_data();
+        $object->coverpath = $data->coverpath;
+    }
+ 
+
+    // Build updated literature entry
+    $object->links = $links;
+    $literature = literature_cast_stdClass_literature($object);
     $literature->timemodified = time();
-    $literature->id = $literature->instance;
+    $literature->id = $instance->litid;
 
-    # You may have to add extra stuff in here #
-
-    return $DB->update_record('literature', $literature);
+    // Update literature entry
+    $newLitId = $literature->update();
+    
+    if($newLitId && $newLitId != $instance->litid) {
+        // Set new litid and update
+        $instance->litid = $newLitId;
+        return $DB->update_record('literature', $instance);
+    }
+    
+    return true;
 }
 
 /**
