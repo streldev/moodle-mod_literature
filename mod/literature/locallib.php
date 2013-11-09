@@ -106,16 +106,18 @@ function literature_view_full($item) {
     switch ($item->type) {
 
         case literature_dbobject_literature::BOOK :
-            return literature_htmlfactory_book($item);
+            $html = literature_htmlfactory_book($item);
             break;
 
         case literature_dbobject_literature::BOOK :
-            return literature_htmlfactory_electronic($item);
+            $html = literature_htmlfactory_electronic($item);
             break;
 
         default:
-            return literature_htmlfactory_misc($item);
+            $html = literature_htmlfactory_misc($item);
     }
+    
+    return format_text($html);
 }
 
 /**
