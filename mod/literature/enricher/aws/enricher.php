@@ -48,7 +48,7 @@ class literature_enricher_aws implements literature_enricher {
     	$setting = $settingname.'_secretkey';
     	$this->secretkey = $CFG->$setting;
     	
-    	$setting = $settingname.'_associateTag';
+    	$setting = $settingname.'_associatetag';
     	$this->associateTag = $CFG->$setting;
 
     }
