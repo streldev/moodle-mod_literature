@@ -51,7 +51,7 @@ function literature_search($data, $from, $to) {
     if (!isset($SESSION->literature)) {
         $SESSION->literature = new stdClass();
     }
-    $SESSION->literature->search = new stdClass();
+    $SESSION->literature_search = new stdClass();
 
     // Extract pluginname
     if (empty($data->type)) {
@@ -173,7 +173,7 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
         $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
 
 
-        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -345,7 +345,7 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
 
         $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
 
-        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -517,7 +517,7 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
         $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
 
 
-        if (isset($SESSION->literature->search->selected) && key_exists($item->id, $SESSION->literature->search->selected) && $SESSION->literature->search->selected[$item->id]) {
+        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -662,9 +662,9 @@ function literature_result_print($results, $from = 0, $count = 5) {
     if (count($results) <= $max) {
         $max = count($results);
         // Set as last site
-        $SESSION->literature->search->last = 1;
+        $SESSION->literature_search_last = 1;
     } else {
-        $SESSION->literature->search->last = 0;
+        $SESSION->literature_search_last = 0;
     }
 
     $counter = 0;

@@ -55,12 +55,12 @@ if ($mform->is_submitted()) {
     $formdata = $mform->get_data();
     $format = $formdata->format;
 
-    if (empty($SESSION->literature->listsselected)) {
+    if (empty($SESSION->literature_listsselected)) {
         $errorurl = new moodle_url('/mod/literature/list/index.php');
         print_error('error:export:nolists', 'literature', $errorurl);
     }
 
-    $listids = $SESSION->literature->listsselected;
+    $listids = $SESSION->literature_listsselected;
 
     $lists = array();
     foreach ($listids as $listid) {
@@ -132,11 +132,11 @@ if ($mform->is_submitted()) {
 
     // Form was not submitted, build new form
 
-    if (empty($SESSION->literature->listsselected)) {
+    if (empty($SESSION->literature_listsselected)) {
         print_error('error:session:nolists', 'literature');
     } else {
 
-        $listids = $SESSION->literature->listsselected;
+        $listids = $SESSION->literature_listsselected;
         $data = new stdClass();
         $data->listinfos = array();
 

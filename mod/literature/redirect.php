@@ -44,7 +44,7 @@ require_capability('mod/literature:addinstance', $context);
 // Post lists
 if (!empty($_POST['btn_post_lists'])) {
 	
-	$SESSION->literature->listsselected = $_POST['select'];
+	$SESSION->literature_listsselected = $_POST['select'];
 	$url = new moodle_url('/mod/literature/list/post.php');
 	$url->param('course', $_POST['course']);
 	$url->param('section', $_POST['section']);

@@ -40,8 +40,8 @@ class literature_results_form extends moodleform {
         $mform = $this->_form;
 
         // Load results
-        if (isset($SESSION->literature->search->timestamp)) {
-            $timestamp = $SESSION->literature->search->timestamp;
+        if (isset($SESSION->literature_search_timestamp)) {
+            $timestamp = $SESSION->literature_search_timestamp;
             $results = literature_db_load_results($timestamp);
         } else {
             print_error('error:search:timestampnotfound', 'literature');
@@ -50,18 +50,18 @@ class literature_results_form extends moodleform {
         // ------------------------------------------------------------------------------
         // View results
         $mform->addElement('header', 'results_header', get_string('results', 'literature'));
-        if (isset($SESSION->literature->search->from) && $SESSION->literature->search->from != 0) {
+        if (isset($SESSION->literature_search_from) && $SESSION->literature_search_from != 0) {
             $value = get_string('prevresults', 'literature');
             $backbutton = '<center><div class="literature_control"><input type="submit" name="back" value="' . $value . '"></input></div></center>';
             $mform->addElement('html', $backbutton);
         }
-        if (!isset($SESSION->literature->search->from)) {
+        if (!isset($SESSION->literature_search_from)) {
             $list = literature_result_print($results);
         } else {
-            $list = literature_result_print($results, $SESSION->literature->search->from);
+            $list = literature_result_print($results, $SESSION->literature_search_from);
         }
         $mform->addElement('html', $list);
-        if (empty($SESSION->literature->search->last) || !$SESSION->literature->search->last) {
+        if (empty($SESSION->literature_search_last) || !$SESSION->literature_search_last) {
             $value = get_string('nextresults', 'literature');
             $nextbutton = '<center><div class="literature_control"><input type="submit" name="next" value="' . $value . '"></input></div></center>';
             $mform->addElement('html', $nextbutton);

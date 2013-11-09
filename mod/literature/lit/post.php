@@ -50,11 +50,11 @@ if (!course_allowed_module($course, 'literature')) {
     print_error('moduledisable');
 }
 
-if (empty($SESSION->literature->post->ids)) {
+if (empty($SESSION->literature_post_ids)) {
     print_error('error:nolitselected', 'literature');
 }
-$litids = $SESSION->literature->post->ids;
-unset($SESSION->literature->post->ids);
+$litids = $SESSION->literature_post_ids;
+unset($SESSION->literature_post_ids);
 
 foreach ($litids as $litid) {
 

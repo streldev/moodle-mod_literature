@@ -76,11 +76,11 @@ if ($courseid != -1 && $section != -1) {
 
             if (!empty($litids)) {
 
-                $SESSION->literature->post = new stdClass();
-                $SESSION->literature->post->ids = array();
+                $SESSION->literature_post = new stdClass();
+                $SESSION->literature_post_ids = array();
                 foreach ($litids as $litid => $isselected) {
                     if ($isselected) {
-                        $SESSION->literature->post->ids[] = $litid;
+                        $SESSION->literature_post_ids[] = $litid;
                     }
                 }
 
@@ -156,10 +156,10 @@ if ($courseid != -1 && $section != -1) {
                         if (empty($SESSION->literature)) {
                             $SESSION->literature = new stdClass();
                         }
-                        $SESSION->literature->litselected = array();
+                        $SESSION->literature_litselected = array();
                         foreach ($litids as $litid => $isselected) {
                             if ($isselected) {
-                                $SESSION->literature->litselected[] = $litid;
+                                $SESSION->literature_litselected[] = $litid;
                             }
                         }
 

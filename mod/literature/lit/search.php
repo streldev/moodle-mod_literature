@@ -143,8 +143,8 @@ if ($mainform->is_submitted()) {
     if (!$timestamp = literature_db_insert_results($results)) {
         print_error('error:search:saveresultsfailed', 'literature');
     }
-    $SESSION->literature->search->data = serialize($formdata);
-    $SESSION->literature->search->timestamp = $timestamp;
+    $SESSION->literature_search_data = serialize($formdata);
+    $SESSION->literature_search_timestamp = $timestamp;
 
     if (!$searchform = literature_searchsource_load_searchform($sourceid)) {
         print_error('error:searchsource:formnotfound', 'literature');
@@ -185,8 +185,8 @@ if ($mainform->is_submitted()) {
     }
 
     // Save search details in the session
-    $SESSION->literature->search->data = serialize($data);
-    $SESSION->literature->search->timestamp = $timestamp;
+    $SESSION->literature_search_data = serialize($data);
+    $SESSION->literature_search_timestamp = $timestamp;
 
 
     $data->incourse = ($section == -1 || $courseid == -1) ? false : true;
@@ -215,17 +215,17 @@ if ($mainform->is_submitted()) {
 
     // Save selected items in Session
     if (isset($_POST['select'])) {
-        if (!isset($SESSION->literature->search->selected)) {
-            $SESSION->literature->search->selected = array();
+        if (!isset($SESSION->literature_search_selected)) {
+            $SESSION->literature_search_selected = array();
         }
 
         // Add checked and delete unchecked items
         foreach ($_POST['select'] as $tempid => $value) {
 
             if ($value) {
-                $SESSION->literature->search->selected[$tempid] = 1;
+                $SESSION->literature_search_selected[$tempid] = 1;
             } else {
-                $SESSION->literature->search->selected[$tempid] = 0;
+                $SESSION->literature_search_selected[$tempid] = 0;
             }
         }
     }
@@ -233,15 +233,15 @@ if ($mainform->is_submitted()) {
     // Post literature
     if (isset($_POST['btn_post'])) {
 
-        if (isset($SESSION->literature->search->timestamp)) {
-            $timestamp = $SESSION->literature->search->timestamp;
+        if (isset($SESSION->literature_search_timestamp)) {
+            $timestamp = $SESSION->literature_search_timestamp;
         } else {
             print_error('error:search:timestampnotfound', 'literature', $PAGE->url);
         }
 
         $litids = array();
         $failedtoinsert = array();
-        foreach ($SESSION->literature->search->selected as $id => $isselected) {
+        foreach ($SESSION->literature_search_selected as $id => $isselected) {
 
             if ($isselected) {
                 if (!$litasstdclass = literature_db_load_result_by_id($timestamp, $id)) {
@@ -255,16 +255,16 @@ if ($mainform->is_submitted()) {
         }
 
         foreach ($failedtoinsert as $literature) {
-            unset($SESSION->literature->search->selected[$literature->id]);
+            unset($SESSION->literature_search_selected[$literature->id]);
             // TODO notify user in next version
         }
 
         // Setup Session for post script
-        $SESSION->literature->post = new stdClass();
-        $SESSION->literature->post->ids = $litids;
+        $SESSION->literature_post = new stdClass();
+        $SESSION->literature_post_ids = $litids;
 
         // Cleanup Session for search
-        $SESSION->literature->search = new stdClass();
+        $SESSION->literature_search = new stdClass();
 
         $url = new moodle_url('/mod/literature/lit/post.php');
         $url->param('course', $courseid);
@@ -283,14 +283,14 @@ if ($mainform->is_submitted()) {
         $listid = $list->insert();
 
         // Check if session is set up properly
-        if (isset($SESSION->literature->search->timestamp)) {
-            $timestamp = $SESSION->literature->search->timestamp;
+        if (isset($SESSION->literature_search_timestamp)) {
+            $timestamp = $SESSION->literature_search_timestamp;
         } else {
             print_error('error:search:timestampnotfound', 'literature');
         }
 
         $failedtoinsert = array();
-        foreach ($SESSION->literature->search->selected as $id => $isselected) {
+        foreach ($SESSION->literature_search_selected as $id => $isselected) {
             if ($isselected) {
                 if (!$litasstdclass = literature_db_load_result_by_id($timestamp, $id)) {
                     print_error('error:db:couldnotloadresult', 'literature');
@@ -317,8 +317,8 @@ if ($mainform->is_submitted()) {
         }
 
         // Cleanup Session
-        if (isset($SESSION->literature->search->selected)) {
-            $SESSION->literature->search->selected = array();
+        if (isset($SESSION->literature_search_selected)) {
+            $SESSION->literature_search_selected = array();
         }
 
         // Redirect to list view
@@ -337,14 +337,14 @@ if ($mainform->is_submitted()) {
         }
 
         // Get Results from DB
-        if (isset($SESSION->literature->search->timestamp)) {
-            $timestamp = $SESSION->literature->search->timestamp;
+        if (isset($SESSION->literature_search_timestamp)) {
+            $timestamp = $SESSION->literature_search_timestamp;
         } else {
             print_error('error:search:timestampnotfound', 'literature');
         }
 
         $failedtoinsert = array();
-        foreach ($SESSION->literature->search->selected as $id => $isselected) {
+        foreach ($SESSION->literature_search_selected as $id => $isselected) {
             if ($isselected) {
                 $result = literature_db_load_result_by_id($timestamp, $id);
                 $literature = literature_cast_stdClass_literature($result);
@@ -369,8 +369,8 @@ if ($mainform->is_submitted()) {
         }
 
         // Cleanup Session
-        if (isset($SESSION->literature->search->selected)) {
-            $SESSION->literature->search->selected = array();
+        if (isset($SESSION->literature_search_selected)) {
+            $SESSION->literature_search_selected = array();
         }
 
         // Redirect to list view
@@ -379,19 +379,19 @@ if ($mainform->is_submitted()) {
         redirect($url);
     } else if (isset($_POST['next'])) {
 
-        if (!isset($SESSION->literature->search->from)) {
-            $SESSION->literature->search->from = 5;
+        if (!isset($SESSION->literature_search_from)) {
+            $SESSION->literature_search_from = 5;
         } else {
-            $SESSION->literature->search->from += 5;
+            $SESSION->literature_search_from += 5;
         }
     } else if (isset($_POST['back'])) {
 
-        if (!isset($SESSION->literature->search->from)) {
-            $SESSION->literature->search->from = 0;
-        } else if ($SESSION->literature->search->from < 5) {
-            $SESSION->literature->search->from = 0;
+        if (!isset($SESSION->literature_search_from)) {
+            $SESSION->literature_search_from = 0;
+        } else if ($SESSION->literature_search_from < 5) {
+            $SESSION->literature_search_from = 0;
         } else {
-            $SESSION->literature->search->from -= 5;
+            $SESSION->literature_search_from -= 5;
         }
     }
 
@@ -399,7 +399,7 @@ if ($mainform->is_submitted()) {
         $message = get_string('notify:failedtoloadsearchform', 'literature');
     }
 
-    $searchdefaults = unserialize($SESSION->literature->search->data);
+    $searchdefaults = unserialize($SESSION->literature_search_data);
     $searchdefaults->course = $courseid;
     $searchdefaults->section = $section;
 

@@ -48,11 +48,11 @@ if (!course_allowed_module($course, 'literature')) {
     print_error('moduledisable');
 }
 
-if (empty($SESSION->literature->listsselected)) {
+if (empty($SESSION->literature_listsselected)) {
     print_error('error:nolistselected', 'literature');
 }
-$listids = $SESSION->literature->listsselected;
-unset($SESSION->literature->listsselected);
+$listids = $SESSION->literature_listsselected;
+unset($SESSION->literature_listsselected);
 
 
 foreach ($listids as $listid => $isselected) {

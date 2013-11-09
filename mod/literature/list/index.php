@@ -71,10 +71,10 @@ if (!empty($_POST)) {
                     if (empty($SESSION->literature)) {
                         $SESSION->literature = new stdClass();
                     }
-                    $SESSION->literature->listsselected = array();
+                    $SESSION->literature_listsselected = array();
                     foreach ($listids as $id => $isselected) {
                         if ($isselected) {
-                            $SESSION->literature->listsselected[] = $id;
+                            $SESSION->literature_listsselected[] = $id;
                         }
                     }
 

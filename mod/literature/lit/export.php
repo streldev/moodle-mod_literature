@@ -52,7 +52,7 @@ if ($mform->is_submitted()) {
     $format = required_param('format', PARAM_TEXT);
     $filename = required_param('filename', PARAM_TEXT);
 
-    if (empty($SESSION->literature->litselected)) {
+    if (empty($SESSION->literature_litselected)) {
 
         $errorurl = new moodle_url('/mod/literature/list/index.php');
         print_error('error:nolitselected', 'literature', $errorurl);
@@ -60,7 +60,7 @@ if ($mform->is_submitted()) {
     } else {
 
         $literature = array();
-        foreach ($SESSION->literature->litselected as $litid) {
+        foreach ($SESSION->literature_litselected as $litid) {
 
             if (!$literature[] = literature_dbobject_literature::load_by_id($litid)) {
                 $errorurl = new moodle_url('/mod/literature/list/index.php');
@@ -81,14 +81,14 @@ if ($mform->is_submitted()) {
 
 
 
-if (empty($SESSION->literature->litselected)) {
+if (empty($SESSION->literature_litselected)) {
 
     $errorurl = new moodle_url('/mod/literature/list/index.php');
     print_error('error:nolitselected', 'literature', $errorurl);
 
 } else {
 
-    $litids = $SESSION->literature->litselected;
+    $litids = $SESSION->literature_litselected;
     $data = new stdClass();
     $data->lit = array();
 
