@@ -746,7 +746,7 @@ function literature_print_literaturelist($items, $selectable = true, $start = 0,
         }
     }
 
-    return literature_html_build_list($htmllistitems);
+    return format_text(literature_html_build_list($htmllistitems));
 }
 
 /**
@@ -764,7 +764,7 @@ function literature_print_listinfos($listinfos, $incourse, $course = null, $sect
     // Build list from items -- list = overview of literature lists
     $list = literature_html_build_list($items, get_string('nolists', 'literature'));
     // return list
-    return $list;
+    return format_text($list);
 }
 
 /**
