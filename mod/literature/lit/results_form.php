@@ -52,8 +52,8 @@ class literature_results_form extends moodleform {
         $mform->addElement('header', 'results_header', get_string('results', 'literature'));
         if (isset($SESSION->literature->search->from) && $SESSION->literature->search->from != 0) {
             $value = get_string('prevresults', 'literature');
-            $bachbutton = '<center><div class="literature_control"><input type="submit" name="back" value="' . $value . '"></input></div></center>';
-            $mform->addElement('html', $bachbutton);
+            $backbutton = '<center><div class="literature_control"><input type="submit" name="back" value="' . $value . '"></input></div></center>';
+            $mform->addElement('html', $backbutton);
         }
         if (!isset($SESSION->literature->search->from)) {
             $list = literature_result_print($results);
