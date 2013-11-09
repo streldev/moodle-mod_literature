@@ -59,73 +59,58 @@ if ($mform->is_cancelled()) {
 
 if ($mform->is_submitted()) {
 
-    $data = $mform->get_data();
-
-    $container = file_get_drafarea_files($data->import);
-    if ($container) {
-
-        foreach ($container->list as $fileinfo) {
-
-            $infos = pathinfo($fileinfo->filename);
-            $extension = $infos['extension'];
-            $extension = '.' . $extension;
-
-            // Load importer
-            if (!$importer = literature_converter_load_importer_by_extension($extension)) {
-
-                $a = new stdClass();
-                $extensions = literature_converter_get_import_extensions();
-                $a->extensions = '';
-                foreach ($extensions as $ext) {
-                    $a->extensions .= $ext . ' ';
-                }
-                $a->yourextension = $extension;
-                print_error('error:importer:extensionnotsupported', 'literature', $PAGE->url, $a);
-            }
-
-            // workaround
-            $args = explode('/', $fileinfo->url);
-
-            $fs = get_file_storage();
-            $file = $fs->get_file($context->id, 'user', 'draft', $args[8], '/', $fileinfo->filename);
-
-            $content = $file->get_content();
-            if ($content) {
-                $file->delete();
-            } else {
-                print_error('error:file:emptycontent', 'literature', $PAGE->url, $fileinfo);
-            }
-
-            if (!$literatures = $importer->import($content)) {
-                print_error('error:importer:import', 'literature', $PAGE->url, $fileinfo);
-            }
-
-            $failedtoinsert = array();
-            foreach ($literatures as $literature) {
-                $litid = $literature->insert();
-                if ($litid) {
-                    if (!literature_dbobject_literaturelist::add_literature($listid, $litid)) {
-                        $literature->delete();
-                        $failedtoinsert[] = $literature;
-                    }
-                } else {
-                    $failedtoinsert[] = $literature;
-                }
-            }
-
-            if (count($failedtoinsert) > 0) {
-                $titles = '';
-                foreach ($failedtoinsert as $item) {
-                    $titles .= $item->title . ', ';
-                }
-                print_error('error:lit:insertmultiple', 'literature', $PAGE->url, $titles);
-            }
-        }
-
-        $url = new moodle_url('/mod/literature/list/view.php');
-        $url->param('id', $listid);
-        redirect($url);
+    // Form submitted, process formdata
+    $content = $mform->get_file_content('mod_literature_import');
+    $filename = $mform->get_new_filename('mod_literature_import');
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    
+    if (!$content) {
+        print_error('error:file:emptycontent', 'literature', $PAGE->url, $filename);
     }
+    
+    // Load importer
+    $importer = literature_converter_load_importer_by_extension($extension);
+    if (!$importer) {
+        $a = new stdClass();
+        $extensions = literature_converter_get_import_extensions();
+        $a->extensions = '';
+        foreach ($extensions as $ext) {
+            $a->extensions .= $ext . ' ';
+        }
+        $a->yourextension = $extension;
+        print_error('error:importer:extensionnotsupported', 'literature', $PAGE->url, $a);
+    }
+
+           
+    $literatures = $importer->import($content);
+    if (!$literatures) {
+        print_error('error:importer:import', 'literature', $PAGE->url, $filename);
+    }
+
+    $failedtoinsert = array();
+    foreach ($literatures as $literature) {
+        $litid = $literature->insert();
+        if ($litid) {
+            if (!literature_dbobject_literaturelist::add_literature($listid, $litid)) {
+                $literature->delete();
+                $failedtoinsert[] = $literature;
+            }
+        } else {
+            $failedtoinsert[] = $literature;
+        }
+    }
+
+    if (count($failedtoinsert) > 0) {
+        $titles = '';
+        foreach ($failedtoinsert as $item) {
+            $titles .= $item->title . ', ';
+        }
+        print_error('error:lit:insertmultiple', 'literature', $PAGE->url, $titles);
+    }
+
+    $url = new moodle_url('/mod/literature/list/view.php');
+    $url->param('id', $listid);
+    redirect($url);
 }
 
 

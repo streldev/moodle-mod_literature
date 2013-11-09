@@ -34,7 +34,7 @@ class literature_conv_bibtex_export implements literature_conv_format_export {
      * Supported file extension
      * @var string
      */
-    private $extension = '.bib';
+    private $extension = 'bib';
 
     /**
      * Name of supported format

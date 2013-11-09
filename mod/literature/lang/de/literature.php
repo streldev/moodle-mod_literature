@@ -162,17 +162,19 @@ $string['error:exporter:couldnotcreatefile'] = 'Die Datei für den Export konnte
 $string['error:exporter:export'] = 'Unbekannter Fehler beim Export!';
 $string['error:exporter:notinstalled'] = 'Das Exportformat {$a} ist nicht installiert!';
 
-$string['error:file:emptycontent'] = 'Es scheint, dass die Datei {$a->filename} keinen Inhalt hat!?';
+$string['error:file:emptycontent'] = 'Es scheint, dass die Datei {$a} keinen Inhalt hat!?';
 $string['error:file:getafterupload'] = 'Das Laden der hochgeladenen Datei {$a->filename} ist fehlgeschlagen!';
 
 $string['error:importer:extensionnotsupported'] = 'Das Importformate für die Dateiendung {$a->yourextension} ist nicht installiert. Unterstützt werden: {$a->extensions}';
-$string['error:importer:import'] = 'Der Import der Datei {$a->filename} ist fehlgeschlagen!';
+$string['error:importer:import'] = 'Der Import der Datei {$a} ist fehlgeschlagen!';
 $string['error:importer:notinstalled'] = 'Das Importformat {$a} ist nicht installiert!';
 
 $string['error:list:accessdenied'] = 'Sie haben keine Erlaubnis auf diese Liste zu zugreiffen!';
 $string['error:list:entriesmissing'] = 'Während dem Laden der Liste wurden {$a} fehlweisende Referenzen in der Liste gefunden und gelöscht. Versuchen Sie es erneut.';
 $string['error:list:insert'] = 'Das Einfügen der Liste {$a} in die Datenbank ist fehlgeschlagen.';
 $string['error:list:loadfailed'] = 'Das Laden der Liste mit der ID: {$a->listid} ist fehlgeschlagen!';
+
+$string['error:list:import:fileload'] = 'Das Laden der Datei {$a} schlug fehl.';
 
 $string['error:lit:loadfailed'] = 'Das Laden der Literatur mit der ID: {$a} ist fehlgeschlagen!';
 

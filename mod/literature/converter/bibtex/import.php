@@ -35,7 +35,7 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
      * Supported file extension
      * @var string
      */
-    private $extension = '.bib';
+    private $extension = 'bib';
 
     /**
      * Name of the supported format
@@ -80,7 +80,7 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
             foreach ($bibentries as $entry) {
 
                 if (!empty($entry[0])) {
-                    $litarray[] = $this->get_literature_from_bib($entry);
+                    $litarray[] = $this->get_literature_from_bibtex($entry);
                 }
             }
             return $litarray;
@@ -127,10 +127,10 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
         $isbn13 = (!empty($tagarray['isbn13'])) ? $tagarray['isbn13'] : null;
         $issn = (!empty($tagarray['issn'])) ? $tagarray['issn'] : null;
         $description = (!empty($tagarray['description'])) ? $tagarray['description'] : null;
-        $linktoread = (!empty($tagarray['linktoread'])) ? $tagarray['linktoread'] : null;
+        $links = (!empty($tagarray['links'])) ? $tagarray['links'] : array();
 
         $literature = new literature_dbobject_literature(null, $type, $title, $subtitle, $authors, $publisher,
-                        $published, $series, $isbn10, $isbn13, $issn, null, $description, $linktoread, null, null, 0);
+                        $published, $series, $isbn10, $isbn13, $issn, null, $description, $links, null, null, 0);
 
         return $literature;
     }
@@ -187,7 +187,7 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
         // 		}
 
         if (key_exists('url', $array)) {
-            $litarray['linktoread'] = $array['url'];
+            $litarray['links'] = $array['url'];
         }
 
         // Delete special bibtex umlaute

@@ -53,9 +53,11 @@ class literature_list_import_form extends moodleform {
             $mform->setType('list_desc', PARAM_CLEANHTML);
         }
 
-        $mform->addElement('filemanager', 'import', get_string('files'), null, array('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10,
-            'accepted_types' => literature_converter_get_import_extensions()));
-        $mform->addRule('import', get_string('required'), 'required', null, 'client');
+        // File manager
+        $acceptedTypes = literature_converter_get_import_extensions();
+        $options = array('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10, 'accepted_types' => $acceptedTypes);
+        $mform->addElement('filepicker', 'mod_literature_import', get_string('files'), null, $options);
+        $mform->addRule('mod_literature_import', get_string('required'), 'required', null, 'client');
 
         $this->add_action_buttons(true, get_string('import', 'literature'));
     }

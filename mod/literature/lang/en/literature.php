@@ -160,17 +160,19 @@ $string['error:exporter:couldnotcreatefile'] = 'Could not create file for export
 $string['error:exporter:export'] = 'Failed to export!';
 $string['error:exporter:notinstalled'] = 'The export format {$a} is not installed!';
 
-$string['error:file:emptycontent'] = 'It seems the file {$a->filename} doesn`t have any content!';
+$string['error:file:emptycontent'] = 'It seems the file {$a} doesn`t have any content!';
 $string['error:file:getafterupload'] = 'Can`t get your uploaded file {$a->filename}!';
 
 $string['error:importer:extensionnotsupported'] = 'The extension {$a->yourextension} is not supported. Supported: {$a->extensions}';
-$string['error:importer:import'] = 'Failed to import {$a->filename}!';
+$string['error:importer:import'] = 'Failed to import {$a}!';
 $string['error:importer:notinstalled'] = 'The import format {$a} is not installed!';
 
 $string['error:list:accessdenied'] = 'You don`t have permission to access this list!';
 $string['error:list:entriesmissing'] = 'While loading your list we found {$a} missguiding links in your list and deleted them. Pleas try again.';
 $string['error:list:insert'] = 'Error while inserting list {$a} into database';
 $string['error:list:loadfailed'] = 'Failed to load list with id: {$a->listid}!';
+
+$string['error:list:import:fileload'] = 'Sorry i failed to load file {$a}';
 
 $string['error:lit:loadfailed'] = 'Failed to load literature with id: {$a}!';
 

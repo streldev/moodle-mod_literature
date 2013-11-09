@@ -318,7 +318,7 @@ function literature_converter_serialize_array($items, $filename, $extension) {
         'filearea' => 'export', // usually = table name
         'itemid' => 0, // usually = ID of row in table
         'filepath' => '/', // any path beginning and ending in /
-        'filename' => $filename . $extension); // any filename
+        'filename' => $filename . '.' . $extension); // any filename
     // Delete if exists
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'],
             $fileinfo['filepath'], $fileinfo['filename']);
