@@ -31,7 +31,7 @@ $string['modulenameplural'] = 'Literatures';
 $string['modulename_help'] = 'The literature module allows to manage and publish literature data.';
 $string['literature'] = 'literature';
 $string['pluginadministration'] = 'literature administration';
-$string['pluginname'] = 'literature';
+$string['pluginname'] = 'Literature';
 
 
 
