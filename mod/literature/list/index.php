@@ -68,9 +68,7 @@ if (!empty($_POST)) {
             case 'exp' :
 
                 if ($listids != null) {
-                    if (empty($SESSION->literature)) {
-                        $SESSION->literature = new stdClass();
-                    }
+                   
                     $SESSION->literature_listsselected = array();
                     foreach ($listids as $id => $isselected) {
                         if ($isselected) {

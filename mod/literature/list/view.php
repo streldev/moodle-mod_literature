@@ -76,7 +76,6 @@ if ($courseid != -1 && $section != -1) {
 
             if (!empty($litids)) {
 
-                $SESSION->literature_post = new stdClass();
                 $SESSION->literature_post_ids = array();
                 foreach ($litids as $litid => $isselected) {
                     if ($isselected) {
@@ -153,9 +152,7 @@ if ($courseid != -1 && $section != -1) {
                 case 'exp' :
 
                     if ($litids != null) {
-                        if (empty($SESSION->literature)) {
-                            $SESSION->literature = new stdClass();
-                        }
+                 
                         $SESSION->literature_litselected = array();
                         foreach ($litids as $litid => $isselected) {
                             if ($isselected) {

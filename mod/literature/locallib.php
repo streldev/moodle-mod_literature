@@ -45,13 +45,6 @@ require_once(dirname(__FILE__) . '/dbobject/literature.php');
  * @return array of Literature objects @see literature_dbobject_literature
  */
 function literature_search($data, $from, $to) {
-    global $SESSION;
-
-    // Cleanup the SESSION
-    if (!isset($SESSION->literature)) {
-        $SESSION->literature = new stdClass();
-    }
-    $SESSION->literature_search = new stdClass();
 
     // Extract pluginname
     if (empty($data->type)) {

@@ -260,12 +260,8 @@ if ($mainform->is_submitted()) {
         }
 
         // Setup Session for post script
-        $SESSION->literature_post = new stdClass();
         $SESSION->literature_post_ids = $litids;
-
-        // Cleanup Session for search
-        $SESSION->literature_search = new stdClass();
-
+        
         $url = new moodle_url('/mod/literature/lit/post.php');
         $url->param('course', $courseid);
         $url->param('section', $section);
