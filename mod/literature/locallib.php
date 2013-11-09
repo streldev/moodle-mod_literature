@@ -84,16 +84,17 @@ function literature_view_list($item) {
     switch ($item->type) {
 
         case literature_dbobject_literature::BOOK :
-            return literature_htmlfactory_book($item, true);
+            $html = literature_htmlfactory_book($item, true);
             break;
 
         case literature_dbobject_literature::ELECTRONIC :
-            return literature_htmlfactory_electronic($item, true);
+            $html = literature_htmlfactory_electronic($item, true);
             break;
 
         default:
-            return literature_htmlfactory_misc($item, true);
+            $html = literature_htmlfactory_misc($item, true);
     }
+    return format_text($html);
 }
 
 /**
