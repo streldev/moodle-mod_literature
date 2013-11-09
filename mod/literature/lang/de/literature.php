@@ -146,37 +146,37 @@ $string['error:nolitselected'] = 'Keine Literatur ausgewählt!';
 $string['error:novalidlist'] = 'Keine gültige Liste ausgewählt!';
 $string['error:novalidaction'] = 'Keine gültige Aktion ausgewählt!';
 
-$string['error:db:addlit2list'] = 'Die Literatur mit dem Titel: {$item->title} konnte nicht zur Liste hinzugefügt werden.';
+$string['error:db:addlit2list'] = 'Die Literatur mit dem Titel: {$a->title} konnte nicht zur Liste hinzugefügt werden.';
 $string['error:db:incorectlinkhandling'] = 'Gratulation! Sie haben einen Fehler im Linkmanagement der Listen gefunden. Bitte kontaktieren sie den Entwickler des Plugins :-)';
-$string['error:db:litinsert'] = 'Die Literatur mit Titel: {$item->title} konnte nicht in die Datenbank eingefügt werden.';
-$string['error:db:litnotfound'] = 'Die Literatur mit der ID: {$id} konnte nicht in der Datenbank gefunden werden.';
-$string['error:db:litupdate'] = 'Das Update der Literatur mit der ID: {$id} konnte nicht durchgeführt werden.';
+$string['error:db:litinsert'] = 'Die Literatur mit Titel: {$a->title} konnte nicht in die Datenbank eingefügt werden.';
+$string['error:db:litnotfound'] = 'Die Literatur mit der ID: {$a} konnte nicht in der Datenbank gefunden werden.';
+$string['error:db:litupdate'] = 'Das Update der Literatur mit der ID: {$a} konnte nicht durchgeführt werden.';
 
 $string['error:enricher:classnotfound'] = 'Jetzt wird es unheimlich. Eine Sekunde zuvor wurde die gesuchte Datei noch gefunden.' .
         'Jetzt scheint die Datein und damit die Klasse des Enricher zu fehlen. Hat sie jemand gelöscht?';
-$string['error:enricher:notinstalled'] = 'Der Enricher {$aws} ist nicht installiert. Um ihn zu nutzen, muss das entsprechende Subplugin installiert werden.';
+$string['error:enricher:notinstalled'] = 'Der Enricher {$a} ist nicht installiert. Um ihn zu nutzen, muss das entsprechende Subplugin installiert werden.';
 
 $string['error:export:nolists'] = 'Keine Liste für den Export ausgewählt. Wurde die Session beendet?';
 
 $string['error:exporter:couldnotcreatefile'] = 'Die Datei für den Export konnte nicht geschlossen werden. Kontaktieren sie den Moodel-Administrator.';
 $string['error:exporter:export'] = 'Unbekannter Fehler beim Export!';
-$string['error:exporter:notinstalled'] = 'Das Exportformat {$format} ist nicht installiert!';
+$string['error:exporter:notinstalled'] = 'Das Exportformat {$a} ist nicht installiert!';
 
-$string['error:file:emptycontent'] = 'Es scheint, dass die Datei {$fileinfo->filename} keinen Inhalt hat!?';
-$string['error:file:getafterupload'] = 'Das Laden der hochgeladenen Datei {$fileinfo->filename} ist fehlgeschlagen!';
+$string['error:file:emptycontent'] = 'Es scheint, dass die Datei {$a->filename} keinen Inhalt hat!?';
+$string['error:file:getafterupload'] = 'Das Laden der hochgeladenen Datei {$a->filename} ist fehlgeschlagen!';
 
 $string['error:importer:extensionnotsupported'] = 'Das Importformate für die Dateiendung {$a->yourextension} ist nicht installiert. Unterstützt werden: {$a->extensions}';
-$string['error:importer:import'] = 'Der Import der Datei {$fileinfo->filename} ist fehlgeschlagen!';
-$string['error:importer:notinstalled'] = 'Das Importformat {$format} ist nicht installiert!';
+$string['error:importer:import'] = 'Der Import der Datei {$a->filename} ist fehlgeschlagen!';
+$string['error:importer:notinstalled'] = 'Das Importformat {$a} ist nicht installiert!';
 
 $string['error:list:accessdenied'] = 'Sie haben keine Erlaubnis auf diese Liste zu zugreiffen!';
 $string['error:list:entriesmissing'] = 'Während dem Laden der Liste wurden {$a} fehlweisende Referenzen in der Liste gefunden und gelöscht. Versuchen Sie es erneut.';
-$string['error:list:insert'] = 'Das Einfügen der Liste {$name} in die Datenbank ist fehlgeschlagen.';
+$string['error:list:insert'] = 'Das Einfügen der Liste {$a} in die Datenbank ist fehlgeschlagen.';
 $string['error:list:loadfailed'] = 'Das Laden der Liste mit der ID: {$a->listid} ist fehlgeschlagen!';
 
-$string['error:lit:loadfailed'] = 'Das Laden der Literatur mit der ID: {$litid} ist fehlgeschlagen!';
+$string['error:lit:loadfailed'] = 'Das Laden der Literatur mit der ID: {$a} ist fehlgeschlagen!';
 
-$string['error:post:litfailedcm'] = 'Die Literatur mit der ID: {$lit->id} konnte nicht veröffentlicht werden.' .
+$string['error:post:litfailedcm'] = 'Die Literatur mit der ID: {$a->id} konnte nicht veröffentlicht werden.' .
         'Grund: Der entsprechende Eintrag in die Datenbanktabelle course_module war nicht erfolgreich!';
 
 $string['error:search:saveresultsfailed'] = 'Das Speichern der Ergebnisse in der Datenbank ist fehlgeschlagen!';
@@ -186,10 +186,10 @@ $string['error:search:couldnotloadresult'] = 'Das Suchergebnis wurde nicht mehr 
 $string['error:searchsource:dbobjectmissing'] = 'Das dbobject der Suchquelle konnte nicht gefunden werden. Installieren sie das dazugehörige Subplugin erneut oder löschen' .
         ' sie den Eintrag der Suchquelle von Hand in der Datenbank.';
 $string['error:searchsource:formnotfound'] = 'Das Formular für die gewählte Suchquelle konnte nicht gefunden werden!';
-$string['error:searchsource:functionmakeformdata'] = 'Die gewählte Suchquelle ist fehlerhaft. Die Funktion {$functionname} ist nicht implementiert!';
+$string['error:searchsource:functionmakeformdata'] = 'Die gewählte Suchquelle ist fehlerhaft. Die Funktion {$a} ist nicht implementiert!';
 $string['error:searchsource:lib'] = 'Fehler beim Laden der Bibliothek für die Suchquellen!';
 $string['error:searchsource:noinstalled'] = 'Noch keine Suchquelle installiert! Bitten sie den Administrator eine Suchquelle zu installieren.';
-$string['error:searchsource:notinstalled'] = 'Suchquelle {$sourcetype} ist nicht installiert. Suchobjekt nicht gefunden!';
+$string['error:searchsource:notinstalled'] = 'Suchquelle {$a} ist nicht installiert. Suchobjekt nicht gefunden!';
 $string['error:searchsource:confignotfound'] = 'Die angeforderte Konfiguration der Suchquelle existiert nicht!';
 $string['error:searchsource:configrefnotfound'] = 'Der Verweis auf die angeforderte Konfiguration der Suchquelle existiert nicht!';
 $string['error:searchsource:typemissing'] = 'Fehler beim Auswerten des Suchformulars. Der Typ der Suchqulle fehlt!';

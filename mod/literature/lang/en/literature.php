@@ -145,36 +145,36 @@ $string['error:nolitselected'] = 'No literature selected!';
 $string['error:novalidlist'] = 'No valid list selected!';
 $string['error:novalidaction'] = 'No valid action selected!';
 
-$string['error:db:addlit2list'] = 'Literature with title: {$item->title} could not be added to list.';
+$string['error:db:addlit2list'] = 'Literature with title: {$a->title} could not be added to list.';
 $string['error:db:incorectlinkhandling'] = 'Congrats! You found a bug in the linkhandling for lists. Please contact the developer :-)';
-$string['error:db:litinsert'] = 'Literature with title: {$item->title} could not be inserted into database.';
-$string['error:db:litnotfound'] = 'Literature with id: {$id} was not found in database!';
-$string['error:db:litupdate'] = 'It was impossible to update the literature with id: {$id}';
+$string['error:db:litinsert'] = 'Literature with title: {$a->title} could not be inserted into database.';
+$string['error:db:litnotfound'] = 'Literature with id: {$a} was not found in database!';
+$string['error:db:litupdate'] = 'It was impossible to update the literature with id: {$a}';
 
 $string['error:enricher:classnotfound'] = 'This is realy mysterious. A second ago i found the correct file but now the class of the enricher is missing! Did someone delete the enricher a second ago?';
-$string['error:enricher:notinstalled'] = 'Enricher {$aws} is not installed. Please install.';
+$string['error:enricher:notinstalled'] = 'Enricher {$a} is not installed. Please install.';
 
 $string['error:export:nolists'] = 'No lists selected for export or your SESSION is not set correct!';
 
 $string['error:exporter:couldnotcreatefile'] = 'Could not create file for export. Pleas contact the moodle admin!';
 $string['error:exporter:export'] = 'Failed to export!';
-$string['error:exporter:notinstalled'] = 'The export format {$format} is not installed!';
+$string['error:exporter:notinstalled'] = 'The export format {$a} is not installed!';
 
-$string['error:file:emptycontent'] = 'It seems the file {$fileinfo->filename} doesn`t have any content!';
-$string['error:file:getafterupload'] = 'Can`t get your uploaded file {$fileinfo->filename}!';
+$string['error:file:emptycontent'] = 'It seems the file {$a->filename} doesn`t have any content!';
+$string['error:file:getafterupload'] = 'Can`t get your uploaded file {$a->filename}!';
 
 $string['error:importer:extensionnotsupported'] = 'The extension {$a->yourextension} is not supported. Supported: {$a->extensions}';
-$string['error:importer:import'] = 'Failed to import {$fileinfo->filename}!';
-$string['error:importer:notinstalled'] = 'The import format {$format} is not installed!';
+$string['error:importer:import'] = 'Failed to import {$a->filename}!';
+$string['error:importer:notinstalled'] = 'The import format {$a} is not installed!';
 
 $string['error:list:accessdenied'] = 'You don`t have permission to access this list!';
 $string['error:list:entriesmissing'] = 'While loading your list we found {$a} missguiding links in your list and deleted them. Pleas try again.';
-$string['error:list:insert'] = 'Error while inserting list {$name} into database';
+$string['error:list:insert'] = 'Error while inserting list {$a} into database';
 $string['error:list:loadfailed'] = 'Failed to load list with id: {$a->listid}!';
 
-$string['error:lit:loadfailed'] = 'Failed to load literature with id: {$litid}!';
+$string['error:lit:loadfailed'] = 'Failed to load literature with id: {$a}!';
 
-$string['error:post:litfailedcm'] = 'Could not post literature with id: {$lit->id}. I was not able to add course module entry!';
+$string['error:post:litfailedcm'] = 'Could not post literature with id: {$a->id}. I was not able to add course module entry!';
 
 $string['error:search:saveresultsfailed'] = 'Failed to save the results in the database!';
 $string['error:search:timestampnotfound'] = 'Failed to load results from the database. Please search again.';
@@ -183,10 +183,10 @@ $string['error:search:couldnotloadresult'] = 'The search result could not be fou
 $string['error:searchsource:dbobjectmissing'] = 'Failed to load the dbobject of the searchsource you want to delete.' .
         'Reinstall the coresponding subplugin or delete the entry by yourself.';
 $string['error:searchsource:formnotfound'] = 'Form for selected searchsource not found!';
-$string['error:searchsource:functionmakeformdata'] = 'Searchsource incorrect installed. Function {$functionname} is missing!';
+$string['error:searchsource:functionmakeformdata'] = 'Searchsource incorrect installed. Function {$a} is missing!';
 $string['error:searchsource:lib'] = 'Failed to load searchsource lib!';
 $string['error:searchsource:noinstalled'] = 'No searchsource is installed! Please contact your moodle admin.';
-$string['error:searchsource:notinstalled'] = 'Searchsource {$sourcetype} is not properly installed. Searchobject not found!';
+$string['error:searchsource:notinstalled'] = 'Searchsource {$a} is not properly installed. Searchobject not found!';
 $string['error:searchsource:confignotfound'] = 'The configuration you asked for does not exist in db!';
 $string['error:searchsource:configrefnotfound'] = 'The reference for the configuration you asked for does not exist in db!';
 $string['error:searchsource:typemissing'] = 'Error while processing search form. Type of the searchsource is missing!';
