@@ -142,63 +142,40 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
      * @return array where the keys are changed to the internal quivalents of the bibtex tags
      */
     private function bibtext2stdtags($array) {
-
+        
+        $litarray = array();
+        
         // Minimal
-        $litarray['title'] = $array['title'];
-        $litarray['authors'] = (isset($array['author'])) ? $array['author'] : null;
-        $litarray['published'] = (isset($array['year'])) ? $array['year'] : null;
+        literature_converter_array_key($array, $litarray, 'title');
+        literature_converter_array_key($array, $litarray, 'author', null, true);
+        literature_converter_array_key($array, $litarray, 'year', 'published', true);
 
         if (isset($array['month'])) {
             $litarray['published'] = $array['month'] . '.' . $litarray['published'];
         }
 
         // Detailed
-        if (key_exists('publisher', $array)) {
-            $litarray['publisher'] = $array['publisher'];
-        }
-
-        if (key_exists('series', $array)) {
-            $litarray['series'] = $array['series'];
-        }
-
-        if (key_exists('abstract', $array)) {
-            $litarray['description'] = $array['abstract'];
-        }
-
-        // 		$key = 'keywords';
-        // 		if(key_exists($key, $array)) {
-        // 			$stdLitArr['tags'] = $array[$key];
-        // 		}
+        literature_converter_array_key($array, $litarray, 'publisher');
+        literature_converter_array_key($array, $litarray, 'series');
+        literature_converter_array_key($array, $litarray, 'abstract', 'description');
+        literature_converter_array_key($array, $litarray, 'issn');
+        literature_converter_array_key($array, $litarray, 'url', 'links');
 
         if (key_exists('isbn', $array)) {
-
             $isbns = $this->get_isbns($array['isbn']);
             $litarray['isbn10'] = isset($isbns->isbn10) ? $isbns->isbn10 : null;
             $litarray['isbn13'] = isset($isbns->isbn13) ? $isbns->isbn13 : null;
         }
-
-        if (key_exists('issn', $array)) {
-            $litarray['isbn13'] = $array['issn'];
-        }
-
-        // 		$key = 'edition';
-        // 		if(key_exists($key, $array)) {
-        // 			$stdLitArr['edition'] = $array[$key];
-        // 		}
-
-        if (key_exists('url', $array)) {
-            $litarray['links'] = $array['url'];
-        }
-
+        
         // Delete special bibtex umlaute
         $cleanarray = array();
         foreach ($litarray as $key => $value) {
 
-            $value = str_replace('{\"a}', 'ä', $value);
-            $value = str_replace('{\"o}', 'ö', $value);
-            $value = str_replace('{\"u}', 'ü', $value);
+            $cleanAUml = str_replace('{\"a}', 'ä', $value);
+            $cleanOUml = str_replace('{\"o}', 'ö', $cleanAUml);
+            $cleanUUml = str_replace('{\"u}', 'ü', $cleanOUml);
 
-            $cleanarray[$key] = $value;
+            $cleanarray[$key] = $cleanUUml;
         }
 
         return $cleanarray;
@@ -257,9 +234,9 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
             $tagarray[$key] = $value;
         }
         // Standardisiere die Keys im Array
-        $tagarray = $this->bibtext2stdtags($tagarray);
+        $stdTags = $this->bibtext2stdtags($tagarray);
         // Erstelle die Buchklasse
-        return $this->make_literature($tagarray, $type);
+        return $this->make_literature($stdTags, $type);
     }
 
     /**

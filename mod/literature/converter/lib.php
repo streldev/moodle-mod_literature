@@ -335,3 +335,17 @@ function literature_converter_serialize_array($items, $filename, $extension) {
     return $file;
 }
 
+
+function literature_converter_array_key($sourceArray, &$targetArray, $sourceKey, $targetKey = null, $forceKey = false) {
+    
+    if($targetKey === null) {
+        $targetKey = $sourceKey;
+    }
+    
+    if (key_exists($sourceKey, $sourceArray)) {
+        $targetArray[$targetKey] = $sourceArray[$sourceKey];
+    } else if ($forceKey) {
+        $targetArray[$targetArray] = null;
+    }
+}
+
