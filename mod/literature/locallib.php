@@ -132,6 +132,9 @@ function literature_view_full($item) {
 function literature_htmlfactory_book($item, $short = false, $aslistelement = false, $addcheckbox = false) {
     global $CFG, $SESSION;
 
+    // Sanitze the stuff
+    literature_sanitize_class($item);
+    
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
@@ -166,13 +169,10 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
     // Get Checkbox
     if ($addcheckbox) {
 
-        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
-
-
         if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
         }
     }
 
@@ -303,6 +303,9 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
  */
 function literature_htmlfactory_electronic($item, $short = false, $aslistelement = false, $addcheckbox = false) {
     global $CFG, $SESSION;
+    
+    // Sanitze the stuff
+    literature_sanitize_class($item);
 
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
@@ -339,12 +342,10 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
     // Get Checkbox
     if ($addcheckbox) {
 
-        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
-
         if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
         }
     }
 
@@ -474,6 +475,9 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
  */
 function literature_htmlfactory_misc($item, $short = false, $aslistelement = false, $addcheckbox = false) {
     global $CFG, $SESSION;
+    
+    // Sanitze the stuff
+    literature_sanitize_class($item);
 
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
@@ -510,13 +514,10 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
     // Get Checkbox
     if ($addcheckbox) {
 
-        $checkbox = '<input type="hidden" name="select[' . $item->id . ']" value="0" />';
-
-
         if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
-            $checkbox .= '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
+            $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
         }
     }
 
@@ -746,7 +747,7 @@ function literature_print_literaturelist($items, $selectable = true, $start = 0,
         }
     }
 
-    return format_text(literature_html_build_list($htmllistitems));
+    return literature_html_build_list($htmllistitems);
 }
 
 /**
@@ -948,4 +949,38 @@ function literature_cast_stdClass_literature($item) {
     return new literature_dbobject_literature($id, $type, $title, $subtitle,
             $authors, $publisher, $published, $series, $isbn10, $isbn13,
             $issn, $coverpath, $description, $links, $format, $titlelink, $refs);
+}
+
+
+
+// The Sanitizer
+
+function literature_sanitize_class(&$class) {
+    
+    $reflect = new ReflectionClass($class);
+    $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
+    
+    
+    foreach ($props as $prop) {
+        if($prop->isStatic()) {
+            continue;
+        }
+        $propName = $prop->getName();
+        $value = $class->$propName;
+        literature_recurisve_sanitize($value);
+        $class->$propName = $value;
+    }
+
+}
+
+function literature_recurisve_sanitize(&$thing) {
+     if(is_array($thing)) {
+         foreach ($thing as $item) {
+             literature_recurisve_sanitize($item);
+         }
+     } else if (is_object ($thing)) {
+         $thing = literature_sanitize_class($thing);
+     } else {
+         $thing = format_string($thing);
+     }
 }
