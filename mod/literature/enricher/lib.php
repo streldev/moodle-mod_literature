@@ -74,10 +74,10 @@ function literature_enricher_check($dirname) {
         return false;
     }
 
-    // check if class implements the interface
-    $interface = 'literature_enricher';
-    $interfaces = class_implements($classname);
-    if (!in_array($interface, $interfaces)) {
+    // check if class extends the abstract class enricher
+    $abstract = 'literature_enricher';
+    $parentclass = get_parent_class($classname);
+    if ($abstract !== $parentclass) {
         return false;
     }
 
