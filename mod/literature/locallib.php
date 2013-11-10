@@ -765,7 +765,7 @@ function literature_print_listinfos($listinfos, $incourse, $course = null, $sect
     // Build list from items -- list = overview of literature lists
     $list = literature_html_build_list($items, get_string('nolists', 'literature'));
     // return list
-    return format_text($list);
+    return $list;
 }
 
 /**
@@ -780,6 +780,9 @@ function literature_build_listitem($array, $incourse, $courseid, $section, $clas
     global $CFG;
     $items = array();
     $counter = 0;
+    
+    literature_recurisve_sanitize($array);
+    
     foreach ($array as $listentry) {
 
         $counter++;
