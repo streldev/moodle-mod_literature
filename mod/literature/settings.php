@@ -4,8 +4,8 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 	require_once($CFG->dirroot.'/mod/literature/enricher/lib.php');
-        print_r("HALLO");
-	$enrichers = literature_enricher_get_folders();
+
+        $enrichers = literature_enricher_get_folders();
 	foreach ($enrichers as $enrichername) {
 		$name = 'literature_enricher_' . $enrichername;
 		$dirname = $enrichername;

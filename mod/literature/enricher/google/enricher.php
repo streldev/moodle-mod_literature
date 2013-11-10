@@ -58,10 +58,17 @@ class literature_enricher_google extends literature_enricher {
      */
     public function enrich($literature) {
          
-        $this->setSearchParams($literature);
+        $isbnFound = $this->setSearchParams($literature);
+        if (!$isbnFound) {
+            return false;
+        }
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
-        print_r($results);
-        exit();
+        
+        if($results['totalItems'] > 0) {
+            $url = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
+            $internalUrl = $this->save_cover($url, $this->isbn);
+            $literature->coverpath = $internalUrl;
+        }
     }
 
     /**
@@ -69,23 +76,28 @@ class literature_enricher_google extends literature_enricher {
      */
     public function enrich_preview($literature) {
        
-        $this->setSearchParams($literature);
+        $isbnFound = $this->setSearchParams($literature);
+        if (!$isbnFound) {
+            return false;
+        }
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
-        print_r($results);
-        exit();
+       
+        if($results['totalItems'] > 0) {
+            $literature->coverpath = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
+        }
     }
     
     private function setSearchParams($literature) {
         
         if (!empty($literature->isbn13)) {
-            $isbn = $literature->isbn13;
+            $this->isbn = $literature->isbn13;
         } elseif (!empty ($literature->isbn10)) {
-            $isbn = $literature->isbn10;
+            $this->isbn = $literature->isbn10;
         } else {
             return false;
         }
         
-        $this->searchTerm = 'isbn:' . $isbn;
+        $this->searchTerm = 'isbn:' . $this->isbn;
         $this->optParams['maxResults'] = 1;        
         
         return true;
