@@ -65,9 +65,11 @@ class literature_enricher_google extends literature_enricher {
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
         
         if($results['totalItems'] > 0) {
-            $url = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
-            $internalUrl = $this->save_cover($url, $this->isbn);
-            $literature->coverpath = $internalUrl;
+            if (isset($results['items'][0]['volumeInfo']['imageLinks'])) {
+                $url = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
+                $internalUrl = $this->save_cover($url, $this->isbn);
+                $literature->coverpath = $internalUrl;
+            }
         }
     }
 
@@ -82,7 +84,7 @@ class literature_enricher_google extends literature_enricher {
         }
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
        
-        if($results['totalItems'] > 0) {
+        if($results['totalItems'] > 0 && isset($results['items'][0]['volumeInfo']['imageLinks'])) {
             $literature->coverpath = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
         }
     }
