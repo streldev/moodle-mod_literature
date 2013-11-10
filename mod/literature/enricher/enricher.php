@@ -23,17 +23,61 @@
  * @copyright  2012 Frederik Strelczuk <frederik.strelczuk@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface literature_enricher {
+abstract class literature_enricher {
 
     /**
      * Enrich the entries saved in the plugin
      * @param literature_dbobject_literature $literature The entry to enrich
      */
-    public function enrich($literature);
+    abstract public function enrich($literature);
 
     /**
      * Enrich the searchresults
      * @param literature_dbobject_literature $result The searchresult to enrich
      */
-    public function enrich_preview($result);
+    abstract public function enrich_preview($result);
+    
+    /**
+     * Save a cover in the plugin
+     * @param string $url The url of the file
+     * @param string $filename The filename the file should get (without extension)
+     * @return boolean|string false or path to file
+     */
+    protected function save_cover($url, $filename) {
+        global $CFG;
+
+        $context = get_context_instance(CONTEXT_SYSTEM);
+
+        $extension = pathinfo($url, PATHINFO_EXTENSION);
+        $filecontent = file_get_contents($url);
+
+        $fs = get_file_storage();
+
+        // Prepare file record object
+        $fileinfo = array(
+            'contextid' => $context->id, // ID of context
+            'component' => 'mod_literature', // usually = table name
+            'filearea' => 'enricher', // usually = table name
+            'itemid' => 0, // usually = ID of row in table
+            'filepath' => '/', // any path beginning and ending in /
+            'filename' => $filename . "." . $extension); // any filename
+
+        // If file exists -> delete
+        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+        if ($file) {
+            $file->delete();
+        }
+
+        // Create the new file
+        if (!$file = $fs->create_file_from_string($fileinfo, $filecontent)) {
+            return false;
+        }
+
+        $url = $CFG->wwwroot . '/pluginfile.php/' . $file->get_contextid() . '/' . $file->get_component() .
+                '/' . $file->get_filearea() . '/0/' . $file->get_filename();
+
+        return $url;
+    }
 }

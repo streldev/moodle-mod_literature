@@ -28,7 +28,7 @@ require_once('AmazonECS.class.php');
  * @copyright  2012 Frederik Strelczuk <frederik.strelczuk@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class literature_enricher_aws implements literature_enricher {
+class literature_enricher_aws extends literature_enricher {
 	
     private $apikey;
     private $secretkey;
@@ -175,50 +175,6 @@ class literature_enricher_aws implements literature_enricher {
         }
 
         return $desc;
-    }
-
-    /**
-     * Save a cover in the plugin
-     * @param string $url The url of the file
-     * @param string $isbn The isbn of the literature the cover belongs to
-     * @return boolean|string false or path to file
-     */
-    protected function save_cover($url, $isbn) {
-        global $CFG;
-
-        $context = get_context_instance(CONTEXT_SYSTEM);
-
-        $extension = pathinfo($url, PATHINFO_EXTENSION);
-        $filecontent = file_get_contents($url);
-
-        $fs = get_file_storage();
-
-        // Prepare file record object
-        $fileinfo = array(
-            'contextid' => $context->id, // ID of context
-            'component' => 'mod_literature', // usually = table name
-            'filearea' => 'enricher', // usually = table name
-            'itemid' => 0, // usually = ID of row in table
-            'filepath' => '/', // any path beginning and ending in /
-            'filename' => $isbn . "." . $extension); // any filename
-
-        // If file exists -> delete
-        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-        if ($file) {
-            $file->delete();
-        }
-
-        // Create the new file
-        if (!$file = $fs->create_file_from_string($fileinfo, $filecontent)) {
-            return false;
-        }
-
-        $url = $CFG->wwwroot . '/pluginfile.php/' . $file->get_contextid() . '/' . $file->get_component() .
-                '/' . $file->get_filearea() . '/0/' . $file->get_filename();
-
-        return $url;
     }
 
 }
