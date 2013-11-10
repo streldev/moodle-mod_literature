@@ -1,4 +1,58 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * The script to display and process the literature import form
+ *
+ * @package    mod_literature_lit
+ * @copyright  2012 Frederik Strelczuk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
+require_once(dirname(dirname(__FILE__)) . '/locallib.php');
+require_once(dirname(dirname(__FILE__)) . '/dbobject/literaturelist.php');
+require_once('import_form.php');
+
+
+$listid = required_param('listid', PARAM_INT);
+
+require_login();
+$context = context_user::instance($USER->id);
+require_capability('mod/literature:manage', $context);
+
+$url = new moodle_url('/mod/literature/lit/import.php');
+$url->param('listid', $listid);
+$PAGE->set_url($url);
+
+$PAGE->set_context($context);
+$PAGE->set_pagelayout('standard');
+
+
+$mform = new literature_lit_import_form();
+
+// --------------------------------------------------------------------------------------
+// Form was canncelled
+
+
+if ($mform->is_cancelled()) {
+
+    $url = new moodle_url('/mod/literature/list/view.php');
+    $url->param('id', $listid);
+    redirect($url);
+}
 
 // --------------------------------------------------------------------------------------
 // Process formadata
@@ -9,11 +63,11 @@ if ($mform->is_submitted()) {
     $content = $mform->get_file_content('mod_literature_import');
     $filename = $mform->get_new_filename('mod_literature_import');
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
-
+    
     if (!$content) {
         print_error('error:file:emptycontent', 'literature', $PAGE->url, $filename);
     }
-
+    
     // Load importer
     $importer = literature_converter_load_importer_by_extension($extension);
     if (!$importer) {
@@ -26,7 +80,6 @@ if ($mform->is_submitted()) {
         $a->yourextension = $extension;
         print_error('error:importer:extensionnotsupported', 'literature', $PAGE->url, $a);
     }
-
 
     $literatures = $importer->import($content);
     if (!$literatures) {
