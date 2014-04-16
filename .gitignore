@@ -1,6 +1,8 @@
 /admin
 /auth
 /backup
+/badges
+/behat.yml.dist
 /blocks
 /blog
 /brokenfile.php
@@ -24,6 +26,7 @@
 /grade
 /group
 /help.php
+/help_ajax.php
 /index.php
 /install
 /install.php
