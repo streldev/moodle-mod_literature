@@ -44,36 +44,27 @@ abstract class literature_enricher {
      * @return boolean|string false or path to file
      */
     protected function save_cover($url, $filename) {
-        global $CFG;
 
         $context = get_context_instance(CONTEXT_SYSTEM);
-
-        $filecontent = file_get_contents($url);
-
         $fs = get_file_storage();
-
-        // Prepare file record object
-        $fileinfo = array(
-            'contextid' => $context->id, // ID of context
-            'component' => 'mod_literature', // usually = table name
-            'filearea' => 'enricher', // usually = table name
-            'itemid' => 0, // usually = ID of row in table
-            'filepath' => '/', // any path beginning and ending in /
-            'filename' => literature_enricher_unused_filename($filename)); // any filename
-
-        // If file exists -> delete
-        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-        if ($file) {
-            $file->delete();
-        }
-
-        // Create the new file
-        if (!$file = $fs->create_file_from_string($fileinfo, $filecontent)) {
+        $filecontent = file_get_contents($url);
+        
+        if (!$filecontent) {
             return false;
         }
 
+        // Prepare file record object
+        $fileinfo = array(
+            'contextid' => $context->id,
+            'component' => 'mod_literature',
+            'filearea' => 'enricher',
+            'itemid' => 0,
+            'filepath' => '/',
+            'filename' => literature_enricher_unused_filename($filename)
+        );
+
+        // Create the new file and return url
+        $file = $fs->create_file_from_string($fileinfo, $filecontent);
         return literature_enricher_get_file_url($file, $fileinfo['itemid']);
     }
 }
