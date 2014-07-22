@@ -143,3 +143,57 @@ function literature_enricher_enrich_preview($result) {
         }
     }
 }
+
+
+function literature_enricher_duplicate_file($file_name) {
+        
+    $fs = get_file_storage();
+    $context = get_context_instance(CONTEXT_SYSTEM);
+
+    // Prepare file record object
+    $fileinfo = array(
+        'contextid' => $context->id,
+        'component' => 'mod_literature', 
+        'filearea' => 'enricher', 
+        'itemid' => 0, 
+        'filepath' => '/',
+        'filename' => $file_name
+    );
+    
+    
+    $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+    
+    $fileinfo['filename'] = literature_enricher_unused_filename($file_name);
+    
+    if ($file) {    
+        $dup_file = $fs->create_file_from_string($fileinfo, $file->get_content());
+        return $dup_file;
+    } else {
+        return false;
+    }
+    
+}
+
+
+function literature_enricher_get_file_url($file) {
+    $url = '/pluginfile.php/' . $file->get_contextid() . '/' . $file->get_component() .
+                '/' . $file->get_filearea() . '/0/' . $file->get_filename();
+    return $url;
+}
+
+
+function literature_enricher_unused_filename($prefix) {
+    
+    $fs = get_file_storage();
+    $context = get_context_instance(CONTEXT_SYSTEM);
+    $filename = $prefix;
+    $counter = 0;
+    
+    while($fs->file_exists($context->id, 'mod_literature', 'enricher', 0, '/', $filename)) {
+        $filename = $prefix . $counter;
+        $counter++;
+    }
+    
+    return $filename;
+}

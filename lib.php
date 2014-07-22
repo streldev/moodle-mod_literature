@@ -117,8 +117,7 @@ function literature_update_instance(stdClass $object, mod_literature_mod_form $m
            $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
         }    
     }
-  
-     
+    
     // Get new cover
     $file = $mform->save_stored_file('mod_literature_cover', $context->id,
             'mod_literature', 'mod_literature_cover', 0, '/', null, true);
@@ -126,20 +125,19 @@ function literature_update_instance(stdClass $object, mod_literature_mod_form $m
     if ($file) {
         $coverurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
                 $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-        $object->coverpath = $coverurl->out(true);
+       $object->coverpath = $coverurl->out(true);
     } else {
         $data = $mform->get_data();
         $object->coverpath = $data->coverpath;
     }
- 
-
+    
     // Build updated literature entry
     $object->links = $links;
     $literature = literature_cast_stdClass_literature($object);
     $literature->timemodified = time();
     $literature->id = $instance->litid;
-
-    // Update literature entry
+    
+    // Update literature entry and get id
     $newLitId = $literature->update();
     $literature->add_ref();
     $literature->save();

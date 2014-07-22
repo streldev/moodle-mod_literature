@@ -259,7 +259,15 @@ class literature_dbobject_literature {
      */
     public function duplicate() {
         $this->id = null;
-        return $this->insert(false);    
+        $file_name = basename($this->coverpath);
+        $dupe_file = literature_enricher_duplicate_file($file_name);
+        if (!$dupe_file) {
+            // TODO error
+            $this->delete();
+            throw new Exception("Could not copy cover!");
+        }
+        $this->coverpath = literature_enricher_get_file_url($dupe_file);
+        return $this->insert(false);
     }
 
     /**
@@ -276,14 +284,20 @@ class literature_dbobject_literature {
             
             // Load the old and decrease the ref counter
             $oldEntry = literature_dbobject_literature::load_by_id($this->id);
-            if($oldEntry) {
-                $oldEntry->del_ref();
-            } else {
-                // TODO error
-                return this;
+            if(!$oldEntry) {
+                return false;
             }
+            
+            $oldEntry->del_ref();
             $oldEntry->save();
-            return $this->duplicate();
+            try {
+                return $this->duplicate();
+            } catch (Exception $exc) {
+                $oldEntry->add_ref();
+                $oldEntry->save();
+                return false;
+            }
+
             
         } else {
             
@@ -415,12 +429,7 @@ class literature_dbobject_literature {
      * @return boolean true if the object hast more then one reference, false otherwise
      */
     public function has_refs() {
-
-        if ($this->refs > 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->refs > 1);
     }
     
     /**
