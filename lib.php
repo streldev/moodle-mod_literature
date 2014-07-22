@@ -141,6 +141,8 @@ function literature_update_instance(stdClass $object, mod_literature_mod_form $m
 
     // Update literature entry
     $newLitId = $literature->update();
+    $literature->add_ref();
+    $literature->save();
     
     if($newLitId && $newLitId != $instance->litid) {
         // Set new litid and update

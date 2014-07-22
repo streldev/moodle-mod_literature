@@ -259,7 +259,6 @@ class literature_dbobject_literature {
      */
     public function duplicate() {
         $this->id = null;
-        $this->refs = 1;
         return $this->insert(false);    
     }
 
@@ -279,11 +278,11 @@ class literature_dbobject_literature {
             $oldEntry = literature_dbobject_literature::load_by_id($this->id);
             if($oldEntry) {
                 $oldEntry->del_ref();
+            } else {
+                // TODO error
+                return this;
             }
             $oldEntry->save();
-            
-            // Set refs to 0 and save the modified entry
-            $this->refs = 1;
             return $this->duplicate();
             
         } else {
