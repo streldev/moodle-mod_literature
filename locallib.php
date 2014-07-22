@@ -215,7 +215,7 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
 
 
     // Title
-    if (isset($item->titlelink) && inShortBook('title')) {
+    if (!empty($item->titlelink) && inShortBook('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
@@ -389,7 +389,7 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
 
 
     // Title
-    if (isset($item->titlelink) && inShortElectronic('title')) {
+    if (!empty($item->titlelink) && inShortElectronic('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
@@ -560,7 +560,7 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
     
 
     // Title
-    if (isset($item->titlelink) && inShortMisc('title')) {
+    if (!empty($item->titlelink) && inShortMisc('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
