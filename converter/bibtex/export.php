@@ -157,6 +157,7 @@ class literature_conv_bibtex_export implements literature_conv_format_export {
             case 2 :
                 $bibarray['year'] = $date[1];
                 $bibarray['month'] = $date[0];
+                break;
             default :
                 $bibarray['year'] = $date[2];
                 $bibarray['month'] = $date[1];

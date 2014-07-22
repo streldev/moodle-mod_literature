@@ -313,12 +313,14 @@ function literature_converter_serialize_array($items, $filename, $extension) {
 
     // Prepare file record object
     $fileinfo = array(
-        'contextid' => $context->id, // ID of context
-        'component' => 'mod_literature', // usually = table name
-        'filearea' => 'export', // usually = table name
-        'itemid' => 0, // usually = ID of row in table
-        'filepath' => '/', // any path beginning and ending in /
-        'filename' => $filename . '.' . $extension); // any filename
+        'contextid' => $context->id,
+        'component' => 'mod_literature',
+        'filearea' => 'export',
+        'itemid' => 0,
+        'filepath' => '/',
+        'filename' => $filename . '.' . $extension
+    );
+    
     // Delete if exists
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'],
             $fileinfo['filepath'], $fileinfo['filename']);
