@@ -189,15 +189,14 @@ class mod_literature_mod_form extends moodleform_mod {
             $mform->addElement('header', 'links', get_string('links', 'literature'));
             $i = 0;
             foreach ($literature->links as $link) {
-                $html = '
-                        <div class="literature_link_wrapper">
-                            <div class="literature_link_data">
-                                <input name="url['.$i.']" type="text" size="50" value="'.$link->url.'">
-                                <input name="linktext['.$i.']" type="text" size="20" value="'.$link->text.'">
-                                <a href="#" class="literature_link_del" id="literature_link_del_'.$i.'">Delete</a>
-                            </div>
-                        </div>';
-                $mform->addElement('html', format_text($html));
+                $html = '<div class="literature_link_wrapper">' .
+                            '<div class="literature_link_data">' .
+                                '<input name="url['.$i.']" type="text" size="50" value="'.format_text($link->url, FORMAT_PLAIN).'">' .
+                                '<input name="linktext['.$i.']" type="text" size="20" value="'.format_text($link->text, FORMAT_PLAIN).'">' .
+                                '<a href="#" class="literature_link_del" id="literature_link_del_'.$i.'">Delete</a>' .
+                            '</div>' .
+                        '</div>';
+                $mform->addElement('html', $html);
                 $i++;
             }
           
