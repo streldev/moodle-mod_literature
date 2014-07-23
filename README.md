@@ -1,4 +1,4 @@
-# moodle-literature (alpha)
+# moodle-mod_literature (alpha)
 
 
 #### A literature plugin for moodle 2.4
@@ -18,13 +18,13 @@ It enables users to:
 First you have to install the basic literature plugin.
 
 <pre>cd $MOODLE_ROOT
-git clone git@github.com:streldev/moodle-literature.git mod/literature
+git clone git@github.com:streldev/moodle-mod_literature.git mod/literature
 </pre>
 
 To fully integrate the literature plugin in your moodle instance, you should now install an additional local plugin. It integrates the literature plugin in the navigation tree.
 
 <pre>cd $MOODLE_ROOT
-git clone git@github.com:streldev/moodle-litnav.git local/litnav
+git clone git@github.com:streldev/moodle-local_litnav.git local/litnav
 </pre>
 
 Thats it. Now login with your admin account and install the plugins. The literatuer plugin comes with some bundled sub plugins for search and export/import. They get installed along with the main 'core'. For further details see section *Sub-Plugins*.
@@ -60,9 +60,9 @@ The google enricher brings some beauty to the search results. It looks for a nic
 
 You just found a bug? You need some help? You wanna help?
 
-Just open a new issue, send a pull request or use the wiki on [GitHub](https://github.com/streldev/moodle-literature). Any help is very much appreciated :-)
+Just open a new issue, send a pull request or use the wiki on [GitHub](https://github.com/streldev/moodle-mod_literature). Any help is very much appreciated :-)
 
 ### Documentation
 
-A detailed documentation for developers is in progress and will be published soon [here](https://github.com/streldev/moodle-literature/wiki). If you don't want to or can't wait, just contact me or open an issue.
+A detailed documentation for developers is in progress and will be published soon [here](https://github.com/streldev/moodle-mod_literature/wiki). If you don't want to or can't wait, just contact me or open an issue.
 
