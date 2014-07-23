@@ -1,7 +1,7 @@
 # moodle-mod_literature (alpha)
 
 
-#### A literature plugin for moodle 2.4
+#### A literature plugin for moodle
 
 This plugin adds basic bibliographic support to moodle and helps users to manage literature for their courses.
 
