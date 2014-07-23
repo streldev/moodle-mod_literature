@@ -37,7 +37,7 @@ class literature_list_import_form extends moodleform {
         $mform->addElement('header', 'importheader', get_string('importlist', 'literature'));
 
         // Name
-        $mform->addElement('text', 'list_name', get_string('name'), array('size' => '40'));
+        $mform->addElement('text', 'list_name', get_string('name'), array ('size' => '40'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('list_name', PARAM_TEXT);
         } else {
@@ -46,7 +46,8 @@ class literature_list_import_form extends moodleform {
         $mform->addRule('list_name', get_string('required'), 'required', null, 'client');
 
         // Description
-        $mform->addElement('textarea', 'list_desc', get_string('description', 'literature'), array('rows' => 5, 'cols' => 90));
+        $mform->addElement('textarea', 'list_desc', get_string('description', 'literature'),
+                array ('rows' => 5, 'cols' => 90));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('list_desc', PARAM_TEXT);
         } else {
@@ -54,8 +55,8 @@ class literature_list_import_form extends moodleform {
         }
 
         // File manager
-        $acceptedTypes = literature_converter_get_import_extensions();
-        $options = array('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10, 'accepted_types' => $acceptedTypes);
+        $accepted_types = literature_converter_get_import_extensions();
+        $options = array ('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10, 'accepted_types' => $accepted_types);
         $mform->addElement('filepicker', 'mod_literature_import', get_string('files'), null, $options);
         $mform->addRule('mod_literature_import', get_string('required'), 'required', null, 'client');
 

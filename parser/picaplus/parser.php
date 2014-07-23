@@ -40,25 +40,24 @@ class literature_parser_picaplus implements literature_parser {
      */
     public function __construct() {
 
-        $this->mapping = array(
-            '002@' => array('field' => 'type', 'map' => 'single', 'args' => '$0'),
-            '004A' => array('field' => 'isbn', 'map' => 'multi', 'args' => 
-                    array('$0' => 'isbn10', '$A' => 'isbn13')),
-            '005A' => array('field' => 'issn', 'map' => 'single', 'args' => '$0'),
-            '010@' => array('field' => 'lang', 'map' => 'single', 'args' => '$a'),
-            '021A' => array('field' => 'title', 'map' => 'multi', 'args' => 
-                    array('$a' => 'title', '$d' => 'subtitle', '$h' => 'authors')),
-            '033A' => array('field' => 'publisher', 'map' => 'multi', 'args' =>
-                    array('$p' => 'place', '$n' => 'publisher')),
-            '011@' => array('field' => 'date', 'map' => 'single', 'args' => '$a'),
+        $this->mapping = array (
+            '002@' => array ('field' => 'type', 'map' => 'single', 'args' => '$0'),
+            '004A' => array ('field' => 'isbn', 'map' => 'multi', 'args' =>
+                array ('$0' => 'isbn10', '$A' => 'isbn13')),
+            '005A' => array ('field' => 'issn', 'map' => 'single', 'args' => '$0'),
+            '010@' => array ('field' => 'lang', 'map' => 'single', 'args' => '$a'),
+            '021A' => array ('field' => 'title', 'map' => 'multi', 'args' =>
+                array ('$a' => 'title', '$d' => 'subtitle', '$h' => 'authors')),
+            '033A' => array ('field' => 'publisher', 'map' => 'multi', 'args' =>
+                array ('$p' => 'place', '$n' => 'publisher')),
+            '011@' => array ('field' => 'date', 'map' => 'single', 'args' => '$a'),
             // '034I' => 'format',
             //'034K' => array('$a' => 'accompany'),
             // '440' => array('field' => 'series', 'handler' => 'map_single', 'args' => '$a'),welches feld???
-            '020F' => array('field' => 'summary', 'map' => 'single', 'args' => '$a'),
-            '009Q' => array('field' => 'link', 'map' => 'multi', 'args' =>
-                    array('$a' => 'url', '$y' => 'text'))
-            );
-                
+            '020F' => array ('field' => 'summary', 'map' => 'single', 'args' => '$a'),
+            '009Q' => array ('field' => 'link', 'map' => 'multi', 'args' =>
+                array ('$a' => 'url', '$y' => 'text'))
+        );
     }
 
     /**
@@ -76,23 +75,22 @@ class literature_parser_picaplus implements literature_parser {
             if (key_exists($code, $this->mapping)) {
 
                 $map = $this->mapping[$code];
-                $mapCallback = 'map_' . $map['map'];
-                $fieldTitle = $map['field'];
-                
+                $map_callback = 'map_' . $map['map'];
+                $field_title = $map['field'];
+
                 // Check if field exists allready
-                if(empty($parsedobject->$fieldTitle)) {
-                    $parsedobject->$fieldTitle = array();
+                if (empty($parsedobject->$field_title)) {
+                    $parsedobject->$field_title = array ();
                 }
-                
+
                 // Get the field value
-                $value = $this->$mapCallback($data,$map['args']);
-                if($value) {
-                    array_push($parsedobject->$fieldTitle, $value);
+                $value = $this->$map_callback($data, $map['args']);
+                if ($value) {
+                    array_push($parsedobject->$field_title, $value);
                 }
-                
             }
         }
-                        
+
         $id = null;
         $type = isset($parsedobject->type[0]) ? $this->get_type($parsedobject->type[0]) : literature_dbobject_literature::MISC;
         $title = isset($parsedobject->title[0]['title']) ? $parsedobject->title[0]['title'] : null;
@@ -106,7 +104,7 @@ class literature_parser_picaplus implements literature_parser {
         $issn = isset($parsedobject->issn[0]) ? $parsedobject->issn[0] : null;
         $coverpath = null;
         $description = isset($parsedobject->summary[0]) ? $parsedobject->summary[0] : null;
-        $links = isset($parsedobject->link) ? $this->get_links($parsedobject->link) : array();
+        $links = isset($parsedobject->link) ? $this->get_links($parsedobject->link) : array ();
         $format = null; // TODO in later version
         $refs = 0;
 
@@ -114,11 +112,10 @@ class literature_parser_picaplus implements literature_parser {
         $title = preg_replace('/@/', '', $title);
         $subtitle = preg_replace('/@/', '', $subtitle);
 
-        return new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher,
-                $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format,
-                $titlelink, $refs);
+        return new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher, $published,
+                $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format, $titlelink, $refs);
     }
-    
+
     /**
      * Parse single subfield
      * @param string $data The datastring for the subfield
@@ -126,12 +123,12 @@ class literature_parser_picaplus implements literature_parser {
      */
     private function map_single($data, $arg) {
 
-        $pattern = '/\\'.$arg.'([^$]*)/';
-        $matches = array();
-        if(preg_match($pattern, $data, $matches)) {
+        $pattern = '/\\' . $arg . '([^$]*)/';
+        $matches = array ();
+        if (preg_match($pattern, $data, $matches)) {
             return $matches[1];
         }
-        return false;     
+        return false;
     }
 
     /**
@@ -140,24 +137,24 @@ class literature_parser_picaplus implements literature_parser {
      */
     private function map_multi($data, $args) {
 
-        $values = array();
+        $values = array ();
         foreach ($args as $code => $title) {
             $value = $this->map_single($data, $code);
-            if($value) {
+            if ($value) {
                 $values[$title] = $value;
             }
         }
-        if(!empty($values)) {
+        if (!empty($values)) {
             return $values;
         } else {
             return false;
         }
     }
 
-    private function get_links($linkArray) {
-        $links = array();
-        foreach ($linkArray as $link) {
-            if(empty($link['url'])) {
+    private function get_links($link_array) {
+        $links = array ();
+        foreach ($link_array as $link) {
+            if (empty($link['url'])) {
                 continue; // No valid url
             }
             $text = (empty($link['text'])) ? $link['url'] : $link['text'];
@@ -175,11 +172,11 @@ class literature_parser_picaplus implements literature_parser {
 
         $result = '';
         foreach ($isbns as $isbn) {
-            if(isset($isbn['isbn10'])) {
+            if (isset($isbn['isbn10'])) {
                 // Have to split with delimiter whitepsace beceause of lazy bib people
-                $splitArray = explode(' ', $isbn['isbn10']);
-                foreach ($splitArray as $splitedIsbn) {
-                    $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
+                $split_array = explode(' ', $isbn['isbn10']);
+                foreach ($split_array as $splited_isbn) {
+                    $cleanisbn10 = preg_replace("/[^0-9Xx]/", '', $splited_isbn);
                     if (strlen($cleanisbn10) == 10) {
                         $result = $cleanisbn10;
                         break 2; // Just choose one isbn. Should be enough to display.
@@ -193,7 +190,7 @@ class literature_parser_picaplus implements literature_parser {
             return null;
         }
     }
-    
+
     /**
      * Extract isbn from string
      * @param string $isbns
@@ -203,17 +200,17 @@ class literature_parser_picaplus implements literature_parser {
 
         $result = '';
         foreach ($isbns as $isbn) {
-            if(isset($isbn['isbn13'])) {
+            if (isset($isbn['isbn13'])) {
                 // Have to split with delimiter whitepsace beceause of lazy bib people
-                $splitArray = explode(' ', $isbn['isbn13']);
-                foreach ($splitArray as $splitedIsbn) {
-                    $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $splitedIsbn);
+                $split_array = explode(' ', $isbn['isbn13']);
+                foreach ($split_array as $splited_isbn) {
+                    $cleanisbn13 = preg_replace("/[^0-9Xx]/", '', $splited_isbn);
                     if (strlen($cleanisbn13) == 13) {
                         $result = $cleanisbn13;
                         break 2;
                     }
                 }
-            } 
+            }
         }
         if (strlen($result) > 0) {
             return $result;

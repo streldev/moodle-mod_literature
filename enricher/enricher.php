@@ -36,7 +36,7 @@ abstract class literature_enricher {
      * @param literature_dbobject_literature $result The searchresult to enrich
      */
     abstract public function enrich_preview($result);
-    
+
     /**
      * Save a cover in the plugin
      * @param string $url The url of the file
@@ -48,7 +48,7 @@ abstract class literature_enricher {
         $context = get_context_instance(CONTEXT_SYSTEM);
         $fs = get_file_storage();
         $filecontent = file_get_contents($url);
-        
+
         if (!$filecontent) {
             return false;
         }

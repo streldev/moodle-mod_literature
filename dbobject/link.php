@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -96,7 +95,7 @@ class literature_dbobject_link {
     public static function load_by_id($id) {
         global $DB;
 
-        if (!$link = $DB->get_record(self::$table, array('id' => $id))) {
+        if (!$link = $DB->get_record(self::$table, array ('id' => $id))) {
             return false;
         }
 
@@ -112,11 +111,11 @@ class literature_dbobject_link {
     public static function load_by_lit_id($id) {
         global $DB;
 
-        if (!$links = $DB->get_records(self::$table, array('lit_id' => $id))) {
-            return array();
+        if (!$links = $DB->get_records(self::$table, array ('lit_id' => $id))) {
+            return array ();
         }
 
-        $results = array();
+        $results = array ();
         foreach ($links as $link) {
             $results[] = new literature_dbobject_link($link->id, $link->lit_id, $link->text, $link->url);
         }
@@ -136,12 +135,12 @@ class literature_dbobject_link {
             return true;
         }
 
-        return $DB->delete_records(self::$table, array('id' => $id));
+        return $DB->delete_records(self::$table, array ('id' => $id));
     }
-    
+
     public static function del_by_lit_id($id) {
-        global $DB;     
-        return $DB->delete_records(self::$table, array('lit_id' => $id));
+        global $DB;
+        return $DB->delete_records(self::$table, array ('lit_id' => $id));
     }
 
     /**
@@ -152,7 +151,7 @@ class literature_dbobject_link {
     public function delete() {
         return self::del_by_id($this->id);
     }
-    
+
     /**
      * Delete all links of a literature
      * @param int $id Id of the literature

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-include_once 'link.php';
+require_once('link.php');
 
 /**
  * Literature Class
@@ -27,12 +27,12 @@ include_once 'link.php';
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class literature_dbobject_literature {
+
     /**
      * Defines the constant for {@link literature_dbobject_literature} entries
      * of type BOOK
      * @var int
      */
-
     const BOOK = 1;
 
     /**
@@ -163,8 +163,8 @@ class literature_dbobject_literature {
      */
     public static $table = 'literature_lit';
 
-    public function __construct($id, $type, $title, $subtitle, $authors, $publisher, $published, $series, $isbn10, $isbn13,
-            $issn, $coverpath, $description, $links, $format, $titlelink, $refs) {
+    public function __construct($id, $type, $title, $subtitle, $authors, $publisher, $published, $series, $isbn10,
+            $isbn13, $issn, $coverpath, $description, $links, $format, $titlelink, $refs) {
 
         $this->id = $id;
 
@@ -207,9 +207,9 @@ class literature_dbobject_literature {
         $this->description = $description;
 
         // LINKS TO READ
-        $this->links = array();
+        $this->links = array ();
         foreach ($links as $link) {
-            $this->links[] = new literature_dbobject_link($link->id,$link->lit_id,$link->text, $link->url);
+            $this->links[] = new literature_dbobject_link($link->id, $link->lit_id, $link->text, $link->url);
         }
 
         // FORMAT
@@ -228,10 +228,10 @@ class literature_dbobject_literature {
      * @param boolean $enrich Should the entry get enriched?
      * @return boolean|int false or new id
      */
-    public function insert($enrich=true) {
+    public function insert($enrich = true) {
         global $DB;
 
-        if($enrich) {
+        if ($enrich) {
             literature_enricher_enrich($this);
         }
         $this->refs = 0;
@@ -240,7 +240,7 @@ class literature_dbobject_literature {
         if ($result) {
             $this->id = $result;
             // Save all links
-            foreach($this->links as $link) {
+            foreach ($this->links as $link) {
                 $link->lit_id = $this->id;
                 $link->insert();
             }
@@ -248,7 +248,7 @@ class literature_dbobject_literature {
 
         return $result;
     }
-    
+
     /**
      * Duplicte this literature object in db
      *
@@ -278,46 +278,43 @@ class literature_dbobject_literature {
      * @return boolean|int false or new id
      */
     public function update() {
-        
-        if($this->refs > 1) {
-            
+
+        if ($this->refs > 1) {
+
             // Load the old and decrease the ref counter
-            $oldEntry = literature_dbobject_literature::load_by_id($this->id);
-            if(!$oldEntry) {
-                return false;
-            }
-            
-            $oldEntry->del_ref();
-            $oldEntry->save();
-            try {
-                return $this->duplicate();
-            } catch (Exception $exc) {
-                $oldEntry->add_ref();
-                $oldEntry->save();
+            $old_entry = self::load_by_id($this->id);
+            if (!$old_entry) {
                 return false;
             }
 
-            
+            $old_entry->del_ref();
+            $old_entry->save();
+            try {
+                return $this->duplicate();
+            } catch (Exception $exc) {
+                $old_entry->add_ref();
+                $old_entry->save();
+                return false;
+            }
         } else {
-            
+
             return $this->save();
-            
-        } 
+        }
     }
-    
+
     public function save() {
         global $DB;
-        
+
         // Delete old links
         literature_dbobject_link::del_by_lit_id($this->id);
-        
+
         // Save new links
-        foreach($this->links as $link) {
+        foreach ($this->links as $link) {
             $link->lit_id = $this->id;
             $link->insert();
         }
-        
-        if($DB->update_record(self::$table, $this)) {
+
+        if ($DB->update_record(self::$table, $this)) {
             return $this->id;
         } else {
             return false;
@@ -333,16 +330,16 @@ class literature_dbobject_literature {
         global $DB;
 
         // Load literature
-        if (!$item = $DB->get_record(self::$table, array('id' => $id), '*', MUST_EXIST)) {
+        if (!$item = $DB->get_record(self::$table, array ('id' => $id), '*', MUST_EXIST)) {
             return false;
         }
 
         // Load links
         $item->links = literature_dbobject_link::load_by_lit_id($id);
-        
+
         return new literature_dbobject_literature($item->id, $item->type, $item->title, $item->subtitle, $item->authors,
-                        $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn,
-                        $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, $item->refs);
+                $item->publisher, $item->published, $item->series, $item->isbn10, $item->isbn13, $item->issn,
+                $item->coverpath, $item->description, $item->links, $item->format, $item->titlelink, $item->refs);
     }
 
     /**
@@ -363,9 +360,9 @@ class literature_dbobject_literature {
             $literature->save();
             return true;
         }
-        
+
         // Delete links
-        foreach($literature->links as $link) {
+        foreach ($literature->links as $link) {
             $link->delete();
         }
 
@@ -376,7 +373,7 @@ class literature_dbobject_literature {
             $filename = basename($literature->coverpath);
 
             // Prepare file record object
-            $fileinfo = array(
+            $fileinfo = array (
                 'contextid' => $context->id,
                 'component' => 'mod_literature',
                 'filearea' => 'enricher',
@@ -394,7 +391,7 @@ class literature_dbobject_literature {
         }
 
         // Delete literature
-        return $DB->delete_records(self::$table, array('id' => $id));
+        return $DB->delete_records(self::$table, array ('id' => $id));
     }
 
     /**
@@ -431,15 +428,15 @@ class literature_dbobject_literature {
     public function has_refs() {
         return ($this->refs > 1);
     }
-    
+
     /**
      * 
      * @return types
      */
-    public static function getTypes() {
-        
-        $types = array();
-        
+    public static function get_types() {
+
+        $types = array ();
+
         $book = get_string('book', 'literature');
         $electronic = get_string('electronic', 'literature');
         $misc = get_string('misc', 'literature');
@@ -447,7 +444,7 @@ class literature_dbobject_literature {
         $types[self::BOOK] = $book;
         $types[self::ELECTRONIC] = $electronic;
         $types[self::MISC] = $misc;
-        
+
         return $types;
     }
 

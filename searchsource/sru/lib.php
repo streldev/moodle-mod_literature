@@ -67,7 +67,6 @@ function literature_searchsource_sru_build_searchconnectors() {
     $connectors = array();
     $connectors['and'] = get_string('and', 'literature');
     $connectors['or'] = get_string('or', 'literature');
-    // $connectors['@not'] = get_string('andnot', 'literature');
 
     return $connectors;
 }

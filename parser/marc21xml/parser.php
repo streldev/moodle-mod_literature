@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,26 +40,26 @@ class literature_parser_marc21xml implements literature_parser {
      */
     public function __construct() {
 
-        $this->mapping = array(
-            '020' => array('field' => 'isbn', 'handler' => 'map_single', 'args' => '$a'),
-            '022' => array('field' => 'issn', 'handler' => 'map_single', 'args' => '$a'),
-            '041' => array('field' => 'language', 'handler' => 'map_single', 'args' => '$a'),
-            '100' => array('field' => 'person', 'handler' => 'map_single', 'args' => '$a'),
-            '245' => array('field' => 'title', 'handler' => 'map_multi', 'args' =>
-                array('$a' => 'title', '$b' => 'subtitle', '$c' => 'authors')),
-            '260' => array('field' => 'publication', 'handler' => 'map_multi', 'args' =>
-                array('$a' => 'place', '$b' => 'publisher', '$c' => 'date')),
-            '300' => array('field' => 'format', 'handler' => 'map_multi', 'args' =>
-                array('$a' => 'extent', '$e' => 'accompany')),
-            '440' => array('field' => 'series', 'handler' => 'map_single', 'args' => '$a'),
-            '500' => array('field' => 'note', 'handler' => 'map_single', 'args' => '$a'),
-            '505' => array('field' => 'content', 'handler' => 'map_single', 'args' => '$a'),
-            '520' => array('field' => 'summary', 'handler' => 'map_multi', 'args' =>
-                array('$a' => 'main', '$b' => 'expansion')),
-            '650' => array('field' => 'topic', 'handler' => 'map_multi', 'args' =>
-                array('$a' => 'topic', '$x' => 'subdiv')),
-            '856' => array('field' => 'link', 'handler' => 'map_multi', 'args' => 
-                array('$u' => 'url', '$y' => 'text', '$3' => 'alttext'))
+        $this->mapping = array (
+            '020' => array ('field' => 'isbn', 'handler' => 'map_single', 'args' => '$a'),
+            '022' => array ('field' => 'issn', 'handler' => 'map_single', 'args' => '$a'),
+            '041' => array ('field' => 'language', 'handler' => 'map_single', 'args' => '$a'),
+            '100' => array ('field' => 'person', 'handler' => 'map_single', 'args' => '$a'),
+            '245' => array ('field' => 'title', 'handler' => 'map_multi', 'args' =>
+                array ('$a' => 'title', '$b' => 'subtitle', '$c' => 'authors')),
+            '260' => array ('field' => 'publication', 'handler' => 'map_multi', 'args' =>
+                array ('$a' => 'place', '$b' => 'publisher', '$c' => 'date')),
+            '300' => array ('field' => 'format', 'handler' => 'map_multi', 'args' =>
+                array ('$a' => 'extent', '$e' => 'accompany')),
+            '440' => array ('field' => 'series', 'handler' => 'map_single', 'args' => '$a'),
+            '500' => array ('field' => 'note', 'handler' => 'map_single', 'args' => '$a'),
+            '505' => array ('field' => 'content', 'handler' => 'map_single', 'args' => '$a'),
+            '520' => array ('field' => 'summary', 'handler' => 'map_multi', 'args' =>
+                array ('$a' => 'main', '$b' => 'expansion')),
+            '650' => array ('field' => 'topic', 'handler' => 'map_multi', 'args' =>
+                array ('$a' => 'topic', '$x' => 'subdiv')),
+            '856' => array ('field' => 'link', 'handler' => 'map_multi', 'args' =>
+                array ('$u' => 'url', '$y' => 'text', '$3' => 'alttext'))
         );
     }
 
@@ -69,7 +68,7 @@ class literature_parser_marc21xml implements literature_parser {
      * @param SimpleXMLElement $xmlrecord
      */
     public function parse($xmlrecord, $titlelink) {
-        $parsedfields = array();
+        $parsedfields = array ();
 
         $parsedfields['type'] = $this->get_type($xmlrecord);
 
@@ -78,10 +77,10 @@ class literature_parser_marc21xml implements literature_parser {
             $code = $field->attributes()->tag->__toString();
 
             if (isset($this->mapping[$code])) {
-                
+
                 $handler = $this->mapping[$code]['handler'];
                 $value = $this->$handler($field, $this->mapping);
-                if($value) {
+                if ($value) {
                     $parsedfields[$this->mapping[$code]['field']][] = $value;
                 }
             }
@@ -124,7 +123,7 @@ class literature_parser_marc21xml implements literature_parser {
      */
     private function map_single($field) {
 
-        $result = array();
+        $result = array ();
 
         $code = $field->attributes()->tag->__toString();
 
@@ -149,7 +148,7 @@ class literature_parser_marc21xml implements literature_parser {
 
         $code = $field->attributes()->tag->__toString();
 
-        $results[$this->mapping[$code]['field']] = array();
+        $results[$this->mapping[$code]['field']] = array ();
 
         foreach ($field->subfield as $subfield) {
             $subcode = '$' . $subfield->attributes()->code->__toString();
@@ -159,9 +158,9 @@ class literature_parser_marc21xml implements literature_parser {
                 $results[$propname] = $subfield->__toString();
             }
         }
-        if(!empty($results)) {
+        if (!empty($results)) {
             return $results;
-        } else  {
+        } else {
             return false;
         }
     }
@@ -176,13 +175,14 @@ class literature_parser_marc21xml implements literature_parser {
 
         $id = null;
         $type = $parsedfields['type'];
-        if(empty($parsedfields['title'][0]['title'])) {
+        if (empty($parsedfields['title'][0]['title'])) {
             return false;
         }
         $title = $parsedfields['title'][0]['title'];
         $subtitle = (isset($parsedfields['title'][0]['subtitle'])) ? $parsedfields['title'][0]['subtitle'] : null;
         $authors = $this->get_authors($parsedfields);
-        $publisher = (isset($parsedfields['publication'][0]['publisher'])) ? $parsedfields['publication'][0]['publisher'] : null;
+        $publisher = (isset($parsedfields['publication'][0]['publisher'])) ? $parsedfields['publication'][0]['publisher']
+                    : null;
         $published = (isset($parsedfields['publication'])) ? $this->make_time($parsedfields['publication']) : null;
         $series = (isset($parsedfields['series'])) ? $parsedfields['series'][0] : null;
         // get isbns
@@ -209,31 +209,31 @@ class literature_parser_marc21xml implements literature_parser {
         $refs = 0;
 
         $literature = new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher,
-                $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format,
-                $titlelink, $refs);
+                $published, $series, $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format, $titlelink,
+                $refs);
 
         return $literature;
     }
-    
+
     /**
      * Extract links from marc21 fields
      */
     private function get_links($fields) {
-                
+
         // If no links found return empty array
-        if(!isset($fields['link'])) {
-            return array();
+        if (!isset($fields['link'])) {
+            return array ();
         }
-        
-        $links = array();
+
+        $links = array ();
         foreach ($fields['link'] as $link) {
-            if(empty($link['url'])) {
+            if (empty($link['url'])) {
                 continue; // No valid url
             }
             $text = (empty($link['text'])) ? (empty($link['alttext'])) ? $link['url'] : $link['alttext'] : $link['text'];
             $links[] = new literature_dbobject_link(null, null, $text, $link['url']);
         }
-        
+
         return $links;
     }
 
@@ -248,16 +248,16 @@ class literature_parser_marc21xml implements literature_parser {
         $result->isbn10 = null;
         $result->isbn13 = null;
 
-        foreach ($isbns as $isbnString) { 
+        foreach ($isbns as $isbn_string) {
             // Have to split the string here because of lazy bib people
-            $isbnArr = explode(' ', $isbnString);
-            foreach ($isbnArr as $isbn) {
+            $isbn_array = explode(' ', $isbn_string);
+            foreach ($isbn_array as $isbn) {
                 $cleanisbn = preg_replace("/[^0-9Xx]/", '', $isbn);
                 if (strlen($cleanisbn) == 10) {
                     $result->isbn10 = $cleanisbn;
                 } else if (strlen($cleanisbn) == 13) {
                     $result->isbn13 = $cleanisbn;
-                }  
+                }
             }
         }
 

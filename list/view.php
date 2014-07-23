@@ -50,7 +50,7 @@ if ($courseid != -1 && $section != -1) {
     // In COURSE context
     ////////////////////////////////////////////////////////////////////////////////
 
-    $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array ('id' => $courseid), '*', MUST_EXIST);
 
     require_login($course);
     $context = context_course::instance($course->id);
@@ -76,7 +76,7 @@ if ($courseid != -1 && $section != -1) {
 
             if (!empty($litids)) {
 
-                $SESSION->literature_post_ids = array();
+                $SESSION->literature_post_ids = array ();
                 foreach ($litids as $litid => $isselected) {
                     if ($isselected) {
                         $SESSION->literature_post_ids[] = $litid;
@@ -94,8 +94,6 @@ if ($courseid != -1 && $section != -1) {
             }
         }
     }
-
-
 } else {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +150,8 @@ if ($courseid != -1 && $section != -1) {
                 case 'exp' :
 
                     if ($litids != null) {
-                 
-                        $SESSION->literature_litselected = array();
+
+                        $SESSION->literature_litselected = array ();
                         foreach ($litids as $litid => $isselected) {
                             if ($isselected) {
                                 $SESSION->literature_litselected[] = $litid;

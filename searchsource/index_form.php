@@ -83,8 +83,8 @@ class literature_search_index_form extends moodleform {
                                 '&nbsp&nbsp' .
                                 '<b>' . get_string('type', 'literature') . '</b>' . $source->typename .
                             '</span>' .
-                            '<a class="edit_link" href="' . $CFG->wwwroot . '/mod/literature/searchsource/' . $source->type . '/view.php?id=' . $globalid . '"
-                             title="Edit">' .
+                            '<a class="edit_link" href="' . $CFG->wwwroot . '/mod/literature/searchsource/' .
+                                $source->type . '/view.php?id=' . $globalid . '" title="Edit">' .
                             get_string('edit', 'literature') .
                             '</a>' .
                             '</div>' .

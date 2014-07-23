@@ -130,7 +130,7 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
         $links = (!empty($tagarray['links'])) ? $tagarray['links'] : array();
 
         $literature = new literature_dbobject_literature(null, $type, $title, $subtitle, $authors, $publisher,
-                        $published, $series, $isbn10, $isbn13, $issn, null, $description, $links, null, null, 0);
+                $published, $series, $isbn10, $isbn13, $issn, null, $description, $links, null, null, 0);
 
         return $literature;
     }
@@ -142,9 +142,9 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
      * @return array where the keys are changed to the internal quivalents of the bibtex tags
      */
     private function bibtext2stdtags($array) {
-        
+
         $litarray = array();
-        
+
         // Minimal
         literature_converter_array_key($array, $litarray, 'title');
         literature_converter_array_key($array, $litarray, 'author', null, true);
@@ -166,16 +166,16 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
             $litarray['isbn10'] = isset($isbns->isbn10) ? $isbns->isbn10 : null;
             $litarray['isbn13'] = isset($isbns->isbn13) ? $isbns->isbn13 : null;
         }
-        
+
         // Delete special bibtex umlaute
         $cleanarray = array();
         foreach ($litarray as $key => $value) {
 
-            $cleanAUml = str_replace('{\"a}', 'ä', $value);
-            $cleanOUml = str_replace('{\"o}', 'ö', $cleanAUml);
-            $cleanUUml = str_replace('{\"u}', 'ü', $cleanOUml);
+            $clean_auml = str_replace('{\"a}', 'ä', $value);
+            $clean_ouml = str_replace('{\"o}', 'ö', $clean_auml);
+            $clean_uuml = str_replace('{\"u}', 'ü', $clean_ouml);
 
-            $cleanarray[$key] = $cleanUUml;
+            $cleanarray[$key] = $clean_uuml;
         }
 
         return $cleanarray;
@@ -234,9 +234,9 @@ class literature_conv_bibtex_import implements literature_conv_format_import {
             $tagarray[$key] = $value;
         }
         // Standardisiere die Keys im Array
-        $stdTags = $this->bibtext2stdtags($tagarray);
+        $std_tags = $this->bibtext2stdtags($tagarray);
         // Erstelle die Buchklasse
-        return $this->make_literature($stdTags, $type);
+        return $this->make_literature($std_tags, $type);
     }
 
     /**

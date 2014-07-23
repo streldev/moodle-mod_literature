@@ -31,13 +31,13 @@ class literature_lit_import_form extends moodleform {
 
     public function definition() {
         global $CFG;
-        
+
         $mform = $this->_form;
 
         $mform->addElement('header', 'importheader', get_string('importlit', 'literature'));
 
-        $acceptedTypes = literature_converter_get_import_extensions();
-        $options = array('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10, 'accepted_types' => $acceptedTypes);
+        $accepted_types = literature_converter_get_import_extensions();
+        $options = array ('subdirs' => 0, 'maxbytes' => $CFG->userquota, 'maxfiles' => 10, 'accepted_types' => $accepted_types);
         $mform->addElement('filepicker', 'mod_literature_import', get_string('files'), null, $options);
         $mform->addRule('mod_literature_import', get_string('required'), 'required', null, 'client');
 

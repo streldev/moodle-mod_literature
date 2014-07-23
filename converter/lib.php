@@ -320,7 +320,7 @@ function literature_converter_serialize_array($items, $filename, $extension) {
         'filepath' => '/',
         'filename' => $filename . '.' . $extension
     );
-    
+
     // Delete if exists
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'], $fileinfo['itemid'],
             $fileinfo['filepath'], $fileinfo['filename']);
@@ -337,17 +337,15 @@ function literature_converter_serialize_array($items, $filename, $extension) {
     return $file;
 }
 
+function literature_converter_array_key($source_array, &$target_array, $source_key, $target_key = null, $force_key = false) {
 
-function literature_converter_array_key($sourceArray, &$targetArray, $sourceKey, $targetKey = null, $forceKey = false) {
-    
-    if($targetKey === null) {
-        $targetKey = $sourceKey;
+    if ($target_key === null) {
+        $target_key = $source_key;
     }
-    
-    if (key_exists($sourceKey, $sourceArray)) {
-        $targetArray[$targetKey] = $sourceArray[$sourceKey];
-    } else if ($forceKey) {
-        $targetArray[$targetArray] = null;
+
+    if (key_exists($source_key, $source_array)) {
+        $target_array[$target_key] = $source_array[$source_key];
+    } else if ($force_key) {
+        $target_array[$target_array] = null;
     }
 }
-

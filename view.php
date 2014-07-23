@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,21 +25,20 @@
  * @copyright  2012 Frederik Strelczuk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/locallib.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__) . '/locallib.php');
 require_once(dirname(__FILE__) . '/dbobject/literature.php');
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 class literature_view_form extends moodleform {
 
-	function definition() {
+    public function definition() {
 
-		$mform = $this->_form;
+        $mform = $this->_form;
 
-		$mform->addElement('html', $this->_customdata);
-	}
+        $mform->addElement('html', $this->_customdata);
+    }
+
 }
 
 $id = required_param('id', PARAM_INT);
@@ -69,10 +67,10 @@ $PAGE->set_pagelayout('standard');
 
 
 // Output starts here
-echo $OUTPUT->header();	
+echo $OUTPUT->header();
 
 $html = literature_view_full($lit);
-$form = new literature_view_form(null,$html);
+$form = new literature_view_form(null, $html);
 $form->display();
 
 // Finish the page

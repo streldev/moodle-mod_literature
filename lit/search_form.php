@@ -58,7 +58,8 @@ class literature_search_form extends moodleform {
 
         // JS
         $sourcegroup = array();
-        $sourcegroup[] = &$mform->createElement('select', 'source', null, $list, array('onChange' => 'M.core_formchangechecker.set_form_submitted(); this.form.submit();'));
+        $sourcegroup[] = &$mform->createElement('select', 'source', null, $list,
+                array('onChange' => 'M.core_formchangechecker.set_form_submitted(); this.form.submit();'));
         $mform->addGroup($sourcegroup, 'sourcegroup', get_string('sel_source', 'literature'));
     }
 

@@ -19,7 +19,6 @@ require_once(dirname(dirname(__FILE__)) . '/enricher.php');
 require_once(dirname(__FILE__) . '/src/Google_Client.php');
 require_once(dirname(__FILE__) . '/src/contrib/Google_BooksService.php');
 
-
 /**
  * Google Books enricher
  *
@@ -31,44 +30,42 @@ require_once(dirname(__FILE__) . '/src/contrib/Google_BooksService.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class literature_enricher_google extends literature_enricher {
-	
+
     private $apikey;
-    
+
     /**
      * Constructor to initialize configurable parameters
      * @param name prefix for setting variables
      */
-    
     public function __construct($settingname = 0) {
-    	global $CFG;
-    	
-    	$setting = $settingname.'_apikey';
-    	$this->apikey = $CFG->$setting;
-        
+        global $CFG;
+
+        $setting = $settingname . '_apikey';
+        $this->apikey = $CFG->$setting;
+
         $client = new Google_Client();
         $client->setDeveloperKey($this->apikey);
         $client->setApplicationName("moodle-mod-literature");
         $service = new Google_BooksService($client);
         $this->volumes = $service->volumes;
-
     }
 
     /**
      * @see literature_enricher::enrich()
      */
     public function enrich($literature) {
-         
-        $isbnFound = $this->setSearchParams($literature);
-        if (!$isbnFound) {
+
+        $isbn_found = $this->set_search_params($literature);
+        if (!$isbn_found) {
             return false;
         }
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
-        
-        if($results['totalItems'] > 0) {
+
+        if ($results['totalItems'] > 0) {
             if (isset($results['items'][0]['volumeInfo']['imageLinks'])) {
                 $url = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
-                $internalUrl = $this->save_cover($url, $this->isbn);
-                $literature->coverpath = $internalUrl;
+                $internal_url = $this->save_cover($url, $this->isbn);
+                $literature->coverpath = $internal_url;
             }
         }
     }
@@ -77,31 +74,31 @@ class literature_enricher_google extends literature_enricher {
      * @see literature_enricher::enrich_preview()
      */
     public function enrich_preview($literature) {
-       
-        $isbnFound = $this->setSearchParams($literature);
-        if (!$isbnFound) {
+
+        $isbn_found = $this->set_search_params($literature);
+        if (!$isbn_found) {
             return false;
         }
         $results = $this->volumes->listVolumes($this->searchTerm, $this->optParams);
-       
-        if($results['totalItems'] > 0 && isset($results['items'][0]['volumeInfo']['imageLinks'])) {
+
+        if ($results['totalItems'] > 0 && isset($results['items'][0]['volumeInfo']['imageLinks'])) {
             $literature->coverpath = $results['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
         }
     }
-    
-    private function setSearchParams($literature) {
-        
+
+    private function set_search_params($literature) {
+
         if (!empty($literature->isbn13)) {
             $this->isbn = $literature->isbn13;
-        } elseif (!empty ($literature->isbn10)) {
+        } else if (!empty($literature->isbn10)) {
             $this->isbn = $literature->isbn10;
         } else {
             return false;
         }
-        
+
         $this->searchTerm = 'isbn:' . $this->isbn;
-        $this->optParams['maxResults'] = 1;        
-        
+        $this->optParams['maxResults'] = 1;
+
         return true;
     }
 

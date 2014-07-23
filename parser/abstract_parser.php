@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,16 +23,14 @@
  * @copyright  2012 Frederik Strelczuk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 abstract class literature_parser_abstract {
-	
-	/**
-	 * Parse a literature entry
-	 * 
-	 * @param string $string The entry
-	 * @param string $titlelink A link to a representation of the data
-	 * @return literature_dbobject_literature A object of the class Literature
-	 */
-	abstract public function parse($string, $titlelink);
-	
+
+    /**
+     * Parse a literature entry
+     * 
+     * @param string $string The entry
+     * @param string $titlelink A link to a representation of the data
+     * @return literature_dbobject_literature A object of the class Literature
+     */
+    abstract public function parse($string, $titlelink);
 }

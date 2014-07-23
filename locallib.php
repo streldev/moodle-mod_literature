@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -117,7 +116,7 @@ function literature_view_full($item) {
         default:
             $html = literature_htmlfactory_misc($item);
     }
-    
+
     return format_text($html);
 }
 
@@ -134,17 +133,17 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
 
     // Sanitze the stuff
     literature_sanitize_class($item);
-    
+
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
-    if (!is_callable('inShortBook')) {
+    if (!is_callable('in_short_book')) {
 
         /**
          * Check if attribute should be displayed
          * @param string $name Name of the attribute
          */
-        function inShortBook($name) {
+        function in_short_book($name) {
             global $shortfields, $short;
 
             if ($short) {
@@ -155,7 +154,6 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
         }
 
     }
-
 
     // Get coverpath
     if (!$short) {
@@ -169,7 +167,7 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
     // Get Checkbox
     if ($addcheckbox) {
 
-        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
+        if (is_item_selected($item->id) ) {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -213,9 +211,8 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
         $html .= '<div class="data_short">';
     }
 
-
     // Title
-    if (!empty($item->titlelink) && inShortBook('title')) {
+    if (!empty($item->titlelink) && in_short_book('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
@@ -224,46 +221,51 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
     $html .= $tit;
 
     // Authors
-    if (isset($item->authors) && inShortBook('authors')) {
-        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+    if (isset($item->authors) && in_short_book('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors .
+                   '</span><br />';
         $html .= $authors;
     }
 
     // Publisher
-    if (isset($item->publisher) && inShortBook('publisher')) {
-        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+    if (isset($item->publisher) && in_short_book('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' .
+                     $item->publisher . '</span><br />';
         $html .= $publisher;
     }
 
     // Published
-    if (isset($item->published) && inShortBook('published')) {
-        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+    if (isset($item->published) && in_short_book('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' .
+                     $item->published . '</span><br />';
         $html .= $published;
     }
 
     // ISBN
-    if (isset($isbn) && inShortBook('isbn')) {
+    if (isset($isbn) && in_short_book('isbn')) {
         $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
         $html .= $isbn;
     }
 
     // Format
-    if (isset($item->format) && inShortBook('format')) {
-        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+    if (isset($item->format) && in_short_book('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format .
+                  '</span><br />';
         $html .= $format;
     }
 
     // Links
-    if (!empty($item->links) && inShortBook('link')) {
-        foreach($item->links as $link) {
-             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+    if (!empty($item->links) && in_short_book('link')) {
+        foreach ($item->links as $link) {
+            $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                    '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
         }
     }
 
     // Description
-    if (isset($item->description) && inShortBook('description')) {
-        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+    if (isset($item->description) && in_short_book('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') .
+                       '</b>' . $item->description . '</span><br />';
         $html .= $description;
     }
 
@@ -303,20 +305,20 @@ function literature_htmlfactory_book($item, $short = false, $aslistelement = fal
  */
 function literature_htmlfactory_electronic($item, $short = false, $aslistelement = false, $addcheckbox = false) {
     global $CFG, $SESSION;
-    
+
     // Sanitze the stuff
     literature_sanitize_class($item);
 
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
-    if (!is_callable('inShortElectronic')) {
+    if (!is_callable('in_short_electronic')) {
 
         /**
          * Check if attribute should be displayed
          * @param string $name Name of the attribute
          */
-        function inShortElectronic($name) {
+        function in_short_electronic($name) {
             global $shortfields, $short;
 
             if ($short) {
@@ -328,7 +330,6 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
         }
 
     }
-
 
     // Get coverpath
     if (!$short) {
@@ -342,7 +343,7 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
     // Get Checkbox
     if ($addcheckbox) {
 
-        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
+        if (is_item_selected($item->id)) {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -385,11 +386,8 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
         $html .= '<div class="data_short">';
     }
 
-
-
-
     // Title
-    if (!empty($item->titlelink) && inShortElectronic('title')) {
+    if (!empty($item->titlelink) && in_short_electronic('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
@@ -398,51 +396,55 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
     $html .= $tit;
 
     // Authors
-    if (isset($item->authors) && inShortElectronic('authors')) {
-        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+    if (isset($item->authors) && in_short_electronic('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors .
+                   '</span><br />';
         $html .= $authors;
     }
 
     // Publisher
-    if (isset($item->publisher) && inShortElectronic('publisher')) {
-        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+    if (isset($item->publisher) && in_short_electronic('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' .
+                     $item->publisher . '</span><br />';
         $html .= $publisher;
     }
 
     // Published
-    if (isset($item->published) && inShortElectronic('published')) {
-        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+    if (isset($item->published) && in_short_electronic('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' .
+                     $item->published . '</span><br />';
         $html .= $published;
     }
 
     // ISBN
-    if (isset($isbn) && inShortElectronic('isbn')) {
+    if (isset($isbn) && in_short_electronic('isbn')) {
         $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
         $html .= $isbn;
     }
 
     // Format
-    if (isset($item->format) && inShortElectronic('format')) {
-        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+    if (isset($item->format) && in_short_electronic('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format .
+                  '</span><br />';
         $html .= $format;
     }
 
     // Links
-    if (!empty($item->links) && inShortElectronic('link')) {
-        foreach($item->links as $link) {
-             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+    if (!empty($item->links) && in_short_electronic('link')) {
+        foreach ($item->links as $link) {
+            $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                    '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
         }
     }
 
     // Description
-    if (isset($item->description) && inShortElectronic('description')) {
-        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+    if (isset($item->description) && in_short_electronic('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' .
+                       $item->description . '</span><br />';
         $html .= $description;
     }
 
     $html .= '</div>';
-
 
     // Clear float from image
     if (!$short) {
@@ -475,20 +477,20 @@ function literature_htmlfactory_electronic($item, $short = false, $aslistelement
  */
 function literature_htmlfactory_misc($item, $short = false, $aslistelement = false, $addcheckbox = false) {
     global $CFG, $SESSION;
-    
+
     // Sanitze the stuff
     literature_sanitize_class($item);
 
     // This is not unused!!!
     $shortfields = array('title', 'authors', 'published', 'publisher', 'isbn');
 
-    if (!is_callable('inShortMisc')) {
+    if (!is_callable('in_short_misc')) {
 
         /**
          * Check if attribute should be displayed
          * @param string $name Name of the attribute
          */
-        function inShortMisc($name) {
+        function in_short_misc($name) {
             global $shortfields, $short;
 
             if ($short) {
@@ -500,7 +502,6 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
         }
 
     }
-
 
     // Get coverpath
     if (!$short) {
@@ -514,7 +515,7 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
     // Get Checkbox
     if ($addcheckbox) {
 
-        if (isset($SESSION->literature_search_selected) && key_exists($item->id, $SESSION->literature_search_selected) && $SESSION->literature_search_selected[$item->id]) {
+        if (is_item_selected($item->id)) {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1" checked></input>';
         } else {
             $checkbox = '<input type="checkbox" name="select[' . $item->id . ']" value="1"></input>';
@@ -557,10 +558,8 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
         $html .= '<div class="data_short">';
     }
 
-    
-
     // Title
-    if (!empty($item->titlelink) && inShortMisc('title')) {
+    if (!empty($item->titlelink) && in_short_misc('title')) {
         $tit = '<span class="lit_title"><b>' . get_string('title', 'literature') . '</b></span>' .
                 '<a href="' . $item->titlelink . '" target="_blank">' . $title . '</a><br />';
     } else {
@@ -569,46 +568,51 @@ function literature_htmlfactory_misc($item, $short = false, $aslistelement = fal
     $html .= $tit;
 
     // Authors
-    if (isset($item->authors) && inShortMisc('authors')) {
-        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors . '</span><br />';
+    if (isset($item->authors) && in_short_misc('authors')) {
+        $authors = '<span class="lit_author"><b>' . get_string('authors', 'literature') . '</b>' . $item->authors .
+                   '</span><br />';
         $html .= $authors;
     }
 
     // Publisher
-    if (isset($item->publisher) && inShortMisc('publisher')) {
-        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' . $item->publisher . '</span><br />';
+    if (isset($item->publisher) && in_short_misc('publisher')) {
+        $publisher = '<span class="lit_published"><b>' . get_string('publisher', 'literature') . '</b>' .
+                     $item->publisher . '</span><br />';
         $html .= $publisher;
     }
 
     // Published
-    if (isset($item->published) && inShortMisc('published')) {
-        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' . $item->published . '</span><br />';
+    if (isset($item->published) && in_short_misc('published')) {
+        $published = '<span class="lit_published"><b>' . get_string('published', 'literature') . '</b>' .
+                     $item->published . '</span><br />';
         $html .= $published;
     }
 
     // ISBN
-    if (isset($isbn) && inShortMisc('isbn')) {
+    if (isset($isbn) && in_short_misc('isbn')) {
         $isbn = '<span class="lit_published"><b>' . get_string('isbn', 'literature') . '</b>' . $isbn . '</span><br />';
         $html .= $isbn;
     }
 
     // Format
-    if (isset($item->format) && inShortMisc('format')) {
-        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format . '</span><br />';
+    if (isset($item->format) && in_short_misc('format')) {
+        $format = '<span class="lit_format"><b>' . get_string('format:', 'literature') . '</b>' . $item->format .
+                  '</span><br />';
         $html .= $format;
     }
 
     // Links
-    if (!empty($item->links) && inShortMisc('link')) {
-        foreach($item->links as $link) {
-             $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
-                '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
+    if (!empty($item->links) && in_short_misc('link')) {
+        foreach ($item->links as $link) {
+            $html .= '<span class="lit_link"><b>' . get_string('link', 'literature') . '</b>' .
+                    '<a href="' . $link->url . '" target="_blank">' . $link->text . '</a></span><br />';
         }
     }
 
     // Description
-    if (isset($item->description) && inShortMisc('description')) {
-        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' . $item->description . '</span><br />';
+    if (isset($item->description) && in_short_misc('description')) {
+        $description = '<span class="lit_description"><b>' . get_string('description:', 'literature') . '</b>' .
+                       $item->description . '</span><br />';
         $html .= $description;
     }
 
@@ -653,7 +657,6 @@ function literature_result_print($results, $from = 0, $count = 5) {
     }
 
     $html = '<div class="results">';
-
 
     $max = $from + $count;
     if (count($results) <= $max) {
@@ -776,13 +779,13 @@ function literature_print_listinfos($listinfos, $incourse, $course = null, $sect
  * @param int $section Thee id of the section
  * @param string $class Class parameter of the li object
  */
-function literature_build_listitem($array, $incourse, $courseid, $section, $class='list_item') {
+function literature_build_listitem($array, $incourse, $courseid, $section, $class = 'list_item') {
     global $CFG;
     $items = array();
     $counter = 0;
-    
+
     literature_recurisve_sanitize($array);
-    
+
     foreach ($array as $listentry) {
 
         $counter++;
@@ -827,7 +830,7 @@ function literature_db_insert_results($results) {
     global $DB, $USER;
 
     $table = 'literature_lit_temp';
-    $tableLink = 'literature_links_temp';
+    $link_table = 'literature_links_temp';
     $userid = $USER->id;
     $timestamp = time();
 
@@ -844,7 +847,7 @@ function literature_db_insert_results($results) {
         // Insert links
         foreach ($result->links as $link) {
             $link->lit_id = $id;
-            if(!$DB->insert_record($tableLink, $link)) {
+            if (!$DB->insert_record($link_table, $link)) {
                 // TODO log error
             }
         }
@@ -862,10 +865,10 @@ function literature_db_load_results($timestamp) {
 
     $table = 'literature_lit_temp';
     $results = $DB->get_records($table, array('userid' => $USER->id, 'timestamp' => $timestamp));
-    
-    $linkTable = 'literature_links_temp';
-    foreach($results as $result) {
-        $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
+
+    $link_table = 'literature_links_temp';
+    foreach ($results as $result) {
+        $links = $DB->get_records($link_table, array('lit_id' => $result->id));
         $result->links = $links;
     }
     return $results;
@@ -881,18 +884,18 @@ function literature_db_load_result_by_id($timestamp, $id) {
 
     $table = 'literature_lit_temp';
     $result = $DB->get_record($table, array('id' => $id, 'userid' => $USER->id, 'timestamp' => $timestamp));
-    
-    $linkTable = 'literature_links_temp';
-    $links = $DB->get_records($linkTable, array('lit_id' => $result->id));
+
+    $link_table = 'literature_links_temp';
+    $links = $DB->get_records($link_table, array('lit_id' => $result->id));
     $result->links = $links;
 
     return $result;
 }
 
 //###########################################################################//
-//																			 //	
-//		Helper Functions													 //
-//																			 //
+//                                                                           //
+//		Helper Functions					     //
+//									     //
 //###########################################################################//
 
 /**
@@ -930,7 +933,7 @@ function literature_html_build_list($htmllistitems, $message = null) {
  * @return literature_dbobject_literature
  */
 function literature_cast_stdClass_literature($item) {
-    
+
     $id = (!empty($item->id)) ? $item->id : null;
     $type = (!empty($item->type)) ? $item->type : null;
     $title = (!empty($item->title)) ? $item->title : null;
@@ -949,23 +952,36 @@ function literature_cast_stdClass_literature($item) {
     $titlelink = (!empty($item->titlelink)) ? $item->titlelink : null;
     $refs = (!empty($item->refs)) ? $item->refs : 0;
 
-    return new literature_dbobject_literature($id, $type, $title, $subtitle,
-            $authors, $publisher, $published, $series, $isbn10, $isbn13,
-            $issn, $coverpath, $description, $links, $format, $titlelink, $refs);
+    return new literature_dbobject_literature($id, $type, $title, $subtitle, $authors, $publisher, $published, $series,
+            $isbn10, $isbn13, $issn, $coverpath, $description, $links, $format, $titlelink, $refs);
 }
 
 
+function is_item_selected($item_id) {
+    global $SESSION;
+
+     $array_exists = isset($SESSION->literature_search_selected);
+     if (!$array_exists) {
+         return false;
+     }
+     $item_exists = key_exists($item_id, $SESSION->literature_search_selected);
+     if(!$item_exists) {
+         return false;
+     }
+     $item_selected = $SESSION->literature_search_selected[$item_id];
+
+     return ($item_selected);
+}
 
 // The Sanitizer
 
 function literature_sanitize_class(&$class) {
-    
+
     $reflect = new ReflectionClass($class);
-    $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
-    
-    
+    $props = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
+
     foreach ($props as $prop) {
-        if($prop->isStatic()) {
+        if ($prop->isStatic()) {
             continue;
         }
         $propName = $prop->getName();
@@ -973,17 +989,16 @@ function literature_sanitize_class(&$class) {
         literature_recurisve_sanitize($value);
         $class->$propName = $value;
     }
-
 }
 
 function literature_recurisve_sanitize(&$thing) {
-     if(is_array($thing)) {
-         foreach ($thing as $item) {
-             literature_recurisve_sanitize($item);
-         }
-     } else if (is_object ($thing)) {
-         $thing = literature_sanitize_class($thing);
-     } else {
-         $thing = format_string($thing);
-     }
+    if (is_array($thing)) {
+        foreach ($thing as $item) {
+            literature_recurisve_sanitize($item);
+        }
+    } else if (is_object($thing)) {
+        $thing = literature_sanitize_class($thing);
+    } else {
+        $thing = format_string($thing);
+    }
 }

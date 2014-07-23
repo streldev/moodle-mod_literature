@@ -39,8 +39,8 @@ $url->param('view', $view);
 
 $PAGE->set_url($url);
 
-$course = $DB->get_record('course', array('id' => $course), '*', MUST_EXIST);
-$module = $DB->get_record('modules', array('name' => 'literature'), '*', MUST_EXIST);
+$course = $DB->get_record('course', array ('id' => $course), '*', MUST_EXIST);
+$module = $DB->get_record('modules', array ('name' => 'literature'), '*', MUST_EXIST);
 
 require_login($course);
 $context = context_course::instance($course->id);
@@ -79,10 +79,10 @@ foreach ($litids as $litid) {
 
     $cm->coursemodule = $cm->id;
 
-    if ( $view !== 0 && $view !== 1) {
+    if ($view !== 0 && $view !== 1) {
         $view = 1;
     }
-   
+
     $literature = new stdClass();
     $literature->litid = $lit->id;
     $literature->course = $course->id;
@@ -93,7 +93,7 @@ foreach ($litids as $litid) {
 
     $instanceid = literature_add_instance($literature);
 
-    $DB->set_field('course_modules', 'instance', $instanceid, array('id' => $cm->id));
+    $DB->set_field('course_modules', 'instance', $instanceid, array ('id' => $cm->id));
 
     course_add_cm_to_section($course, $cm->id, $section);
 

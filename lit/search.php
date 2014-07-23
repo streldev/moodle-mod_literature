@@ -45,12 +45,11 @@ $PAGE->set_url($url);
 
 if ($courseid != -1) {
 
-    $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array ('id' => $courseid), '*', MUST_EXIST);
 
     require_login($course);
     $context = context_course::instance($course->id);
     require_capability('mod/literature:addinstance', $context);
-    
 } else {
 
     require_login();
@@ -81,7 +80,6 @@ if ($mainform->is_submitted()) {
 
     $searchdefaults->course = $courseid;
     $searchdefaults->section = $section;
-
 } else if ($courseid == -1 && $search == 'false') {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +106,6 @@ if ($mainform->is_submitted()) {
     $searchdefaults = new stdClass();
     $searchdefaults->section = $section;
     $searchdefaults->course = $courseid;
-
 } else if ($search == 'false' && $courseid != -1) {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +122,6 @@ if ($mainform->is_submitted()) {
     $maindefaults = new stdClass();
     $maindefaults->sourcegroup['source'] = $sourceid;
     $searchdefaults = make_form_data($text, $sourceid, $courseid, $section);
-
 } else if ($search == 'quick') {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +129,7 @@ if ($mainform->is_submitted()) {
     ////////////////////////////////////////////////////////////////////////////////
 
     $text = required_param('text', PARAM_NOTAGS);
-    
+
     $sourceid = required_param('source', PARAM_ALPHANUM);
 
     $formdata = make_form_data($text, $sourceid, $courseid, $section);
@@ -163,7 +159,6 @@ if ($mainform->is_submitted()) {
 
     $maindefaults = new stdClass();
     $maindefaults->sourcegroup['source'] = $sourceid;
-
 } else if ($search == 'true') {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +196,6 @@ if ($mainform->is_submitted()) {
     $searchdefaults = $data;
     $resultdefaults = new stdClass();
     $resultdefaults->source = $sourceid;
-
 } else if ($search == 'redo') {
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +210,7 @@ if ($mainform->is_submitted()) {
     // Save selected items in Session
     if (isset($_POST['select'])) {
         if (!isset($SESSION->literature_search_selected)) {
-            $SESSION->literature_search_selected = array();
+            $SESSION->literature_search_selected = array ();
         }
 
         // Add checked and delete unchecked items
@@ -239,8 +233,8 @@ if ($mainform->is_submitted()) {
             print_error('error:search:timestampnotfound', 'literature', $PAGE->url);
         }
 
-        $litids = array();
-        $failedtoinsert = array();
+        $litids = array ();
+        $failedtoinsert = array ();
         foreach ($SESSION->literature_search_selected as $id => $isselected) {
 
             if ($isselected) {
@@ -261,7 +255,7 @@ if ($mainform->is_submitted()) {
 
         // Setup Session for post script
         $SESSION->literature_post_ids = $litids;
-        
+
         $url = new moodle_url('/mod/literature/lit/post.php');
         $url->param('course', $courseid);
         $url->param('section', $section);
@@ -275,7 +269,7 @@ if ($mainform->is_submitted()) {
         $listname = trim($data->new_list_group['new_list_name']);
         $timer = new DateTime();
         $listinfo = new literature_dbobject_listinfo(null, $listname, $USER->id, $timer->getTimestamp(), null, 0);
-        $list = new literature_dbobject_literaturelist($listinfo, array());
+        $list = new literature_dbobject_literaturelist($listinfo, array ());
         $listid = $list->insert();
 
         // Check if session is set up properly
@@ -285,7 +279,7 @@ if ($mainform->is_submitted()) {
             print_error('error:search:timestampnotfound', 'literature');
         }
 
-        $failedtoinsert = array();
+        $failedtoinsert = array ();
         foreach ($SESSION->literature_search_selected as $id => $isselected) {
             if ($isselected) {
                 if (!$litasstdclass = literature_db_load_result_by_id($timestamp, $id)) {
@@ -314,7 +308,7 @@ if ($mainform->is_submitted()) {
 
         // Cleanup Session
         if (isset($SESSION->literature_search_selected)) {
-            $SESSION->literature_search_selected = array();
+            $SESSION->literature_search_selected = array ();
         }
 
         // Redirect to list view
@@ -339,7 +333,7 @@ if ($mainform->is_submitted()) {
             print_error('error:search:timestampnotfound', 'literature');
         }
 
-        $failedtoinsert = array();
+        $failedtoinsert = array ();
         foreach ($SESSION->literature_search_selected as $id => $isselected) {
             if ($isselected) {
                 $result = literature_db_load_result_by_id($timestamp, $id);
@@ -366,7 +360,7 @@ if ($mainform->is_submitted()) {
 
         // Cleanup Session
         if (isset($SESSION->literature_search_selected)) {
-            $SESSION->literature_search_selected = array();
+            $SESSION->literature_search_selected = array ();
         }
 
         // Redirect to list view
@@ -431,7 +425,6 @@ if (empty($resultform)) {
     $searchform->display();
 
     echo $OUTPUT->footer();
-
 } else {
 
     // Set form defaults
@@ -466,7 +459,7 @@ if (empty($resultform)) {
 function make_form_data($text, $source, $courseid, $section) {
     global $DB;
 
-    $record = $DB->get_record('literature_searchsource', array('id' => $source));
+    $record = $DB->get_record('literature_searchsource', array ('id' => $source));
     $sourcelib = dirname(dirname(__FILE__)) . '/searchsource/' . $record->type . '/lib.php';
     if (!file_exists($sourcelib)) {
         print_error('error:searchsource:lib', 'literature');

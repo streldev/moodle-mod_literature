@@ -79,7 +79,7 @@ class literature_searchsource_opacxml_searchobject {
             print_error('error:searchsource:config', 'searchsource_opacxml');
         }
 
-        $results = array();
+        $results = array ();
         foreach ($xml->SET->SHORTTITLE as $shorttitle) {
 
             $ppn = $shorttitle->attributes()->PPN;
@@ -94,7 +94,7 @@ class literature_searchsource_opacxml_searchobject {
 
             $titlelink = $this->server . '/PPN?PPN=' . $ppn;
             $result = $parser->parse($entries, $titlelink);
-            if($result) {
+            if ($result) {
                 $results[] = $result;
             }
         }
@@ -112,7 +112,8 @@ class literature_searchsource_opacxml_searchobject {
 
         if (!empty($searchdata->searchfield)) {
 
-            $query = '/XML=1.0/FRST=' . $from . '/LAST=' . $to . '/TTL=1/CMD?ACT=SRCHA&IKT=1016&SRT=RLV&TRM=' . $searchdata->searchfield;
+            $query = '/XML=1.0/FRST=' . $from . '/LAST=' . $to . '/TTL=1/CMD?ACT=SRCHA&IKT=1016&SRT=RLV&TRM=' .
+                     $searchdata->searchfield;
         } else {
             return false;
         }

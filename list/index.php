@@ -68,8 +68,8 @@ if (!empty($_POST)) {
             case 'exp' :
 
                 if ($listids != null) {
-                   
-                    $SESSION->literature_listsselected = array();
+
+                    $SESSION->literature_listsselected = array ();
                     foreach ($listids as $id => $isselected) {
                         if ($isselected) {
                             $SESSION->literature_listsselected[] = $id;
@@ -122,7 +122,6 @@ if ($node = $PAGE->navigation->find('literature_managelists', navigation_node::T
 ////////////////////////////////////////////////////////////////////////////////
 // Display form
 ////////////////////////////////////////////////////////////////////////////////
-
 // Load own lists
 $listinfos = literature_dbobject_listinfo::load_by_userid($USER->id);
 

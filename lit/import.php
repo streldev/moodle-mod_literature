@@ -63,11 +63,11 @@ if ($mform->is_submitted()) {
     $content = $mform->get_file_content('mod_literature_import');
     $filename = $mform->get_new_filename('mod_literature_import');
     $extension = pathinfo($filename, PATHINFO_EXTENSION);
-    
+
     if (!$content) {
         print_error('error:file:emptycontent', 'literature', $PAGE->url, $filename);
     }
-    
+
     // Load importer
     $importer = literature_converter_load_importer_by_extension($extension);
     if (!$importer) {
@@ -86,7 +86,7 @@ if ($mform->is_submitted()) {
         print_error('error:importer:import', 'literature', $PAGE->url, $filename);
     }
 
-    $failedtoinsert = array();
+    $failedtoinsert = array ();
     foreach ($literatures as $literature) {
         $litid = $literature->insert();
         if ($litid) {

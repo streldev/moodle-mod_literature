@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -46,17 +45,17 @@
  */
 function literature_supports($feature) {
     switch ($feature) {
-        case FEATURE_IDNUMBER:                  return false;
-        case FEATURE_GROUPS:                    return false;
-        case FEATURE_GROUPINGS:                 return false;
-        case FEATURE_GROUPMEMBERSONLY:          return true;
-        case FEATURE_MOD_INTRO:                 return false;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:   return false;
-        case FEATURE_GRADE_HAS_GRADE:           return false;
-        case FEATURE_GRADE_OUTCOMES:            return false;
-        case FEATURE_MOD_ARCHETYPE:             return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_NO_VIEW_LINK:              return true;
-            
+        case FEATURE_IDNUMBER: return false;
+        case FEATURE_GROUPS: return false;
+        case FEATURE_GROUPINGS: return false;
+        case FEATURE_GROUPMEMBERSONLY: return true;
+        case FEATURE_MOD_INTRO: return false;
+        case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
+        case FEATURE_GRADE_HAS_GRADE: return false;
+        case FEATURE_GRADE_OUTCOMES: return false;
+        case FEATURE_MOD_ARCHETYPE: return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_NO_VIEW_LINK: return true;
+
         default: return null;
     }
 }
@@ -96,58 +95,57 @@ function literature_add_instance(stdClass $literature, mod_literature_mod_form $
  */
 function literature_update_instance(stdClass $object, mod_literature_mod_form $mform = null) {
     global $DB, $CFG, $USER;
-    
+
     // Get context
     require_login();
     $context = context_user::instance($USER->id);
 
     // Load old instance
     $instance = $DB->get_record('literature', array('id' => $object->instance));
-    if(!$instance) {
-        // TODO error
+    if (!$instance) {
         return false;
     }
-    
+
     // Build new links
     $links = array();
     if (isset($_POST['url'])) {
-        for($i=0; $i<count($_POST['url']); $i++) {
-           $url = $_POST['url'][$i];
-           $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
-           $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
-        }    
+        for ($i = 0; $i < count($_POST['url']); $i++) {
+            $url = $_POST['url'][$i];
+            $text = (!empty($_POST['linktext'][$i])) ? $_POST['linktext'][$i] : null;
+            $links[] = new literature_dbobject_link($instance->litid, $object->instance, $text, $url);
+        }
     }
-    
+
     // Get new cover
-    $file = $mform->save_stored_file('mod_literature_cover', $context->id,
-            'mod_literature', 'mod_literature_cover', 0, '/', null, true);
+    $file = $mform->save_stored_file('mod_literature_cover', $context->id, 'mod_literature', 'mod_literature_cover', 0,
+            '/', null, true);
 
     if ($file) {
         $coverurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
-                $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-       $object->coverpath = $coverurl->out(true);
+                        $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+        $object->coverpath = $coverurl->out(true);
     } else {
         $data = $mform->get_data();
         $object->coverpath = $data->coverpath;
     }
-    
+
     // Build updated literature entry
     $object->links = $links;
     $literature = literature_cast_stdClass_literature($object);
     $literature->timemodified = time();
     $literature->id = $instance->litid;
-    
+
     // Update literature entry and get id
-    $newLitId = $literature->update();
+    $new_id = $literature->update();
     $literature->add_ref();
     $literature->save();
-    
-    if($newLitId && $newLitId != $instance->litid) {
+
+    if ($new_id && $new_id != $instance->litid) {
         // Set new litid and update
-        $instance->litid = $newLitId;
+        $instance->litid = $new_id;
         return $DB->update_record('literature', $instance);
     }
-    
+
     return true;
 }
 
@@ -205,7 +203,7 @@ function literature_user_outline($course, $user, $mod, $literature) {
  * @return void, is supposed to echp directly
  */
 function literature_user_complete($course, $user, $mod, $literature) {
-    
+
 }
 
 /**
@@ -235,17 +233,17 @@ function literature_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function literature_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
-    
+function literature_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0,
+        $groupid = 0) {
+
 }
 
 /**
  * Prints single activity item prepared by {@see literature_get_recent_mod_activity()}
-
  * @return void
  */
 function literature_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
-    
+
 }
 
 /**
@@ -262,26 +260,26 @@ function literature_cron() {
     $timestamp = time() - 900;
 
     // Clean temp. table
-    $litTable = 'literature_lit_temp';
-    $linkTable = 'literature_link_temp';
-    $records = $DB->get_records($litTable);
+    $lit_table = 'literature_lit_temp';
+    $link_table = 'literature_link_temp';
+    $records = $DB->get_records($lit_table);
     foreach ($records as $record) {
 
         if ($record->timestamp <= $timestamp) {
             // Delete literature entry
-            $DB->delete_records($litTable, array('id' => $record->id));
+            $DB->delete_records($lit_table, array('id' => $record->id));
             // Delete link entry
-            $DB->delete_records($linkTable, array('lit_id' => $record->id));
+            $DB->delete_records($link_table, array('lit_id' => $record->id));
         }
     }
 
     // Clean exported file
-    $fileTable = 'files';
+    $file_table = 'files';
     $options = array('component' => 'mod_literature', 'filearea' => 'export');
-    $files = $DB->get_records($fileTable, $options);
+    $files = $DB->get_records($file_table, $options);
     foreach ($files as $file) {
         if ($file->timecreated <= $timestamp) {
-            $DB->delete_records($fileTable, array('id' => $file->id));
+            $DB->delete_records($file_table, array('id' => $file->id));
         }
     }
 
@@ -485,7 +483,7 @@ function literature_pluginfile($course, $cm, $context, $filearea, array $args, $
  * @param cm_info $cm
  */
 function literature_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
-    
+
 }
 
 /**
@@ -498,7 +496,7 @@ function literature_extend_navigation(navigation_node $navref, stdclass $course,
  * @param navigation_node $literaturenode {@link navigation_node}
  */
 function literature_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $literaturenode = null) {
-    
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -525,4 +523,3 @@ function literature_cm_info_view(cm_info $cminfo) {
     }
     $cminfo->set_content($content);
 }
-
