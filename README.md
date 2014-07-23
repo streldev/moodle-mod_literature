@@ -19,6 +19,8 @@ First you have to install the basic literature plugin.
 
 <pre>cd $MOODLE_ROOT
 git clone git@github.com:streldev/moodle-mod_literature.git mod/literature
+cd mod/literature
+git co LIT_M_26
 </pre>
 
 To fully integrate the literature plugin in your moodle instance, you should now install an additional local plugin. It integrates the literature plugin in the navigation tree.
