@@ -262,7 +262,6 @@ class literature_dbobject_literature {
         $file_name = basename($this->coverpath);
         $dupe_file = literature_enricher_duplicate_file($file_name);
         if (!$dupe_file) {
-            // TODO error
             $this->delete();
             throw new Exception("Could not copy cover!");
         }
@@ -378,12 +377,13 @@ class literature_dbobject_literature {
 
             // Prepare file record object
             $fileinfo = array(
-                'contextid' => $context->id, // ID of context
-                'component' => 'mod_literature', // usually = table name
-                'filearea' => 'enricher', // usually = table name
-                'itemid' => 0, // usually = ID of row in table
-                'filepath' => '/', // any path beginning and ending in /
-                'filename' => $filename); // any filename
+                'contextid' => $context->id,
+                'component' => 'mod_literature',
+                'filearea' => 'enricher',
+                'itemid' => 0,
+                'filepath' => '/',
+                'filename' => $filename
+            );
 
             $fs = get_file_storage();
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
