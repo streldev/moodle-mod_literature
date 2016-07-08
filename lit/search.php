@@ -141,6 +141,7 @@ if ($mainform->is_submitted()) {
     }
     $SESSION->literature_search_data = serialize($formdata);
     $SESSION->literature_search_timestamp = $timestamp;
+    $SESSION->literature_search_selected = array ();
 
     if (!$searchform = literature_searchsource_load_searchform($sourceid)) {
         print_error('error:searchsource:formnotfound', 'literature');
@@ -179,10 +180,11 @@ if ($mainform->is_submitted()) {
         print_error('error:search:saveresultsfailed', 'literature');
     }
 
+
     // Save search details in the session
     $SESSION->literature_search_data = serialize($data);
     $SESSION->literature_search_timestamp = $timestamp;
-
+    $SESSION->literature_search_selected = array ();
 
     $data->incourse = ($section == -1 || $courseid == -1) ? false : true;
 
@@ -226,7 +228,6 @@ if ($mainform->is_submitted()) {
 
     // Post literature
     if (isset($_POST['btn_post'])) {
-
         if (isset($SESSION->literature_search_timestamp)) {
             $timestamp = $SESSION->literature_search_timestamp;
         } else {
